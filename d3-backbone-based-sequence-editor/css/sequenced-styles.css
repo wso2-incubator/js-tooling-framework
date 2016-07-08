@@ -1,0 +1,24 @@
+.lifeline-title{
+    fill: #ffffff;
+    text-anchor:middle;
+    cursor:text;
+}
+
+.lifeline-line{
+    stroke: #181818;
+    stroke-dasharray: 4,1;
+    stroke-width: 2.5px;
+
+}
+
+.lifeline-rect{
+
+}
+
+
+.lifeline{
+}
+
+.lifeline:hover{
+    cursor: pointer;
+}
