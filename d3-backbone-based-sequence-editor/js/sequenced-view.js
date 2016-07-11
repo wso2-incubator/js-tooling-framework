@@ -20,7 +20,7 @@ var SequenceD = (function (sequenced) {
          * @param options
          */
         initialize: function (options) {
-            _.extend(this, _.pick(options, "centerPoint"));
+            _.extend(this, _.pick(options, "centerPoint", "paperID"));
         },
 
         /**
@@ -68,18 +68,27 @@ var SequenceD = (function (sequenced) {
             BaseView.prototype.initialize(options);
         },
 
-        /**
-         * Render LifeLine
-         *
-         * @returns {Snap.Element} rendered SVG Element.
-         */
-        render: function () {
+
+        render: function (paperID) {
+            // set paper
+            _.extend(this, {paperID:this.paperID || paperID || sequenced.paper.selector});
+
+            // wrap d3 drawing apis
+            var d3Draw = d3_draw.wrap(d3.select(this.paperID));
+
+            // fetch prefs for LifeLines
+            var prefs = sequenced.prefs.lifeline;
+
+            var g = d3Draw.lifeLine(this.centerPoint, this.title, prefs);
+
+            this.el = g;
+            return g;
         }
 
     });
 
     views.BaseView = BaseView;
-    views.LifeLine = LifeLineView;
+    views.LifeLineView = LifeLineView;
 
     return sequenced;
 

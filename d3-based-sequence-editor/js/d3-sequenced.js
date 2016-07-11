@@ -319,7 +319,7 @@ function mousedown() {
 function mousemove() {
     var x1 = line.attr("x1");
     var y1 = line.attr("y1");
-    
+
     var m = d3.mouse(this);
     var x2 = Math.max(drawingCanvasX + 5, m[0]);
     var y2 = Math.max(drawingCanvasY + 5, m[1]);

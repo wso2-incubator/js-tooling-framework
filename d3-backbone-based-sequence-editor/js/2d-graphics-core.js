@@ -1,6 +1,6 @@
-var GraphicsCore = (function (graphicsCore) {
+var graphics_core = (function (graphicsCore) {
 
-    var models = graphicsCore.Models = {};
+    var models = graphicsCore.Models || {};
 
     // create the model for a Point
     var Point = Backbone.Model.extend({
@@ -41,4 +41,4 @@ var GraphicsCore = (function (graphicsCore) {
 
     return graphicsCore;
 
-}(GraphicsCore || {}));
+}(graphics_core || {}));
