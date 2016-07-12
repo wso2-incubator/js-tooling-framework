@@ -76,6 +76,9 @@ var d3_draw = (function (d3_draw) {
                             .classed(prefs.line.class, true);
         var text = d3Ref.centeredText(center, title, group)
                             .classed(prefs.text.class, true);
+        group.__proto__.rect = rect;
+        group.__proto__.line = line;
+        group.__proto__.title = text;
         return group;
     };
 
