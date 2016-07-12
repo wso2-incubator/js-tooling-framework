@@ -4,14 +4,17 @@ var SequenceD = (function (sequenced) {
 
     // create the base model
     var Base = Backbone.Model.extend({
-
-
-
+        defaults:{
+            centerPoint: new graphics_core.Models.Point({x: 0, y: 0}),
+            created: new Date()
+        }
     });
 
     var LifeLine = Base.extend({
-
-
+        defaults:{
+            title: "lifeline",
+            paperID: SequenceD.prefs.paper.selector
+        }
     });
 
     // set models

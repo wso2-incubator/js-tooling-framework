@@ -10,7 +10,13 @@
    height: 100%;
 }
 
+.tool-palette{
+   height: 200px;
+   background-color: #204d74;
+}
+
 body{
    margin: 0;
    padding: 0;
 }
+
