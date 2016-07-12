@@ -89,7 +89,7 @@ var SequenceD = (function (sequenced) {
 
         render: function (paperID) {
             // set paper
-            this.attribute("paperID", this.paperID || paperID || sequenced.paper.selector);
+            this.attribute("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
 
             // wrap d3 with custom drawing apis
             var d3Draw = d3_draw.wrap(d3.select(this.attribute("paperID")));
