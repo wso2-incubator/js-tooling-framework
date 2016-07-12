@@ -1,4 +1,4 @@
-var paper = "#svgArea";
+var paper = "#mainPaper";
 
 var lifeLine1 = new SequenceD.Views.LifeLineView({title:" LifeLine1", centerPoint: new graphics_core.Models.Point({x: 250, y: 250})});
 lifeLine1.render(paper);

@@ -8,8 +8,8 @@ var SequenceD = (function (sequenced) {
         lifeLinePrefs = prefs.lifeline || {},
         paperPrefs = prefs.paper || {};
 
-    // set css selector for paper
-    paperPrefs.selector = "#svgArea ";
+    // set css selector for paper - default mainPaper
+    paperPrefs.selector = "#mainPaper";
 
     // prefs for lifeline view
     lifeLinePrefs.class = "lifeline";
