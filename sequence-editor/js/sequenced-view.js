@@ -23,10 +23,10 @@ var SequenceD = (function (sequenced) {
          */
         dragMove: function (event) {
             var d = this.attribute("dragData");
-            d.x += event.dx;
-            d.y += event.dy;
+            d.x += this.horizontalDrag() ? event.dx : 0;
+            d.y += this.verticalDrag() ? event.dy : 0;
             this.el.attr("transform", function(){
-                return "translate(" + [ d.x,d.y ] + ")"
+                return "translate(" + [ d.x, d.y ] + ")"
             })
         },
 
@@ -37,7 +37,8 @@ var SequenceD = (function (sequenced) {
          */
         dragStart: function (event) {
             if(this.attribute("dragData") === undefined){
-                this.attribute("dragData", {x:event.dx, y:event.dy});
+                this.attribute("dragData", {x: this.horizontalDrag() ? event.dx : 0,
+                                            y: this.verticalDrag() ? event.dy :0});
             }
         },
 
@@ -63,6 +64,14 @@ var SequenceD = (function (sequenced) {
                     this.model.unset(name);
                 }
             }
+        },
+
+        horizontalDrag: function(){
+            return true;
+        },
+
+        verticalDrag: function(){
+            return true;
         }
     });
 
@@ -75,6 +84,10 @@ var SequenceD = (function (sequenced) {
         // fetch default class from prefs
         className: sequenced.prefs.lifeline.class,
 
+        verticalDrag: function(){
+            return false;
+        },
+
         render: function (paperID) {
             // set paper
             this.attribute("paperID", this.paperID || paperID || sequenced.paper.selector);
@@ -85,7 +98,7 @@ var SequenceD = (function (sequenced) {
             // fetch global prefs for LifeLines
             var prefs = sequenced.prefs.lifeline;
 
-            var group = d3Draw.lifeLine(this.attribute('centerPoint'), this.attribute('title'), prefs);
+            var lifeLine = d3Draw.lifeLine(this.attribute('centerPoint'), this.attribute('title'), prefs);
             var viewObj = this;
             var drag = d3.drag()
                 .on("start",function(){
@@ -98,10 +111,10 @@ var SequenceD = (function (sequenced) {
                     viewObj.dragStop();
                 });
 
-            group.call(drag);
+            lifeLine.call(drag);
 
-            this.el = group;
-            return group;
+            this.el = lifeLine;
+            return lifeLine;
         }
 
     });
