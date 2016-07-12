@@ -47,7 +47,6 @@ var SequenceD = (function (sequenced) {
          * for custom behaviour.
          */
         dragStop: function () {
-            this.attribute("dragData", null);
         },
 
         attribute: function(name,value){
