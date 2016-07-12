@@ -73,16 +73,16 @@ var SequenceD = (function (sequenced) {
             // set paper
             _.extend(this, {paperID:this.paperID || paperID || sequenced.paper.selector});
 
-            // wrap d3 drawing apis
+            // wrap d3 with custom drawing apis
             var d3Draw = d3_draw.wrap(d3.select(this.paperID));
 
-            // fetch prefs for LifeLines
+            // fetch global prefs for LifeLines
             var prefs = sequenced.prefs.lifeline;
 
-            var g = d3Draw.lifeLine(this.centerPoint, this.title, prefs);
+            var group = d3Draw.lifeLine(this.centerPoint, this.title, prefs);
 
-            this.el = g;
-            return g;
+            this.el = group;
+            return group;
         }
 
     });
