@@ -12,7 +12,7 @@ var d3_draw = (function (d3_draw) {
 
     var circleOnPoint = function(point, r, parent){
         parent = parent || d3Ref;
-        return parent.circle(point.getX(), point.getY(), r);
+        return parent.draw.circle(point.getX(), point.getY(), r);
     };
 
     var rect = function(x, y, width, height, rx, ry, parent){
@@ -32,7 +32,7 @@ var d3_draw = (function (d3_draw) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.rect(center.getX() - width/2, center.getY() - height/2, width, height, rx, ry, parent);
+        return parent.draw.rect(center.getX() - width/2, center.getY() - height/2, width, height, rx, ry, parent);
     };
 
     var line = function(x1, y1, x2, y2, parent){
@@ -46,7 +46,7 @@ var d3_draw = (function (d3_draw) {
 
     var verticalLine = function(start, height, parent){
         parent = parent || d3Ref;
-        return parent.line(start.getX(), start.getY(), start.getX(), start.getY() + height, parent);
+        return parent.draw.line(start.getX(), start.getY(), start.getX(), start.getY() + height, parent);
     };
 
     var editableText = function(x, y, text){
@@ -65,17 +65,17 @@ var d3_draw = (function (d3_draw) {
 
     var centeredText = function(center, textContent, parent){
         parent = parent || d3Ref;
-        return parent.textElement(center.getX(), center.getY(), textContent, parent).attr('text-anchor', 'middle');
+        return parent.draw.textElement(center.getX(), center.getY(), textContent, parent).attr('text-anchor', 'middle');
     };
 
     var lifeLine = function (center, title, prefs) {
-        var group = d3Ref.group()
+        var group = d3Ref.draw.group()
                         .classed(prefs.class, true);
-        var rect = d3Ref.centeredRect(center, prefs.rect.width, prefs.rect.height, 10, 10, group)
+        var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 10, 10, group)
                             .classed(prefs.rect.class, true);
-        var line = d3Ref.verticalLine(center, prefs.line.height, group)
+        var line = d3Ref.draw.verticalLine(center, prefs.line.height, group)
                             .classed(prefs.line.class, true);
-        var text = d3Ref.centeredText(center, title, group)
+        var text = d3Ref.draw.centeredText(center, title, group)
                             .classed(prefs.text.class, true);
         Object.getPrototypeOf(group).rect = rect;
         Object.getPrototypeOf(group).line = line;
@@ -103,21 +103,23 @@ var d3_draw = (function (d3_draw) {
         if( typeof d3ref === 'undefined'){
             throw "undefined d3 ref.";
         }
-        d3Ref = d3ref;
-        var d3Proto = Object.getPrototypeOf(d3Ref);
-        d3Proto.centeredRect = centeredRect;
-        d3Proto.rect = rect;
-        d3Proto.line = line;
-        d3Proto.verticalLine = verticalLine;
-        d3Proto.editableText = editableText;
-        d3Proto.centeredText = centeredText;
-        d3Proto.textElement = textElement;
-        d3Proto.circle = circle;
-        d3Proto.circleOnPoint = circleOnPoint;
-        d3Proto.lifeLine = lifeLine;
-        d3Proto.group = group;
+        var draw = {};
+        draw.centeredRect = centeredRect;
+        draw.rect = rect;
+        draw.line = line;
+        draw.verticalLine = verticalLine;
+        draw.editableText = editableText;
+        draw.centeredText = centeredText;
+        draw.textElement = textElement;
+        draw.circle = circle;
+        draw.circleOnPoint = circleOnPoint;
+        draw.lifeLine = lifeLine;
+        draw.group = group;
 
-        return d3Ref;
+        var d3Proto = Object.getPrototypeOf(d3ref);
+        d3Proto.draw = draw;
+
+        return d3Ref = d3ref;
     };
 
     var d3 = function(){
