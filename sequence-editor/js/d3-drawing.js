@@ -77,9 +77,9 @@ var d3_draw = (function (d3_draw) {
                             .classed(prefs.line.class, true);
         var text = d3Ref.centeredText(center, title, group)
                             .classed(prefs.text.class, true);
-        group.__proto__.rect = rect;
-        group.__proto__.line = line;
-        group.__proto__.title = text;
+        Object.getPrototypeOf(group).rect = rect;
+        Object.getPrototypeOf(group).line = line;
+        Object.getPrototypeOf(group).title = text;
         return group;
     };
 
@@ -104,17 +104,18 @@ var d3_draw = (function (d3_draw) {
             throw "undefined d3 ref.";
         }
         d3Ref = d3ref;
-        d3Ref.__proto__.centeredRect = centeredRect;
-        d3Ref.__proto__.rect = rect;
-        d3Ref.__proto__.line = line;
-        d3Ref.__proto__.verticalLine = verticalLine;
-        d3Ref.__proto__.editableText = editableText;
-        d3Ref.__proto__.centeredText = centeredText;
-        d3Ref.__proto__.textElement = textElement;
-        d3Ref.__proto__.circle = circle;
-        d3Ref.__proto__.circleOnPoint = circleOnPoint;
-        d3Ref.__proto__.lifeLine = lifeLine;
-        d3Ref.__proto__.group = group;
+        var d3Proto = Object.getPrototypeOf(d3Ref);
+        d3Proto.centeredRect = centeredRect;
+        d3Proto.rect = rect;
+        d3Proto.line = line;
+        d3Proto.verticalLine = verticalLine;
+        d3Proto.editableText = editableText;
+        d3Proto.centeredText = centeredText;
+        d3Proto.textElement = textElement;
+        d3Proto.circle = circle;
+        d3Proto.circleOnPoint = circleOnPoint;
+        d3Proto.lifeLine = lifeLine;
+        d3Proto.group = group;
 
         return d3Ref;
     };
