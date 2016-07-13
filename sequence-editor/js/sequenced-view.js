@@ -7,19 +7,20 @@ var SequenceD = (function (sequenced) {
 
     var views = sequenced.Views = sequenced.Views || {};
 
-    /**
-     * Base View class to extend from.
-     *
-     * @type {*|void}
-     */
-    var BaseView = Backbone.View.extend({
+    var BaseView = Backbone.View.extend(
+    /** @lends BaseView.prototype */
+    {
+        /**
+         * @augments Backbone.View
+         * @constructs
+         * @class BaseView Represents the base view for components in Sequence Diagrams.
+         */
+        initialize: function() {},
 
         /**
-         * Default drag move handler for views which will
-         * drag the element along with the mouse pointer.
-         *
-         * @param dx
-         * @param dy
+         * Default drag move handler which will translate view by appending new offsets
+         * to current translate element.
+         * @param {d3.event} event D3 event object.
          */
         dragMove: function (event) {
             var d = this.attribute("dragData");
@@ -33,7 +34,7 @@ var SequenceD = (function (sequenced) {
         /**
          * Default drag start handler which captures original position
          * of the view.
-         *
+         * @param {d3.event} event D3 event object.
          */
         dragStart: function (event) {
             if(this.attribute("dragData") === undefined){
@@ -49,6 +50,15 @@ var SequenceD = (function (sequenced) {
         dragStop: function () {
         },
 
+        /**
+         * Sets, un-sets or gets an attribute of underline model. If a value is not passed
+         * gets the value of attribute. Otherwise, set the value of attribute.
+         * if the passed value is null, un-set the attribute.
+         *
+         * @param {string} name Name of the model attribute.
+         * @param {*} [value] Value of the model attribute.
+         * @returns {*|void} Returns value if value is not passed. Else void.
+         */
         attribute: function(name,value){
             if(value === undefined){
                 return this.model.get(name);
@@ -65,20 +75,34 @@ var SequenceD = (function (sequenced) {
             }
         },
 
+        /**
+         * Checks whether this view supports horizontal drag.
+         *
+         * @returns {boolean}
+         */
         horizontalDrag: function(){
             return true;
         },
 
+        /**
+         * Checks whether this view supports vertical drag.
+         *
+         * @returns {boolean}
+         */
         verticalDrag: function(){
             return true;
         }
     });
 
-
-    /**
-     * LifeLine Backbone View
-     */
-    var LifeLineView = BaseView.extend({
+    var LifeLineView = BaseView.extend(
+    /** @lends LifeLineView.prototype */
+    {
+        /**
+         * @augments BaseView
+         * @constructs
+         * @class LifeLineView Represents the view for lifeline components in Sequence Diagrams.
+         */
+        initialize: function() {},
 
         // fetch default class from prefs
         className: sequenced.prefs.lifeline.class,
