@@ -69,7 +69,8 @@ var d3_draw = (function (d3_draw) {
     };
 
     var lifeLine = function (center, title, prefs) {
-        var group = d3Ref.group();
+        var group = d3Ref.group()
+                        .classed(prefs.class, true);
         var rect = d3Ref.centeredRect(center, prefs.rect.width, prefs.rect.height, 10, 10, group)
                             .classed(prefs.rect.class, true);
         var line = d3Ref.verticalLine(center, prefs.line.height, group)

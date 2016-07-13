@@ -5,16 +5,14 @@
 }
 
 .lifeline-line{
-    stroke: #181818;
+    stroke: #666666;
     stroke-dasharray: 4,1;
     stroke-width: 2.5px;
-
 }
 
 .lifeline-rect{
-
+    fill: #666666;
 }
-
 
 .lifeline{
 }
