@@ -12,13 +12,13 @@
 }
 
 .logo{
-   height: 50px;
+   height: 25px;
    margin: 15px;
    float: right;
 }
 .tool-palette{
    padding-right: 25px;
-   height: 10%;
+   height: 50px;
    background-color: #333333;
 }
 
