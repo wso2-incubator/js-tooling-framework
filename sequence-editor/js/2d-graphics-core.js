@@ -2,6 +2,7 @@ var graphics_core = (function (graphicsCore) {
 
     var models = graphicsCore.Models || {};
 
+
     var Point = Backbone.Model.extend(
     /** @lends Point.prototype */
     {
@@ -81,8 +82,54 @@ var graphics_core = (function (graphicsCore) {
         }
     });
 
+    var Line = Backbone.Model.extend(
+    /** @lends Line.prototype */
+    {
+        /**
+         * @augments Backbone.Model
+         * @constructs
+         * @class Line represents a line in paper.
+         */
+        initialize: function() {},
+
+        /**
+         * default line is a 0 length line at 0,0.
+         */
+        defaults: {
+            start: new Point(),
+            end: new Point()
+        },
+
+        /**
+         * Get or set starting point of the line.
+         * @param {Point} [point] Ignore if you only want to get the starting point.
+         * @returns {Point|void} starting point of the line or void if setter is invoked.
+         */
+        start: function(point){
+            if(point === undefined)
+            {
+                return this.get('start');
+            }
+            this.set('start', point);
+        },
+        /**
+         * Get or set ending point of the line.
+         * @param {Point} [point] Ignore if you only want to get the ending point.
+         * @returns {Point|void} ending point of the line or void if setter is invoked.
+         */
+        end: function(point){
+            if(point === undefined)
+            {
+                return this.get('start');
+            }
+            this.set('end',point);
+        }
+    });
+
     // set models
     models.Point = Point;
+    models.Line = Line;
+
 
     graphicsCore.Models = models;
 
