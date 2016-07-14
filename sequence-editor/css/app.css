@@ -23,12 +23,20 @@
 }
 
 .editor{
-   height: 90%;
+   height: 95%;
    background-color: #fff;
+}
+
+.ruled-paper{
    background-image:
    linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
    linear-gradient(#eee .1em, transparent .1em);
    background-size: 100% 1.2em;
+}
+
+.cardboard{
+   background-color: #ffffff;
+   background-image: url("patterns/cardboard-flat.png");
 }
 
 body{
