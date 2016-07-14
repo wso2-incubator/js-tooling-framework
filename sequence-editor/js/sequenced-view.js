@@ -181,8 +181,6 @@ var SequenceD = (function (sequenced) {
             // wrap d3 with custom drawing apis
             var d3Draw = d3_draw.wrap(d3.select(this.attribute("paperID")));
 
-            this.el = lifeLine;
-            return lifeLine;
         }
 
     });
