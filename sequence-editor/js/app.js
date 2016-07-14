@@ -18,10 +18,29 @@
 
 var paper = "#mainPaper";
 
-var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", centerPoint: new graphics_core.Models.Point({x: 250, y: 50})});
-var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model});
+// options for lifeline view
+var lifeLineOptions = {};
+lifeLineOptions.class = "lifeline";
+// rectangle options
+lifeLineOptions.rect = {};
+lifeLineOptions.rect.width = 200;
+lifeLineOptions.rect.height = 75;
+lifeLineOptions.rect.roundX = 20;
+lifeLineOptions.rect.roundY = 20;
+lifeLineOptions.rect.class = "lifeline-rect";
+// line options
+lifeLineOptions.line =  {};
+lifeLineOptions.line.height = 800;
+lifeLineOptions.line.class = "lifeline-line";
+// text options
+lifeLineOptions.text = {};
+lifeLineOptions.text.class = "lifeline-title";
+
+
+var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", paperID:paper, centerPoint: new graphics_core.Models.Point({x: 250, y: 50})});
+var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model, options:lifeLineOptions});
 lifeLine1.render();
 
-var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", centerPoint: new graphics_core.Models.Point({x: 500, y: 50})});
-var lifeLine2 = new SequenceD.Views.LifeLineView({model:lifeLine2Model});
+var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", paperID:paper, centerPoint: new graphics_core.Models.Point({x: 500, y: 50})});
+var lifeLine2 = new SequenceD.Views.LifeLineView({model:lifeLine2Model, options:lifeLineOptions});
 lifeLine2.render();

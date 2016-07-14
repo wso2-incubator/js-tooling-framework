@@ -32,8 +32,11 @@ var SequenceD = (function (sequenced) {
          * @augments Backbone.View
          * @constructs
          * @class BaseView Represents the base view for components in Sequence Diagrams.
+         * @param {Object} options Rendering options for the view
          */
-        initialize: function() {},
+        initialize: function(options) {
+            _.extend(this, _.pick(options, "options"));
+        },
 
         /**
          * Default drag move handler which will translate view by appending new offsets
@@ -119,11 +122,11 @@ var SequenceD = (function (sequenced) {
          * @augments BaseView
          * @constructs
          * @class LifeLineView Represents the view for lifeline components in Sequence Diagrams.
+         * @param {Object} options Rendering options for the view
          */
-        initialize: function() {},
-
-        // fetch default class from prefs
-        className: sequenced.prefs.lifeline.class,
+        initialize: function(options) {
+            BaseView.prototype.initialize(options);
+        },
 
         verticalDrag: function(){
             return false;
@@ -131,15 +134,11 @@ var SequenceD = (function (sequenced) {
 
         render: function (paperID) {
             // set paper
-            this.modelAttr("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
+            this.modelAttr("paperID", this.modelAttr("paperID") || paperID);
 
             // wrap d3 with custom drawing apis
             var d3Draw = d3_draw.wrap(d3.select(this.modelAttr("paperID")));
-
-            // fetch global prefs for LifeLines
-            var prefs = sequenced.prefs.lifeline;
-
-            var lifeLine = d3Draw.draw.lifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), prefs);
+            var lifeLine = d3Draw.draw.lifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
             var viewObj = this;
             var drag = d3.drag()
                 .on("start",function(){
@@ -167,8 +166,11 @@ var SequenceD = (function (sequenced) {
          * @augments BaseView
          * @constructs
          * @class MessageView Represents the view for message components in Sequence Diagrams.
+         * @param {Object} options Rendering options for the view
          */
-        initialize: function() {},
+        initialize: function(options) {
+            BaseView.prototype.initialize(options);
+        },
 
         horizontalDrag: function(){
             return false;

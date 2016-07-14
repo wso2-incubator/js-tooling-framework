@@ -32,7 +32,6 @@ var SequenceD = (function (sequenced) {
         initialize: function() {},
 
         defaults:{
-            paperID: SequenceD.prefs.paper.selector,
             created: new Date()
         },
         /**
