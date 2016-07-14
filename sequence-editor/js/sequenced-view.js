@@ -139,7 +139,7 @@ var SequenceD = (function (sequenced) {
             // fetch global prefs for LifeLines
             var prefs = sequenced.prefs.lifeline;
 
-            var lifeLine = d3Draw.lifeLine(this.attribute('centerPoint'), this.attribute('title'), prefs);
+            var lifeLine = d3Draw.draw.lifeLine(this.attribute('centerPoint'), this.attribute('title'), prefs);
             var viewObj = this;
             var drag = d3.drag()
                 .on("start",function(){
@@ -160,7 +160,35 @@ var SequenceD = (function (sequenced) {
 
     });
 
+    var MessageView = BaseView.extend(
+    /** @lends MessageView.prototype */
+    {
+        /**
+         * @augments BaseView
+         * @constructs
+         * @class MessageView Represents the view for message components in Sequence Diagrams.
+         */
+        initialize: function() {},
+
+        horizontalDrag: function(){
+            return false;
+        },
+
+        render: function (paperID) {
+            // set paper
+            this.attribute("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
+
+            // wrap d3 with custom drawing apis
+            var d3Draw = d3_draw.wrap(d3.select(this.attribute("paperID")));
+
+            this.el = lifeLine;
+            return lifeLine;
+        }
+
+    });
+
     views.BaseView = BaseView;
+    views.MessageView = MessageView;
     views.LifeLineView = LifeLineView;
 
     return sequenced;

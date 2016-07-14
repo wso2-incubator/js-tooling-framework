@@ -44,11 +44,59 @@ var SequenceD = (function (sequenced) {
         }
     });
 
-    var LifeLine = BaseModel.extend(
-    /** @lends LifeLine.prototype */
+    var Element = BaseModel.extend(
+    /** @lends Element.prototype */
     {
         /**
          * @augments BaseModel
+         * @constructs
+         * @class Element represents the model for an elements in a diagram.
+         */
+        initialize: function() {},
+
+        defaults:{
+        }
+    });
+
+    var Link = BaseModel.extend(
+    /** @lends Link.prototype */
+    {
+        /**
+         * @augments BaseModel
+         * @constructs
+         * @class Link represents the model for a link between two elements in a diagrams.
+         */
+        initialize: function() {},
+
+        defaults:{
+        },
+        /**
+         * Gets or sets source element for the link.
+         * @param {Element} [element] Source element
+         */
+        source: function(element){
+            if(element === undefined){
+                return this.get('source');
+            }
+            this.set('source', element);
+        },
+        /**
+         * Gets or sets destination element for the link.
+         * @param {Element} [element] Destination element
+         */
+        destination: function(element){
+            if(element === undefined){
+                return this.get('destination');
+            }
+            this.set('destination', element);
+        }
+    });
+
+    var LifeLine = Element.extend(
+    /** @lends LifeLine.prototype */
+    {
+        /**
+         * @augments Element
          * @constructs
          * @class LifeLine Represents the model for a LifeLine in Sequence Diagrams.
          */
@@ -60,8 +108,56 @@ var SequenceD = (function (sequenced) {
         }
     });
 
+    var Mediator = Element.extend(
+    /** @lends Mediator.prototype */
+    {
+        /**
+         * @augments Element
+         * @constructs
+         * @class Mediator Represents the model for a Mediator in an NEL Design Diagram.
+         */
+        initialize: function() {},
+
+        defaults:{
+            centerPoint: new graphics_core.Models.Point({x: 0, y: 0}),
+            title: "Mediator"
+        }
+    });
+
+    var Message = Link.extend(
+    /** @lends Message.prototype */
+    {
+        /**
+         * @augments Link
+         * @constructs
+         * @class Message Represents the model for a Message in Sequence Diagrams.
+         */
+        initialize: function() {},
+
+        defaults:{
+        },
+
+        /**
+         * Gets or sets source element for the Message.
+         * @param {Mediator|LifeLine} [sourceElement] Source element
+         */
+        source: function(sourceElement){
+            return Link.prototype.source(sourceElement);
+        },
+        /**
+         * Gets or sets destination element for the Message.
+         * @param {LifeLine} [lifeLine] Destination element
+         */
+        destination: function(lifeLine){
+            return Link.prototype.source(lifeLine);
+        }
+    });
+
     // set models
     models.BaseModel = BaseModel;
+    models.Element = Element;
+    models.Link = Link;
+    models.Message = Message;
     models.LifeLine = LifeLine;
 
     sequenced.Models = models;
