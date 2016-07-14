@@ -141,6 +141,16 @@ var graphics_core = (function (graphicsCore) {
                 return this.get('start');
             }
             this.set('end',point);
+        },
+
+        /**
+         *  Gives the length of the line.
+         *  @returns {number} length of the line.
+         */
+        length: function(){
+            var absDistX = this.end().absDistInXFrom(this.start());
+            var absDistY = this.end().absDistInYFrom(this.start());
+            return Math.sqrt(Math.pow(absDistX, 2) + Math.pow(absDistY, 2));
         }
     });
 
