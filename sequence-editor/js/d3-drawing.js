@@ -30,7 +30,7 @@ var d3_draw = (function (d3_draw) {
 
     var circleOnPoint = function(point, r, parent){
         parent = parent || d3Ref;
-        return parent.draw.circle(point.getX(), point.getY(), r);
+        return parent.draw.circle(point.x(), point.y(), r);
     };
 
     var rect = function(x, y, width, height, rx, ry, parent){
@@ -50,7 +50,7 @@ var d3_draw = (function (d3_draw) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.rect(center.getX() - width/2, center.getY() - height/2, width, height, rx, ry, parent);
+        return parent.draw.rect(center.x() - width/2, center.y() - height/2, width, height, rx, ry, parent);
     };
 
     var line = function(x1, y1, x2, y2, parent){
@@ -64,7 +64,7 @@ var d3_draw = (function (d3_draw) {
 
     var verticalLine = function(start, height, parent){
         parent = parent || d3Ref;
-        return parent.draw.line(start.getX(), start.getY(), start.getX(), start.getY() + height, parent);
+        return parent.draw.line(start.x(), start.y(), start.x(), start.y() + height, parent);
     };
 
     var editableText = function(x, y, text){
@@ -83,7 +83,7 @@ var d3_draw = (function (d3_draw) {
 
     var centeredText = function(center, textContent, parent){
         parent = parent || d3Ref;
-        return parent.draw.textElement(center.getX(), center.getY(), textContent, parent).attr('text-anchor', 'middle');
+        return parent.draw.textElement(center.x(), center.y(), textContent, parent).attr('text-anchor', 'middle');
     };
 
     var lifeLine = function (center, title, prefs) {

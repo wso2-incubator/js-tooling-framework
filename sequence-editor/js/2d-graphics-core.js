@@ -39,32 +39,24 @@ var graphics_core = (function (graphicsCore) {
             y: 0
         },
         /**
-         * Returns Y coordinate of the Point.
-         * @returns {number} X coordinate of the Point
+         * Gets or sets X coordinate of the Point.
+         * @returns {number|void} X coordinate of the Point or void.
          */
-        getX: function () {
-            return this.get('x');
+        x: function (newX) {
+            if(newX === undefined){
+                return this.get('x');
+            }
+            this.set('x', newX);
         },
         /**
-         * Returns Y coordinate of the Point.
-         * @returns {number} Y coordinate of the Point
+         * Gets or sets Y coordinate of the Point.
+         * @returns {number|void} Y coordinate of the Point or void.
          */
-        getY: function () {
-            return this.get('y');
-        },
-        /**
-         * Sets X coordinate of the Point.
-         * @param {number} x X coordinate of the Point
-         */
-        setX: function (x) {
-            this.set('x', x);
-        },
-        /**
-         * Sets Y coordinate of the Point.
-         * @param {number} y Y coordinate of the Point
-         */
-        setY: function (y) {
-            this.set('y', y);
+        y: function (newY) {
+            if(newY === undefined){
+                return this.get('y');
+            }
+            this.set('y', newY);
         },
         /**
          * Returns absolute distance in X axis from a given Point to this point.
@@ -72,7 +64,7 @@ var graphics_core = (function (graphicsCore) {
          * @returns {number} Absolute distance in X axis.
          */
         absDistInXFrom: function (refPoint) {
-            return Math.abs(this.getX() - refPoint.getX())
+            return Math.abs(this.distInXFrom(refPoint))
         },
         /**
          * Returns absolute distance in Y axis from a given Point to this point.
@@ -80,7 +72,7 @@ var graphics_core = (function (graphicsCore) {
          * @returns {number} Absolute distance in Y axis.
          */
         absDistInYFrom: function (refPoint) {
-            return Math.abs(this.getY() - refPoint.getY())
+            return Math.abs(this.distInYFrom(refPoint))
         },
         /**
          * Returns distance in X axis from a given Point to this point.
@@ -88,7 +80,7 @@ var graphics_core = (function (graphicsCore) {
          * @returns {number} Distance in X axis.
          */
         distInXFrom: function (refPoint) {
-            return this.getX() - refPoint.getX();
+            return this.x() - refPoint.x();
         },
         /**
          * Returns distance in Y axis from a given Point to this point.
@@ -96,7 +88,7 @@ var graphics_core = (function (graphicsCore) {
          * @returns {number} Distance in Y axis.
          */
         distInYFrom: function (refPoint) {
-            return this.getY() - refPoint.getY();
+            return this.y() - refPoint.y();
         }
     });
 
