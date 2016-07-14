@@ -41,7 +41,7 @@ var SequenceD = (function (sequenced) {
          * @param {d3.event} event D3 event object.
          */
         dragMove: function (event) {
-            var d = this.attribute("dragData");
+            var d = this.modelAttr("dragData");
             d.x += this.horizontalDrag() ? event.dx : 0;
             d.y += this.verticalDrag() ? event.dy : 0;
             this.el.attr("transform", function(){
@@ -55,8 +55,8 @@ var SequenceD = (function (sequenced) {
          * @param {d3.event} event D3 event object.
          */
         dragStart: function (event) {
-            if(this.attribute("dragData") === undefined){
-                this.attribute("dragData", {x: this.horizontalDrag() ? event.dx : 0,
+            if(this.modelAttr("dragData") === undefined){
+                this.modelAttr("dragData", {x: this.horizontalDrag() ? event.dx : 0,
                                             y: this.verticalDrag() ? event.dy :0});
             }
         },
@@ -70,14 +70,14 @@ var SequenceD = (function (sequenced) {
 
         /**
          * Sets, un-sets or gets an attribute of underline model. If a value is not passed
-         * gets the value of attribute. Otherwise, set the value of attribute.
+         * gets the value of modelAttr. Otherwise, set the value of attribute.
          * if the passed value is null, un-set the attribute.
          *
          * @param {string} name Name of the model attribute.
          * @param {*} [value] Value of the model attribute.
          * @returns {*|void} Returns value if value is not passed. Else void.
          */
-        attribute: function(name,value){
+        modelAttr: function(name,value){
             if(value === undefined){
                 return this.model.get(name);
             }
@@ -131,15 +131,15 @@ var SequenceD = (function (sequenced) {
 
         render: function (paperID) {
             // set paper
-            this.attribute("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
+            this.modelAttr("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
 
             // wrap d3 with custom drawing apis
-            var d3Draw = d3_draw.wrap(d3.select(this.attribute("paperID")));
+            var d3Draw = d3_draw.wrap(d3.select(this.modelAttr("paperID")));
 
             // fetch global prefs for LifeLines
             var prefs = sequenced.prefs.lifeline;
 
-            var lifeLine = d3Draw.draw.lifeLine(this.attribute('centerPoint'), this.attribute('title'), prefs);
+            var lifeLine = d3Draw.draw.lifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), prefs);
             var viewObj = this;
             var drag = d3.drag()
                 .on("start",function(){
@@ -176,10 +176,11 @@ var SequenceD = (function (sequenced) {
 
         render: function (paperID) {
             // set paper
-            this.attribute("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
+            this.modelAttr("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
 
             // wrap d3 with custom drawing apis
-            var d3Draw = d3_draw.wrap(d3.select(this.attribute("paperID")));
+            var d3Draw = d3_draw.wrap(d3.select(this.modelAttr("paperID")));
+
 
         }
 
