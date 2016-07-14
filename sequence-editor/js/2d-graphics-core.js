@@ -89,6 +89,15 @@ var graphics_core = (function (graphicsCore) {
          */
         distInYFrom: function (refPoint) {
             return this.y() - refPoint.y();
+        },
+        /**
+         * Returns the distance from a given Point to this point.
+         * @param {Point} refPoint Referring point
+         * @returns {number} Distance
+         */
+        distFrom: function (refPoint) {
+            return Math.sqrt(Math.pow(this.absDistInXFrom(refPoint), 2)
+                + Math.pow(this.absDistInYFrom(refPoint), 2));
         }
     });
 
@@ -140,9 +149,7 @@ var graphics_core = (function (graphicsCore) {
          *  @returns {number} length of the line.
          */
         length: function(){
-            var absDistX = this.end().absDistInXFrom(this.start());
-            var absDistY = this.end().absDistInYFrom(this.start());
-            return Math.sqrt(Math.pow(absDistX, 2) + Math.pow(absDistY, 2));
+            return this.end().distFrom(this.start());
         }
     });
 
