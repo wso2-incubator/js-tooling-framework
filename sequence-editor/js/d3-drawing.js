@@ -62,6 +62,17 @@ var d3_draw = (function (d3_draw) {
            .attr("y2",y2);
     };
 
+    /**
+     * Draws a line between two points.
+     * @param {Point} startPoint starting point for the line.
+     * @param {Point} endPoint ending point for the line.
+     * @param [parent] parent element.
+     */
+    var lineFromPoints = function(startPoint, endPoint, parent){
+        parent = parent || d3Ref;
+        return parent.line(startPoint.x(), startPoint.y(), endPoint.x(), endPoint.y());
+    };
+
     var verticalLine = function(start, height, parent){
         parent = parent || d3Ref;
         return parent.draw.line(start.x(), start.y(), start.x(), start.y() + height, parent);
@@ -125,6 +136,7 @@ var d3_draw = (function (d3_draw) {
         draw.centeredRect = centeredRect;
         draw.rect = rect;
         draw.line = line;
+        draw.lineFromPoints = lineFromPoints;
         draw.verticalLine = verticalLine;
         draw.editableText = editableText;
         draw.centeredText = centeredText;
