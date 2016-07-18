@@ -82,23 +82,10 @@ var SequenceD = (function (sequenced) {
             Diagrams.Views.LinkView.prototype.initialize(options);
         },
 
-        horizontalDrag: function(){
-            return false;
-        },
-
         render: function (paperID) {
-            // set paper
-            this.modelAttr("paperID", paperID || this.get('paperID') );
-
-            // wrap d3 with custom drawing apis
-            var d3Draw = D3Utils.decorate(d3.select(this.modelAttr("paperID")));
-
-            var line = d3Draw.draw.lineFromPoints(this.model.source(), this.model.destination())
-                                .classed(this.options.class, true);
-            this.el = line;
-            return line;
+            // call super
+            Diagrams.Views.LinkView.prototype.render.call(this, paperID);
         }
-
     });
 
     views.MessageView = MessageView;

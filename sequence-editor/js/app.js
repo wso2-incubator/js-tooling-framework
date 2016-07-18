@@ -42,7 +42,7 @@ var createPoint = function(x, y){
 var createLifeLine = function(title, center, options){
     var model = new SequenceD.Models.LifeLine({title:title, centerPoint: center});
     var view = Diagrams.Utils.createViewForModel(SequenceD.Views, model, options.lifeLineOptions);
-    return view.render(options.paper);
+    view.render(options.paper);
 };
 
 var createMessage = function(start, end, options){
@@ -59,10 +59,11 @@ createLifeLine("LifeLine4",createPoint(1000, 50), lifeViewOpts);
 
 var messageViewOpts  = {paper:paper, messageOptions:{'class':'message'}};
 createMessage(createPoint(250, 150), createPoint(500,150), messageViewOpts);
-createMessage(createPoint(250, 175), createPoint(500,175), messageViewOpts);
+createMessage(createPoint(500, 175), createPoint(250,175), messageViewOpts);
 createMessage(createPoint(500, 200), createPoint(750,200), messageViewOpts);
 createMessage(createPoint(750, 225), createPoint(1000,225), messageViewOpts);
 createMessage(createPoint(1000, 250), createPoint(750,250), messageViewOpts);
+createMessage(createPoint(250, 300), createPoint(1000,300), messageViewOpts);
 
 
 

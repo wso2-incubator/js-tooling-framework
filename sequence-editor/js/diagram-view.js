@@ -133,7 +133,36 @@ var Diagrams = (function (diagrams){
          */
         initialize: function (options) {
             _.extend(this, _.pick(options, "options"));
+        },
+        // disable horizontal drag for links
+        horizontalDrag: function(){
+            return true;
+        },
+
+        sourceChanged: function(){
+            this.el.attr({x1: this.model.source().x(), y1: this.model.source().y()});
+        },
+
+        destinationChange: function(){
+            this.el.attr({x2: this.model.destination().x(), y2: this.model.destination().y()});
+        },
+
+        render: function (paperID) {
+            // set paper
+            this.modelAttr("paperID", paperID || this.modelAttr('paperID') );
+
+            // wrap d3 with custom drawing apis
+            var d3Draw = D3Utils.decorate(d3.select(this.modelAttr("paperID")));
+
+            var line = d3Draw.draw.lineFromPoints(this.model.source(), this.model.destination())
+                .classed(this.options.class, true);
+
+            this.model.on({"change:start": this.sourceChanged, "change:destination": this.destinationChange}, this);
+
+            this.el = line;
+            return line;
         }
+
     });
 
     var DiagramView = Backbone.View.extend(
