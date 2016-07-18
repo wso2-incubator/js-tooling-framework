@@ -30,6 +30,8 @@ var SequenceD = (function (sequenced) {
          */
         initialize: function() {},
 
+        modelName : "LifeLine",
+
         defaults:{
             centerPoint: new graphics_core.Models.Point({x: 0, y: 0}),
             title: "lifeline"
@@ -46,12 +48,14 @@ var SequenceD = (function (sequenced) {
          */
         initialize: function() {},
 
+        modelName : "Message",
+
         defaults:{
         },
 
         /**
          * Gets or sets source element for the Message.
-         * @param {Mediator|LifeLine} [sourceElement] Source element
+         * @param {LifeLine} [sourceElement] Source element
          */
         source: function(sourceElement){
             return Diagrams.Models.Link.prototype.source.call(this, sourceElement);

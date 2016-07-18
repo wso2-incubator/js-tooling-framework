@@ -29,6 +29,8 @@ var Diagrams = (function (diagrams){
          */
         initialize: function() {},
 
+        modelName : "DiagramElement",
+
         defaults:{
         }
     });
@@ -37,11 +39,13 @@ var Diagrams = (function (diagrams){
     /** @lends Link.prototype */
     {
         /**
-         * @augments BaseModel
+         * @augments DiagramElement
          * @constructs
          * @class Link represents the model for a link between two elements in a diagrams.
          */
         initialize: function() {},
+
+        modelName : "Shape",
 
         defaults:{
         },
@@ -71,11 +75,13 @@ var Diagrams = (function (diagrams){
     /** @lends Link.prototype */
     {
         /**
-         * @augments BaseModel
+         * @augments DiagramElement
          * @constructs
          * @class Link represents the model for a link between two elements in a diagrams.
          */
         initialize: function() {},
+
+        modelName : "Link",
 
         defaults:{
         },

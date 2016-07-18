@@ -62,7 +62,10 @@ var addToolPanel = function(){
 };
 
 var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", paperID:paper, centerPoint: createPoint(250, 50)});
-var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model, options:lifeLineOptions});
+//var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model, options:lifeLineOptions});
+//lifeLine1.render();
+
+var lifeLine1 = Diagrams.Utils.createViewForModel(SequenceD.Views, lifeLine1Model, lifeLineOptions);
 lifeLine1.render();
 
 var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", paperID:paper, centerPoint: createPoint(500, 50)});
