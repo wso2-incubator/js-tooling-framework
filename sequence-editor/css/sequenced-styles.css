@@ -17,6 +17,7 @@
 .message{
     stroke: #666666;
     stroke-width: 2.5px;
+    marker-end: url(#markerArrow);
 }
 
 .lifeline{
@@ -24,4 +25,8 @@
 
 .lifeline:hover{
     cursor: pointer;
+}
+
+.marker{
+    fill: #666666;
 }
