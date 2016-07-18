@@ -33,15 +33,33 @@ var SequenceD = (function (sequenced) {
 
         defaults:{
             created: new Date()
-        },
-        /**
-         * Checks whether this model can be connected to a particular model.
-         * @param {BaseModel} target Target model to connect to.
-         */
-        canConnectTo:function(target){
-            return false;
         }
+
     });
+
+    var Port = BaseModel.extend(
+        /** @lends Port.prototype */
+        {
+            /**
+             * @augments Backbone.Model
+             * @constructs
+             * @class Port Represents the base model for ports in elements.
+             */
+            initialize: function() {},
+            /**
+             *  Gets or sets the connection point of a Port.
+             * @param {Point} [pointRef] point of the port
+             * @returns {Point|void}
+             */
+            point:function(pointRef){
+                if(pointRef === undefined) {
+                    return this.get('point');
+                }
+                this.set('point',pointRef);
+            }
+        }
+    );
+
 
     var Element = BaseModel.extend(
     /** @lends Element.prototype */
@@ -54,6 +72,14 @@ var SequenceD = (function (sequenced) {
         initialize: function() {},
 
         defaults:{
+        },
+
+        /**
+         * Checks whether this element can be connected to a particular port.
+         * @param {Port} target Target port to connect to.
+         */
+        canConnectTo:function(target){
+            return false;
         }
     });
 
@@ -148,7 +174,7 @@ var SequenceD = (function (sequenced) {
          * @param {LifeLine} [lifeLine] Destination element
          */
         destination: function(lifeLine){
-            return Link.prototype.source(lifeLine);
+            return Link.prototype.destination(lifeLine);
         }
     });
 
@@ -156,6 +182,7 @@ var SequenceD = (function (sequenced) {
     models.BaseModel = BaseModel;
     models.Element = Element;
     models.Link = Link;
+    models.Port = Port;
     models.Message = Message;
     models.LifeLine = LifeLine;
 

@@ -59,6 +59,15 @@ var graphics_core = (function (graphicsCore) {
             this.set('y', newY);
         },
         /**
+         * Move point by dx and dy
+         * @param dx
+         * @param dy
+         */
+        move:function(dx, dy){
+           this.x(this.x()+dx);
+           this.y(this.y()+dy);
+        },
+        /**
          * Returns absolute distance in X axis from a given Point to this point.
          * @param {Point} refPoint Referring point.
          * @returns {number} Absolute distance in X axis.

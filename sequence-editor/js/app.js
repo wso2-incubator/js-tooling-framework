@@ -36,11 +36,26 @@ lifeLineOptions.line.class = "lifeline-line";
 lifeLineOptions.text = {};
 lifeLineOptions.text.class = "lifeline-title";
 
+var createPoint = function(x, y){
+    return new graphics_core.Models.Point({'x': x, 'y': y});
+};
 
-var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", paperID:paper, centerPoint: new graphics_core.Models.Point({x: 250, y: 50})});
+
+var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", paperID:paper, centerPoint: createPoint(250, 50)});
 var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model, options:lifeLineOptions});
 lifeLine1.render();
 
-var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", paperID:paper, centerPoint: new graphics_core.Models.Point({x: 500, y: 50})});
+var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", paperID:paper, centerPoint: createPoint(500, 50)});
 var lifeLine2 = new SequenceD.Views.LifeLineView({model:lifeLine2Model, options:lifeLineOptions});
 lifeLine2.render();
+
+var messageModel = new SequenceD.Models.Link({source:createPoint(250, 150), destination: createPoint(500, 150)});
+var message1 = new SequenceD.Views.MessageView({model:messageModel, options:{'class':'message'}});
+message1.render(paper);
+
+//var port1 = new SequenceD.Models.Port({point:});
+var messageModel2 = new SequenceD.Models.Link({source:createPoint(250, 250), destination:createPoint(500, 250)});
+var message2 = new SequenceD.Views.MessageView({model:messageModel2, options:{'class':'message'}});
+message2.render(paper);
+
+

@@ -70,7 +70,7 @@ var d3_draw = (function (d3_draw) {
      */
     var lineFromPoints = function(startPoint, endPoint, parent){
         parent = parent || d3Ref;
-        return parent.line(startPoint.x(), startPoint.y(), endPoint.x(), endPoint.y());
+        return parent.draw.line(startPoint.x(), startPoint.y(), endPoint.x(), endPoint.y());
     };
 
     var verticalLine = function(start, height, parent){

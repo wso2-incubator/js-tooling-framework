@@ -178,19 +178,37 @@ var SequenceD = (function (sequenced) {
 
         render: function (paperID) {
             // set paper
-            this.modelAttr("paperID", this.paperID || paperID || sequenced.prefs.paper.selector);
+            this.modelAttr("paperID", paperID || this.get('paperID') );
 
             // wrap d3 with custom drawing apis
             var d3Draw = d3_draw.wrap(d3.select(this.modelAttr("paperID")));
 
-
+            var line = d3Draw.draw.lineFromPoints(this.model.source(), this.model.destination())
+                                .classed(this.options.class, true);
+            this.el = line;
+            return line;
         }
+
+    });
+
+    var Canvas = BaseView.extend(
+    /** @lends Canvas.prototype */
+    {
+        /**
+         * @augments BaseView
+         * @constructs
+         * @class Canvas Represents the canvas diagram
+         * @param {Object} options Rendering options for the view
+         */
+        initialize: function(options) {
+        },
 
     });
 
     views.BaseView = BaseView;
     views.MessageView = MessageView;
     views.LifeLineView = LifeLineView;
+    views.Canvas = Canvas;
 
     return sequenced;
 
