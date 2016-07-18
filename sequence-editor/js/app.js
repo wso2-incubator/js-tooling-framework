@@ -16,7 +16,8 @@
  * under the License.
  */
 
-var paper = "#mainPaper";
+var paper = "#mainPaper",
+    toolPaneSelector = "#toolPane";
 
 // options for lifeline view
 var lifeLineOptions = {};
@@ -41,6 +42,25 @@ var createPoint = function(x, y){
 };
 
 
+var addToolPanel = function(){
+    var clonedOpts = _.cloneDeep(lifeLineOptions);
+    clonedOpts.class = "lifeline";
+    clonedOpts.rect.width = 80;
+    clonedOpts.rect.height = 30;
+    clonedOpts.rect.roundX = 2;
+    clonedOpts.rect.roundY = 2;
+    clonedOpts.rect.class = "lifeline-rect";
+    clonedOpts.line.height = 60;
+    clonedOpts.line.class = "lifeline-line";
+    clonedOpts.text.class = "lifeline-title";
+
+    var lLModel = new SequenceD.Models.LifeLine({title:"lifeline", paperID:toolPaneSelector, centerPoint: createPoint(250, 50)});
+    var lLine = new SequenceD.Views.LifeLineView({model:lLModel, options:clonedOpts});
+    lLine.render();
+
+    //var dragStart = function(event)
+};
+
 var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", paperID:paper, centerPoint: createPoint(250, 50)});
 var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model, options:lifeLineOptions});
 lifeLine1.render();
@@ -49,12 +69,11 @@ var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", paperID:p
 var lifeLine2 = new SequenceD.Views.LifeLineView({model:lifeLine2Model, options:lifeLineOptions});
 lifeLine2.render();
 
-var messageModel = new SequenceD.Models.Link({source:createPoint(250, 150), destination: createPoint(500, 150)});
+var messageModel = new SequenceD.Models.Message({source:createPoint(250, 150), destination: createPoint(500, 150)});
 var message1 = new SequenceD.Views.MessageView({model:messageModel, options:{'class':'message'}});
 message1.render(paper);
 
-//var port1 = new SequenceD.Models.Port({point:});
-var messageModel2 = new SequenceD.Models.Link({source:createPoint(250, 250), destination:createPoint(500, 250)});
+var messageModel2 = new SequenceD.Models.Message({source:createPoint(250, 250), destination:createPoint(500, 250)});
 var message2 = new SequenceD.Views.MessageView({model:messageModel2, options:{'class':'message'}});
 message2.render(paper);
 

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-var d3_draw = (function (d3_draw) {
+var D3Utils = (function (d3_utils) {
 
     var d3Ref = undefined;
 
@@ -109,6 +109,11 @@ var d3_draw = (function (d3_draw) {
         Object.getPrototypeOf(group).rect = rect;
         Object.getPrototypeOf(group).line = line;
         Object.getPrototypeOf(group).title = text;
+        Object.getPrototypeOf(group).translate = function(dx, dy){
+            this.attr("transform", function(){
+                return "translate(" + [ dx, dy ] + ")"
+            })
+        };
         return group;
     };
 
@@ -128,7 +133,7 @@ var d3_draw = (function (d3_draw) {
         return g;
     };
 
-    var wrap = function(d3ref){
+    var decorate = function(d3ref){
         if( typeof d3ref === 'undefined'){
             throw "undefined d3 ref.";
         }
@@ -156,8 +161,8 @@ var d3_draw = (function (d3_draw) {
       return d3Ref;
     };
 
-    d3_draw.wrap = wrap;
+    d3_utils.decorate = decorate;
 
-    return d3_draw;
+    return d3_utils;
 
-}(d3_draw || {}));
+}(D3Utils || {}));

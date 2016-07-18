@@ -25,107 +25,17 @@ var SequenceD = (function (sequenced) {
 
     var views = sequenced.Views = sequenced.Views || {};
 
-    var BaseView = Backbone.View.extend(
-    /** @lends BaseView.prototype */
-    {
-        /**
-         * @augments Backbone.View
-         * @constructs
-         * @class BaseView Represents the base view for components in Sequence Diagrams.
-         * @param {Object} options Rendering options for the view
-         */
-        initialize: function(options) {
-            _.extend(this, _.pick(options, "options"));
-        },
-
-        /**
-         * Default drag move handler which will translate view by appending new offsets
-         * to current translate element.
-         * @param {d3.event} event D3 event object.
-         */
-        dragMove: function (event) {
-            var d = this.modelAttr("dragData");
-            d.x += this.horizontalDrag() ? event.dx : 0;
-            d.y += this.verticalDrag() ? event.dy : 0;
-            this.el.attr("transform", function(){
-                return "translate(" + [ d.x, d.y ] + ")"
-            })
-        },
-
-        /**
-         * Default drag start handler which captures original position
-         * of the view.
-         * @param {d3.event} event D3 event object.
-         */
-        dragStart: function (event) {
-            if(this.modelAttr("dragData") === undefined){
-                this.modelAttr("dragData", {x: this.horizontalDrag() ? event.dx : 0,
-                                            y: this.verticalDrag() ? event.dy :0});
-            }
-        },
-
-        /**
-         * Default empty drag stop handler. Extending views need to override
-         * for custom behaviour.
-         */
-        dragStop: function () {
-        },
-
-        /**
-         * Sets, un-sets or gets an attribute of underline model. If a value is not passed
-         * gets the value of modelAttr. Otherwise, set the value of attribute.
-         * if the passed value is null, un-set the attribute.
-         *
-         * @param {string} name Name of the model attribute.
-         * @param {*} [value] Value of the model attribute.
-         * @returns {*|void} Returns value if value is not passed. Else void.
-         */
-        modelAttr: function(name,value){
-            if(value === undefined){
-                return this.model.get(name);
-            }
-            if(name !== undefined){
-                if(value !== null)
-                {
-                    var data = {};
-                    data[name] = value;
-                    this.model.set(data);
-                }else{
-                    this.model.unset(name);
-                }
-            }
-        },
-
-        /**
-         * Checks whether this view supports horizontal drag.
-         *
-         * @returns {boolean}
-         */
-        horizontalDrag: function(){
-            return true;
-        },
-
-        /**
-         * Checks whether this view supports vertical drag.
-         *
-         * @returns {boolean}
-         */
-        verticalDrag: function(){
-            return true;
-        }
-    });
-
-    var LifeLineView = BaseView.extend(
+    var LifeLineView = Diagrams.Views.ShapeView.extend(
     /** @lends LifeLineView.prototype */
     {
         /**
-         * @augments BaseView
+         * @augments ShapeView
          * @constructs
          * @class LifeLineView Represents the view for lifeline components in Sequence Diagrams.
          * @param {Object} options Rendering options for the view
          */
         initialize: function(options) {
-            BaseView.prototype.initialize(options);
+            Diagrams.Views.ShapeView.prototype.initialize(options);
         },
 
         verticalDrag: function(){
@@ -137,7 +47,7 @@ var SequenceD = (function (sequenced) {
             this.modelAttr("paperID", this.modelAttr("paperID") || paperID);
 
             // wrap d3 with custom drawing apis
-            var d3Draw = d3_draw.wrap(d3.select(this.modelAttr("paperID")));
+            var d3Draw = D3Utils.decorate(d3.select(this.modelAttr("paperID")));
             var lifeLine = d3Draw.draw.lifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
             var viewObj = this;
             var drag = d3.drag()
@@ -159,17 +69,17 @@ var SequenceD = (function (sequenced) {
 
     });
 
-    var MessageView = BaseView.extend(
+    var MessageView = Diagrams.Views.LinkView.extend(
     /** @lends MessageView.prototype */
     {
         /**
-         * @augments BaseView
+         * @augments LinkView
          * @constructs
          * @class MessageView Represents the view for message components in Sequence Diagrams.
          * @param {Object} options Rendering options for the view
          */
         initialize: function(options) {
-            BaseView.prototype.initialize(options);
+            Diagrams.Views.LinkView.prototype.initialize(options);
         },
 
         horizontalDrag: function(){
@@ -181,7 +91,7 @@ var SequenceD = (function (sequenced) {
             this.modelAttr("paperID", paperID || this.get('paperID') );
 
             // wrap d3 with custom drawing apis
-            var d3Draw = d3_draw.wrap(d3.select(this.modelAttr("paperID")));
+            var d3Draw = D3Utils.decorate(d3.select(this.modelAttr("paperID")));
 
             var line = d3Draw.draw.lineFromPoints(this.model.source(), this.model.destination())
                                 .classed(this.options.class, true);
@@ -191,25 +101,8 @@ var SequenceD = (function (sequenced) {
 
     });
 
-    var Canvas = BaseView.extend(
-    /** @lends Canvas.prototype */
-    {
-        /**
-         * @augments BaseView
-         * @constructs
-         * @class Canvas Represents the canvas diagram
-         * @param {Object} options Rendering options for the view
-         */
-        initialize: function(options) {
-        },
-
-    });
-
-    views.BaseView = BaseView;
     views.MessageView = MessageView;
     views.LifeLineView = LifeLineView;
-    views.Canvas = Canvas;
-
     return sequenced;
 
 }(SequenceD || {}));

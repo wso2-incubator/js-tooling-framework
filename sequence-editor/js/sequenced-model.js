@@ -20,104 +20,7 @@ var SequenceD = (function (sequenced) {
 
     var models = sequenced.Models = {};
 
-    // create the base model
-    var BaseModel = Backbone.Model.extend(
-    /** @lends BaseModel.prototype */
-    {
-        /**
-         * @augments Backbone.Model
-         * @constructs
-         * @class BaseModel Represents the base model for components in Sequence Diagrams.
-         */
-        initialize: function() {},
-
-        defaults:{
-            created: new Date()
-        }
-
-    });
-
-    var Port = BaseModel.extend(
-        /** @lends Port.prototype */
-        {
-            /**
-             * @augments Backbone.Model
-             * @constructs
-             * @class Port Represents the base model for ports in elements.
-             */
-            initialize: function() {},
-            /**
-             *  Gets or sets the connection point of a Port.
-             * @param {Point} [pointRef] point of the port
-             * @returns {Point|void}
-             */
-            point:function(pointRef){
-                if(pointRef === undefined) {
-                    return this.get('point');
-                }
-                this.set('point',pointRef);
-            }
-        }
-    );
-
-
-    var Element = BaseModel.extend(
-    /** @lends Element.prototype */
-    {
-        /**
-         * @augments BaseModel
-         * @constructs
-         * @class Element represents the model for an elements in a diagram.
-         */
-        initialize: function() {},
-
-        defaults:{
-        },
-
-        /**
-         * Checks whether this element can be connected to a particular port.
-         * @param {Port} target Target port to connect to.
-         */
-        canConnectTo:function(target){
-            return false;
-        }
-    });
-
-    var Link = BaseModel.extend(
-    /** @lends Link.prototype */
-    {
-        /**
-         * @augments BaseModel
-         * @constructs
-         * @class Link represents the model for a link between two elements in a diagrams.
-         */
-        initialize: function() {},
-
-        defaults:{
-        },
-        /**
-         * Gets or sets source element for the link.
-         * @param {Element} [element] Source element
-         */
-        source: function(element){
-            if(element === undefined){
-                return this.get('source');
-            }
-            this.set('source', element);
-        },
-        /**
-         * Gets or sets destination element for the link.
-         * @param {Element} [element] Destination element
-         */
-        destination: function(element){
-            if(element === undefined){
-                return this.get('destination');
-            }
-            this.set('destination', element);
-        }
-    });
-
-    var LifeLine = Element.extend(
+    var LifeLine = Diagrams.Models.Shape.extend(
     /** @lends LifeLine.prototype */
     {
         /**
@@ -133,23 +36,7 @@ var SequenceD = (function (sequenced) {
         }
     });
 
-    var Mediator = Element.extend(
-    /** @lends Mediator.prototype */
-    {
-        /**
-         * @augments Element
-         * @constructs
-         * @class Mediator Represents the model for a Mediator in an NEL Design Diagram.
-         */
-        initialize: function() {},
-
-        defaults:{
-            centerPoint: new graphics_core.Models.Point({x: 0, y: 0}),
-            title: "Mediator"
-        }
-    });
-
-    var Message = Link.extend(
+    var Message = Diagrams.Models.Link.extend(
     /** @lends Message.prototype */
     {
         /**
@@ -167,22 +54,18 @@ var SequenceD = (function (sequenced) {
          * @param {Mediator|LifeLine} [sourceElement] Source element
          */
         source: function(sourceElement){
-            return Link.prototype.source(sourceElement);
+            return Diagrams.Models.Link.prototype.source.call(this, sourceElement);
         },
         /**
          * Gets or sets destination element for the Message.
          * @param {LifeLine} [lifeLine] Destination element
          */
         destination: function(lifeLine){
-            return Link.prototype.destination(lifeLine);
+            return Diagrams.Models.Link.prototype.destination.call(this, lifeLine);
         }
     });
 
     // set models
-    models.BaseModel = BaseModel;
-    models.Element = Element;
-    models.Link = Link;
-    models.Port = Port;
     models.Message = Message;
     models.LifeLine = LifeLine;
 

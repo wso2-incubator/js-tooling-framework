@@ -20,7 +20,6 @@ var graphics_core = (function (graphicsCore) {
 
     var models = graphicsCore.Models || {};
 
-
     var Point = Backbone.Model.extend(
     /** @lends Point.prototype */
     {

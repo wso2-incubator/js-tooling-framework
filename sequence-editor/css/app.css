@@ -6,8 +6,9 @@
 }
 
 .tools-pane{
-   float: left;
-   display: inline;
+   position: absolute;
+   top:200px;
+   left: 0;
    background-color: #BBBBBB;
 }
 
@@ -16,13 +17,14 @@
    margin: 15px;
    float: right;
 }
-.tool-palette{
+.header{
    padding-right: 25px;
    height: 50px;
    background-color: #333333;
 }
 
 .editor{
+   margin-left: 0px;
    height: 95%;
    background-color: #fff;
 }

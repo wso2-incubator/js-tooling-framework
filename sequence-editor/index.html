@@ -7,14 +7,14 @@
 </head>
 <body>
     <div id="root-container">
-        <div class="tool-palette">
-            <div class="tools-pane">
-            </div>
+        <div class="header">
             <img class="logo" src="images/logo.svg"/>
         </div>
         <div class="editor cardboard">
             <svg width="100%" height="100%" id="mainPaper">
             </svg>
+        </div>
+        <div class="tools-pane">
         </div>
     </div>
     <!-- Third party js libs -->
@@ -25,8 +25,10 @@
     <script src="lib/backbone_storage_adapter_v1_1_0/backbone.localStorage.js"></script>
     <script src="lib/d3_v4_1_1/d3.js"></script>
     <!-- custom js libs -->
-    <script src="js/2d-graphics-core.js"></script>
-    <script src="js/d3-drawing.js"></script>
+    <script src="js/geometry-core.js"></script>
+    <script src="js/d3-utils.js"></script>
+    <script src="js/diagram-model.js"></script>
+    <script src="js/diagram-view.js"></script>
     <script src="js/sequenced-model.js"></script>
     <script src="js/sequenced-view.js"></script>
     <script src="js/app.js"></script>
