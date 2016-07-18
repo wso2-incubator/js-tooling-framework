@@ -17,10 +17,8 @@
  */
 
 var paper = "#mainPaper",
-    toolPaneSelector = "#toolPane";
+    lifeLineOptions = {};
 
-// options for lifeline view
-var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // rectangle options
 lifeLineOptions.rect = {};
@@ -38,46 +36,33 @@ lifeLineOptions.text = {};
 lifeLineOptions.text.class = "lifeline-title";
 
 var createPoint = function(x, y){
-    return new graphics_core.Models.Point({'x': x, 'y': y});
+    return new GeoCore.Models.Point({'x': x, 'y': y});
 };
 
-
-var addToolPanel = function(){
-    var clonedOpts = _.cloneDeep(lifeLineOptions);
-    clonedOpts.class = "lifeline";
-    clonedOpts.rect.width = 80;
-    clonedOpts.rect.height = 30;
-    clonedOpts.rect.roundX = 2;
-    clonedOpts.rect.roundY = 2;
-    clonedOpts.rect.class = "lifeline-rect";
-    clonedOpts.line.height = 60;
-    clonedOpts.line.class = "lifeline-line";
-    clonedOpts.text.class = "lifeline-title";
-
-    var lLModel = new SequenceD.Models.LifeLine({title:"lifeline", paperID:toolPaneSelector, centerPoint: createPoint(250, 50)});
-    var lLine = new SequenceD.Views.LifeLineView({model:lLModel, options:clonedOpts});
-    lLine.render();
-
-    //var dragStart = function(event)
+var createLifeLine = function(title, center, options){
+    var model = new SequenceD.Models.LifeLine({title:title, centerPoint: center});
+    var view = Diagrams.Utils.createViewForModel(SequenceD.Views, model, options.lifeLineOptions);
+    return view.render(options.paper);
 };
 
-var lifeLine1Model = new SequenceD.Models.LifeLine({title:"LifeLine1", paperID:paper, centerPoint: createPoint(250, 50)});
-//var lifeLine1 = new SequenceD.Views.LifeLineView({model:lifeLine1Model, options:lifeLineOptions});
-//lifeLine1.render();
+var createMessage = function(start, end, options){
+    var model = new SequenceD.Models.Message({source: start, destination: end});
+    var view = new SequenceD.Views.MessageView({model: model, options: options.messageOptions});
+    view.render(options.paper);
+};
 
-var lifeLine1 = Diagrams.Utils.createViewForModel(SequenceD.Views, lifeLine1Model, lifeLineOptions);
-lifeLine1.render();
+var lifeViewOpts = {paper:paper, lifeLineOptions:lifeLineOptions};
+createLifeLine("LifeLine1",createPoint(250, 50), lifeViewOpts);
+createLifeLine("LifeLine2",createPoint(500, 50), lifeViewOpts);
+createLifeLine("LifeLine3",createPoint(750, 50), lifeViewOpts);
+createLifeLine("LifeLine4",createPoint(1000, 50), lifeViewOpts);
 
-var lifeLine2Model = new SequenceD.Models.LifeLine({title:"LifeLine2", paperID:paper, centerPoint: createPoint(500, 50)});
-var lifeLine2 = new SequenceD.Views.LifeLineView({model:lifeLine2Model, options:lifeLineOptions});
-lifeLine2.render();
+var messageViewOpts  = {paper:paper, messageOptions:{'class':'message'}};
+createMessage(createPoint(250, 150), createPoint(500,150), messageViewOpts);
+createMessage(createPoint(250, 175), createPoint(500,175), messageViewOpts);
+createMessage(createPoint(500, 200), createPoint(750,200), messageViewOpts);
+createMessage(createPoint(750, 225), createPoint(1000,225), messageViewOpts);
+createMessage(createPoint(1000, 250), createPoint(750,250), messageViewOpts);
 
-var messageModel = new SequenceD.Models.Message({source:createPoint(250, 150), destination: createPoint(500, 150)});
-var message1 = new SequenceD.Views.MessageView({model:messageModel, options:{'class':'message'}});
-message1.render(paper);
-
-var messageModel2 = new SequenceD.Models.Message({source:createPoint(250, 250), destination:createPoint(500, 250)});
-var message2 = new SequenceD.Views.MessageView({model:messageModel2, options:{'class':'message'}});
-message2.render(paper);
 
 

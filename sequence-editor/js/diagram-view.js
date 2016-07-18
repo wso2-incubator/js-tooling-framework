@@ -149,7 +149,7 @@ var Diagrams = (function (diagrams){
             var opts = options || {};
             opts.selector = options.selector || ".editor";
             opts.canvas = options.canvas || {};
-            opts.canvas.height = options
+            opts.canvas.height = options;
             this.options = opts;
         },
 

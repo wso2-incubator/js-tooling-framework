@@ -107,7 +107,41 @@ var Diagrams = (function (diagrams){
         }
     });
 
+    var DiagramElements = Backbone.Collection.extend(
+    /** @lends DiagramElements.prototype */
+    {
+        /**
+         * @augments Backbone.Collection
+         * @constructs
+         * @class DiagramElements represents the collection for elements in a diagram.
+         */
+        initialize: function() {},
+
+        modelName : "DiagramElements",
+
+        //model:function
+    });
+
+
+    var Diagram = Backbone.Model.extend(
+    /** @lends Diagram.prototype */
+    {
+        /**
+         * @augments Backbone.Model
+         * @constructs
+         * @class Diagram represents the model for aa diagrams.
+         */
+        initialize: function(options) {
+
+
+        },
+
+        modelName : "Diagram"
+    });
+
     models.DiagramElement = DiagramElement;
+    models.DiagramElements = DiagramElements;
+    models.Diagram = Diagram;
     models.Shape = Shape;
     models.Link = Link;
     diagrams.Models = models;

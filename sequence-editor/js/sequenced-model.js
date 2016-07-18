@@ -33,7 +33,7 @@ var SequenceD = (function (sequenced) {
         modelName : "LifeLine",
 
         defaults:{
-            centerPoint: new graphics_core.Models.Point({x: 0, y: 0}),
+            centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
             title: "lifeline"
         }
     });

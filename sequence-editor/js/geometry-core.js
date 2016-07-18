@@ -16,9 +16,9 @@
  * under the License.
  */
 
-var graphics_core = (function (graphicsCore) {
+var GeoCore = (function (geo) {
 
-    var models = graphicsCore.Models || {};
+    var models = geo.Models || {};
 
     var Point = Backbone.Model.extend(
     /** @lends Point.prototype */
@@ -166,8 +166,8 @@ var graphics_core = (function (graphicsCore) {
     models.Line = Line;
 
 
-    graphicsCore.Models = models;
+    geo.Models = models;
 
-    return graphicsCore;
+    return geo;
 
-}(graphics_core || {}));
+}(GeoCore || {}));
