@@ -46,9 +46,7 @@ var SequenceD = (function (sequenced) {
             // set paper
             this.modelAttr("paperID", this.modelAttr("paperID") || paperID);
 
-            // wrap d3 with custom drawing apis
-            var d3Draw = D3Utils.decorate(d3.select(this.modelAttr("paperID")));
-            var lifeLine = d3Draw.draw.lifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
+            var lifeLine = this.drawlifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
             var viewObj = this;
             var drag = d3.drag()
                 .on("start",function(){
@@ -65,6 +63,27 @@ var SequenceD = (function (sequenced) {
 
             this.el = lifeLine;
             return lifeLine;
+        },
+
+        drawlifeLine: function (center, title, prefs) {
+            var d3Ref = this.getD3Ref();
+            var group = d3Ref.draw.group()
+                .classed(prefs.class, true);
+            var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 10, 10, group)
+                .classed(prefs.rect.class, true);
+            var line = d3Ref.draw.verticalLine(center, prefs.line.height, group)
+                .classed(prefs.line.class, true);
+            var text = d3Ref.draw.centeredText(center, title, group)
+                .classed(prefs.text.class, true);
+            Object.getPrototypeOf(group).rect = rect;
+            Object.getPrototypeOf(group).line = line;
+            Object.getPrototypeOf(group).title = text;
+            Object.getPrototypeOf(group).translate = function(dx, dy){
+                this.attr("transform", function(){
+                    return "translate(" + [ dx, dy ] + ")"
+                })
+            };
+            return group;
         }
 
     });

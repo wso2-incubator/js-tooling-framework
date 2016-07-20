@@ -97,25 +97,6 @@ var D3Utils = (function (d3_utils) {
         return parent.draw.textElement(center.x(), center.y(), textContent, parent).attr('text-anchor', 'middle');
     };
 
-    var lifeLine = function (center, title, prefs) {
-        var group = d3Ref.draw.group()
-                        .classed(prefs.class, true);
-        var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 10, 10, group)
-                            .classed(prefs.rect.class, true);
-        var line = d3Ref.draw.verticalLine(center, prefs.line.height, group)
-                            .classed(prefs.line.class, true);
-        var text = d3Ref.draw.centeredText(center, title, group)
-                            .classed(prefs.text.class, true);
-        Object.getPrototypeOf(group).rect = rect;
-        Object.getPrototypeOf(group).line = line;
-        Object.getPrototypeOf(group).title = text;
-        Object.getPrototypeOf(group).translate = function(dx, dy){
-            this.attr("transform", function(){
-                return "translate(" + [ dx, dy ] + ")"
-            })
-        };
-        return group;
-    };
 
     var group = function(parent){
         parent = parent || d3Ref;
@@ -156,7 +137,6 @@ var D3Utils = (function (d3_utils) {
         draw.textElement = textElement;
         draw.circle = circle;
         draw.circleOnPoint = circleOnPoint;
-        draw.lifeLine = lifeLine;
         draw.group = group;
         draw.svg = svg;
 

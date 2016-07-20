@@ -104,6 +104,22 @@ var Diagrams = (function (diagrams){
          */
         verticalDrag: function(){
             return true;
+        },
+
+        /**
+         * Returns wrapped D3 reference for drawing in paper.
+         *
+         * @param paperSelector
+         * @returns {*}
+         */
+        getD3Ref: function (paperSelector) {
+            if (_.isUndefined(paperSelector)) {
+                var paperID = this.modelAttr("paperID");
+                if (_.isUndefined(paperID)) {
+                    throw "Paper is not defined for rendering svg.";
+                }
+            }
+            return D3Utils.decorate(d3.select(paperSelector || this.modelAttr("paperID")))
         }
     });
 
