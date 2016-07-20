@@ -119,13 +119,14 @@ var Diagrams = (function (diagrams){
 
         modelName : "DiagramElements",
 
-        //model:function
+        model: DiagramElement
     });
 
 
     var Diagram = Backbone.Model.extend(
     /** @lends Diagram.prototype */
     {
+        modelName : "Diagram",
         /**
          * @augments Backbone.Model
          * @constructs
@@ -133,10 +134,22 @@ var Diagrams = (function (diagrams){
          */
         initialize: function(options) {
 
+            var elements = new DiagramElements({
+                diagram: this
+            });
+
+            this.set('diagramElements', elements);
 
         },
 
-        modelName : "Diagram"
+        addElement: function(element, opts){
+            this.get('diagramElements').add(element, opts);
+        },
+
+        getElement: function(id){
+            return this.get('diagramElements').get(id);
+        }
+
     });
 
     models.DiagramElement = DiagramElement;

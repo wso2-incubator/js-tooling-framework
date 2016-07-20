@@ -177,8 +177,10 @@ var Diagrams = (function (diagrams){
         initialize: function(options) {
             var opts = options || {};
             opts.selector = options.selector || ".editor";
-            opts.canvas = options.canvas || {};
-            opts.canvas.height = options;
+            opts.diagram = options.diagram || {};
+            opts.diagram.height = opts.diagram.height || "100%" ;
+            opts.diagram.width = opts.diagram.width || "100%" ;
+            opts.diagram.class = opts.diagram.class || "diagram" ;
             this.options = opts;
         },
 
@@ -190,8 +192,27 @@ var Diagrams = (function (diagrams){
             // wrap d3 with custom drawing apis
             container = D3Utils.decorate(container);
 
-            //container.append("svg").ap
+            var svg = container.draw.svg(this.options.diagram);
 
+            var defs = svg.append("defs");
+
+            // add marker definitions
+            defs.append("marker")
+                .attr("id","markerArrow")
+                .attr("markerWidth","13")
+                .attr("markerHeight","13")
+                .attr("refX","10")
+                .attr("refY","6")
+                .attr("orient","auto")
+                .append("path")
+                    .attr("d", "M2,2 L2,11 L10,6 L2,2")
+                    .attr("class","marker");
+
+            this.el = svg;
+            return svg;
+        },
+
+        renderViewForElement: function(element, renderOpts){
 
         }
 

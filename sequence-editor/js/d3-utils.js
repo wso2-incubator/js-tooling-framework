@@ -122,6 +122,14 @@ var D3Utils = (function (d3_utils) {
         return parent.append("g");
     };
 
+    var svg = function(opts, parent){
+        parent = parent || d3Ref;
+        return parent.append("svg")
+                .attr("height", opts.height)
+                .attr("width", opts.width)
+                .attr("class", opts.class);
+    };
+
     // FIXME: refactor to use native window methods
     var regroup = function(elements){
         var g = d3Ref.append("g");
@@ -150,6 +158,7 @@ var D3Utils = (function (d3_utils) {
         draw.circleOnPoint = circleOnPoint;
         draw.lifeLine = lifeLine;
         draw.group = group;
+        draw.svg = svg;
 
         var d3Proto = Object.getPrototypeOf(d3ref);
         d3Proto.draw = draw;
