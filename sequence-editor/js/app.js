@@ -16,9 +16,7 @@
  * under the License.
  */
 
-var paper = "#mainPaper",
-    lifeLineOptions = {};
-
+var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // rectangle options
 lifeLineOptions.rect = {};
@@ -39,31 +37,35 @@ var createPoint = function(x, y){
     return new GeoCore.Models.Point({'x': x, 'y': y});
 };
 
-var createLifeLine = function(title, center, options){
-    var model = new SequenceD.Models.LifeLine({title:title, centerPoint: center});
-    var view = Diagrams.Utils.createViewForModel(SequenceD.Views, model, options.lifeLineOptions);
-    view.render(options.paper);
+var createLifeLine = function(title, center){
+    return new SequenceD.Models.LifeLine({title:title, centerPoint: center});
 };
 
-var createMessage = function(start, end, options){
-    var model = new SequenceD.Models.Message({source: start, destination: end});
-    var view = new SequenceD.Views.MessageView({model: model, options: options.messageOptions});
-    view.render(options.paper);
+var createMessage = function(start, end){
+    return new SequenceD.Models.Message({source: start, destination: end});
 };
 
-var lifeViewOpts = {paper:paper, lifeLineOptions:lifeLineOptions};
-createLifeLine("LifeLine1",createPoint(250, 50), lifeViewOpts);
-createLifeLine("LifeLine2",createPoint(500, 50), lifeViewOpts);
-createLifeLine("LifeLine3",createPoint(750, 50), lifeViewOpts);
-createLifeLine("LifeLine4",createPoint(1000, 50), lifeViewOpts);
+// create the model for diagram
+var diagram = new Diagrams.Models.Diagram({});
 
-var messageViewOpts  = {paper:paper, messageOptions:{'class':'message'}};
-createMessage(createPoint(250, 150), createPoint(500,150), messageViewOpts);
-createMessage(createPoint(500, 175), createPoint(250,175), messageViewOpts);
-createMessage(createPoint(500, 200), createPoint(750,200), messageViewOpts);
-createMessage(createPoint(750, 225), createPoint(1000,225), messageViewOpts);
-createMessage(createPoint(1000, 250), createPoint(750,250), messageViewOpts);
-createMessage(createPoint(250, 300), createPoint(1000,300), messageViewOpts);
+// create diagram view
+var diagramOptions = {selector : '.editor' };
+var diagramView = new Diagrams.Views.DiagramView({model: diagram, options:diagramOptions});
+diagramView.render();
+
+var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
+diagram.addElement(lifeline1, lifeLineOptions);
+var lifeline2 = createLifeLine("LifeLine2",createPoint(500, 50));
+diagram.addElement(lifeline2, lifeLineOptions);
+
+
+var messageOptions = {'class':'message'};
+var msg1 = createMessage(createPoint(250, 150), createPoint(500,150));
+diagram.addElement(msg1, messageOptions);
+var msg2 = createMessage(createPoint(250, 175), createPoint(500,175));
+diagram.addElement(msg2, messageOptions);
+
+
 
 
 

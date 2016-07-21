@@ -224,8 +224,15 @@ var Diagrams = (function (diagrams){
                     .attr("d", "M2,2 L2,11 L10,6 L2,2")
                     .attr("class","marker");
 
+            this.model.on("AddElement", this.onAddElement);
+
             this.el = svg;
             return svg;
+        },
+
+        onAddElement:function(element, opts){
+            var view = Diagrams.Utils.createViewForModel(SequenceD.Views, element, opts);
+            view.render(".diagram");
         },
 
         renderViewForElement: function(element, renderOpts){

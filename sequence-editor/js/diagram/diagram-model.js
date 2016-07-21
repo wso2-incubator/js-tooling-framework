@@ -31,6 +31,8 @@ var Diagrams = (function (diagrams){
 
         modelName : "DiagramElement",
 
+        idAttribute: this.cid,
+
         defaults:{
         }
     });
@@ -48,26 +50,6 @@ var Diagrams = (function (diagrams){
         modelName : "Shape",
 
         defaults:{
-        },
-        /**
-         * Gets or sets source element for the link.
-         * @param {Element} [element] Source element
-         */
-        source: function(element){
-            if(element === undefined){
-                return this.get('source');
-            }
-            this.set('source', element);
-        },
-        /**
-         * Gets or sets destination element for the link.
-         * @param {Element} [element] Destination element
-         */
-        destination: function(element){
-            if(element === undefined){
-                return this.get('destination');
-            }
-            this.set('destination', element);
         }
     });
 
@@ -120,6 +102,7 @@ var Diagrams = (function (diagrams){
         modelName : "DiagramElements",
 
         model: DiagramElement
+
     });
 
 
@@ -134,20 +117,25 @@ var Diagrams = (function (diagrams){
          */
         initialize: function(options) {
 
-            var elements = new DiagramElements({
-                diagram: this
-            });
-
-            this.set('diagramElements', elements);
-
+            var elements = new DiagramElements([],{diagram: this});
+            this.diagramElements(elements);
         },
 
         addElement: function(element, opts){
-            this.get('diagramElements').add(element, opts);
+            this.diagramElements().add(element, opts);
+            this.trigger("AddElement", element, opts);
         },
 
         getElement: function(id){
-            return this.get('diagramElements').get(id);
+            return this.diagramElements().get(id);
+        },
+
+        diagramElements: function(diaElements){
+            if(_.isUndefined(diaElements)){
+                return this.get('diagramElements');
+            }else{
+                this.set('diagramElements', diaElements);
+            }
         }
 
     });
