@@ -28,14 +28,49 @@ var SequenceD = (function (sequenced) {
          * @constructs
          * @class LifeLine Represents the model for a LifeLine in Sequence Diagrams.
          */
-        initialize: function() {},
+        initialize: function(attrs, options) {
+            Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
+        },
 
         modelName : "LifeLine",
+
+        nameSpace : sequenced,
 
         defaults:{
             centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
             title: "lifeline"
+        },
+
+        createActivation: function(opts){
+            var activation = new  SequenceD.Models.Activation({owner: this}, opts);
+            this.addConnectionPoint(activation);
+            return activation;
         }
+    });
+
+    var Activation = Diagrams.Models.ConnectionPoint.extend(
+    /** @lends Activation.prototype */
+    {
+        /**
+         * @augments ConnectionPoint
+         * @constructs
+         * @class Activation Represents the model for an activation in Sequence Diagrams.
+         */
+        initialize: function(attrs, options) {
+            Diagrams.Models.ConnectionPoint.prototype.initialize.call(this, attrs, options);
+            this.owner().addConnectionPoint(this);
+        },
+
+        modelName : "Activation",
+
+        nameSpace : sequenced,
+
+        onOwnerMove: function(event){
+
+            var test = this;
+
+        }
+
     });
 
     var Message = Diagrams.Models.Link.extend(
@@ -46,30 +81,28 @@ var SequenceD = (function (sequenced) {
          * @constructs
          * @class Message Represents the model for a Message in Sequence Diagrams.
          */
-        initialize: function() {},
+        initialize: function(attrs, options) {
+            Diagrams.Models.Link.prototype.initialize.call(this, attrs, options);
+        },
 
         modelName : "Message",
+
+        nameSpace : sequenced,
 
         defaults:{
         },
 
-        /**
-         * Gets or sets source element for the Message.
-         * @param {LifeLine} [sourceElement] Source element
-         */
-        source: function(sourceElement){
-            return Diagrams.Models.Link.prototype.source.call(this, sourceElement);
+        source: function(ConnectionPoint){
+            return Diagrams.Models.Link.prototype.source.call(this, ConnectionPoint);
         },
-        /**
-         * Gets or sets destination element for the Message.
-         * @param {LifeLine} [lifeLine] Destination element
-         */
-        destination: function(lifeLine){
-            return Diagrams.Models.Link.prototype.destination.call(this, lifeLine);
+
+        destination: function(ConnectionPoint){
+            return Diagrams.Models.Link.prototype.destination.call(this, ConnectionPoint);
         }
     });
 
     // set models
+    models.Activation = Activation;
     models.Message = Message;
     models.LifeLine = LifeLine;
 

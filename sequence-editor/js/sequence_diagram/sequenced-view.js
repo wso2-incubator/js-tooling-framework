@@ -35,7 +35,7 @@ var SequenceD = (function (sequenced) {
          * @param {Object} options Rendering options for the view
          */
         initialize: function(options) {
-            Diagrams.Views.ShapeView.prototype.initialize(options);
+            Diagrams.Views.ShapeView.prototype.initialize.call(this, options);
         },
 
         verticalDrag: function(){
@@ -43,8 +43,7 @@ var SequenceD = (function (sequenced) {
         },
 
         render: function (paperID) {
-            // set paper
-            this.modelAttr("paperID", this.modelAttr("paperID") || paperID);
+            Diagrams.Views.ShapeView.prototype.render.call(this, paperID);
 
             var lifeLine = this.drawlifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
             var viewObj = this;
@@ -61,7 +60,8 @@ var SequenceD = (function (sequenced) {
 
             lifeLine.call(drag);
 
-            this.el = lifeLine;
+            this.d3el = lifeLine;
+            this.el = lifeLine.node();
             return lifeLine;
         },
 
@@ -98,7 +98,7 @@ var SequenceD = (function (sequenced) {
          * @param {Object} options Rendering options for the view
          */
         initialize: function(options) {
-            Diagrams.Views.LinkView.prototype.initialize(options);
+            Diagrams.Views.LinkView.prototype.initialize.call(this,options);
         },
 
         render: function (paperID) {
@@ -107,7 +107,35 @@ var SequenceD = (function (sequenced) {
         }
     });
 
+    var ActivationView = Diagrams.Views.ConnectionPointView.extend(
+    /** @lends ConnectionPointView.prototype */
+    {
+        /**
+         * @augments LinkView
+         * @constructs
+         * @class ActivationView Represents the view for activations in Sequence Diagrams.
+         * @param {Object} options Rendering options for the view
+         */
+        initialize: function(options) {
+            Diagrams.Views.ConnectionPointView.prototype.initialize.call(this, options);
+        },
+
+        render: function (paperID) {
+            // call super
+            Diagrams.Views.ConnectionPointView.prototype.render.call(this, paperID);
+        },
+
+        getNextAvailableConnectionPoint: function(connectionPoint){
+            if(!_.isEqual(this.model.connections.length, 0))
+            {
+                var yOffset = this.model.connections.length  * 50;
+            }
+            return _.cloneDeep(this.model.owner().get('centerPoint')).move(0, yOffset || 50);
+        }
+    });
+
     views.MessageView = MessageView;
+    views.ActivationView = ActivationView;
     views.LifeLineView = LifeLineView;
     return sequenced;
 

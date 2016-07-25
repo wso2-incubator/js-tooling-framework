@@ -28,7 +28,7 @@ var GeoCore = (function (geo) {
          * @constructs
          * @class Point Represents a point in paper.
          */
-        initialize: function() {},
+        initialize: function(attrs, options) {},
 
         /**
          * Default point is {0,0}.
@@ -65,6 +65,7 @@ var GeoCore = (function (geo) {
         move:function(dx, dy){
            this.x(this.x()+dx);
            this.y(this.y()+dy);
+           return this;
         },
         /**
          * Returns absolute distance in X axis from a given Point to this point.
@@ -117,7 +118,7 @@ var GeoCore = (function (geo) {
          * @constructs
          * @class Line represents a line in paper.
          */
-        initialize: function() {},
+        initialize: function(attrs, options) {},
 
         /**
          * default line is a 0 length line at 0,0.

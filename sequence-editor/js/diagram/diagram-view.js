@@ -39,9 +39,12 @@ var Diagrams = (function (diagrams){
          */
         dragMove: function (event) {
             var d = this.modelAttr("dragData");
-            d.x += this.horizontalDrag() ? event.dx : 0;
-            d.y += this.verticalDrag() ? event.dy : 0;
-            this.el.translate(d.x, d.y);
+            var dx= this.horizontalDrag() ? event.dx : 0;
+            var dy= this.verticalDrag() ? event.dy : 0;
+            d.x += dx;
+            d.y += dy;
+            this.d3el.translate(d.x, d.y);
+            this.model.trigger("elementMoved", {dx: dx, dy: dy});
         },
 
         /**
@@ -106,6 +109,10 @@ var Diagrams = (function (diagrams){
             return true;
         },
 
+        render: function(paperID){
+            this.modelAttr("paperID", this.modelAttr("paperID") || paperID);
+        },
+
         /**
          * Returns wrapped D3 reference for drawing in paper.
          *
@@ -133,10 +140,65 @@ var Diagrams = (function (diagrams){
              * @param {Object} options Rendering options for the view
              */
             initialize: function (options) {
-                _.extend(this, _.pick(options, "options"));
+                DiagramElementView.prototype.initialize.call(this, options);
+            },
+
+            render: function(paperID){
+                DiagramElementView.prototype.render.call(this, paperID);
+                this.model.on("connectionPointAdded", this.onConnectionPointAdded, this);
+            },
+
+            onConnectionPointAdded: function(connectionPoint){
+                var view = Diagrams.Utils.createViewForModel(connectionPoint, {});
+                view.render(this.modelAttr("paperID"));
             }
         }
     );
+
+    var ConnectionView = DiagramElementView.extend(
+    /** @lends ConnectionView.prototype */
+    {
+            /**
+             * @augments DiagramElementView.View
+             * @constructs
+             * @class ConnectionView Represents the view for connections in a diagram.
+             * @param {Object} options Rendering options for the view
+             */
+            initialize: function (options) {
+                DiagramElementView.prototype.initialize.call(this, options);
+            },
+
+            render: function(paperID){
+                DiagramElementView.prototype.render.call(this, paperID);
+            }
+    });
+
+    var ConnectionPointView = DiagramElementView.extend(
+    /** @lends ConnectionPointView.prototype */
+    {
+            /**
+             * @augments DiagramElementView.View
+             * @constructs
+             * @class ConnectionPointView Represents the view for connection points in a diagram.
+             * @param {Object} options Rendering options for the view
+             */
+            initialize: function (options) {
+               DiagramElementView.prototype.initialize.call(this, options);
+                this.model.on("connectionMade", this.onConnectionMade, this);
+            },
+
+            render: function(paperID){
+                DiagramElementView.prototype.render.call(this, paperID);
+            },
+
+            onConnectionMade: function(connection){
+                connection.point(this.getNextAvailableConnectionPoint());
+            },
+
+            getNextAvailableConnectionPoint: function(){
+                return new GeoCore.Models.Point({x:0, y:0});
+            }
+    });
 
     var LinkView = DiagramElementView.extend(
     /** @lends LinkView.prototype */
@@ -148,34 +210,35 @@ var Diagrams = (function (diagrams){
          * @param {Object} options Rendering options for the view
          */
         initialize: function (options) {
-            _.extend(this, _.pick(options, "options"));
+            DiagramElementView.prototype.initialize.call(this, options);
         },
         // disable horizontal drag for links
         horizontalDrag: function(){
             return true;
         },
 
-        sourceChanged: function(){
-            this.el.attr({x1: this.model.source().x(), y1: this.model.source().y()});
+        sourceMoved: function(event){
+            this.d3el.attr('x1', this.model.source().point().x());
+            this.d3el.attr('y1', this.model.source().point().y());
         },
 
-        destinationChange: function(){
-            this.el.attr({x2: this.model.destination().x(), y2: this.model.destination().y()});
+        destinationMoved: function(event){
+            this.d3el.attr('x2', this.model.destination().point().x());
+            this.d3el.attr('y2', this.model.destination().point().y());
         },
 
         render: function (paperID) {
-            // set paper
-            this.modelAttr("paperID", paperID || this.modelAttr('paperID') );
 
-            // wrap d3 with custom drawing apis
-            var d3Draw = D3Utils.decorate(d3.select(this.modelAttr("paperID")));
+            DiagramElementView.prototype.render.call(this, paperID);
 
-            var line = d3Draw.draw.lineFromPoints(this.model.source(), this.model.destination())
+            var line = this.getD3Ref().draw.lineFromPoints(this.model.source().point(), this.model.destination().point())
                 .classed(this.options.class, true);
 
-            this.model.on({"change:start": this.sourceChanged, "change:destination": this.destinationChange}, this);
+            this.model.source().on("connectingPointChanged", this.sourceMoved, this);
+            this.model.destination().on("connectingPointChanged", this.destinationMoved, this);
 
-            this.el = line;
+            this.d3el = line;
+            this.el = line.node();
             return line;
         }
 
@@ -191,12 +254,13 @@ var Diagrams = (function (diagrams){
          * @param {Object} options Rendering options for the view
          */
         initialize: function(options) {
-            var opts = options || {};
-            opts.selector = options.selector || ".editor";
-            opts.diagram = options.diagram || {};
+            var opts = options.options || {};
+            opts.selector = opts.selector || ".editor";
+            opts.diagram = opts.diagram || {};
             opts.diagram.height = opts.diagram.height || "100%" ;
             opts.diagram.width = opts.diagram.width || "100%" ;
             opts.diagram.class = opts.diagram.class || "diagram" ;
+            opts.diagram.selector = opts.diagram.selector || ".diagram";
             this.options = opts;
         },
 
@@ -224,15 +288,16 @@ var Diagrams = (function (diagrams){
                     .attr("d", "M2,2 L2,11 L10,6 L2,2")
                     .attr("class","marker");
 
-            this.model.on("AddElement", this.onAddElement);
+            this.model.on("AddElement", this.onAddElement, this);
 
-            this.el = svg;
+            this.d3el = svg;
+            this.el = svg.node();
             return svg;
         },
 
         onAddElement:function(element, opts){
-            var view = Diagrams.Utils.createViewForModel(SequenceD.Views, element, opts);
-            view.render(".diagram");
+            var view = Diagrams.Utils.createViewForModel(element, opts);
+            view.render(this.options.diagram.selector);
         },
 
         renderViewForElement: function(element, renderOpts){
@@ -244,6 +309,8 @@ var Diagrams = (function (diagrams){
     views.DiagramElementView = DiagramElementView;
     views.ShapeView = ShapeView;
     views.LinkView = LinkView;
+    views.ConnectionView = ConnectionView;
+    views.ConnectionPointView = ConnectionPointView;
     views.DiagramView = DiagramView;
 
     diagrams.Views = views;

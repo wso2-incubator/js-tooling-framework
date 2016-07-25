@@ -18,17 +18,15 @@
 var Diagrams = (function (diagrams){
     var utils = diagrams.Utils || {};
 
-
     /**
      * Create the view for a particular model.
      *
-     * @param {Object} namespace
      * @param {Object} model instance
      * @param {Object} [options] options for the view constructor
      * @returns {Object} view object created for the model
      */
-    var createViewForModel = function(namespace, model, options){
-        return new namespace[model.modelName + "View"]({model:model, options:options});
+    var createViewForModel = function(model, options){
+        return new model.nameSpace.Views[model.modelName + "View"]({model:model, options:options});
     };
 
     utils.createViewForModel = createViewForModel;
