@@ -91,6 +91,7 @@ var Diagrams = (function (diagrams){
 
         defaults:{
         },
+
         /**
          * Gets or sets source connectionPoint for the link.
          * @param {ConnectionPoint} [connectionPoint] Source connectionPoint
@@ -100,6 +101,9 @@ var Diagrams = (function (diagrams){
                 return this.get('source');
             }
             var connection = connectionPoint.connectLink(this, {type:'outgoing'});
+            if(this.makeParallel()){
+                connection.point().y(this.destination().point().y());
+            }
             this.set('source', connection);
         },
         /**
@@ -111,7 +115,13 @@ var Diagrams = (function (diagrams){
                 return this.get('destination');
             }
             var connection = connectionPoint.connectLink(this, {type:'incoming'});
+            if(this.makeParallel()){
+                connection.point().y(this.source().point().y());
+            }
             this.set('destination', connection);
+        },
+        makeParallel: function(){
+            return true;
         }
     });
 
@@ -261,7 +271,7 @@ var Diagrams = (function (diagrams){
 
         addElement: function(element, opts){
             this.diagramElements().add(element, opts);
-            this.trigger("AddElement", element, opts);
+            this.trigger("addElement", element, opts);
         },
 
         getElement: function(id){
@@ -286,6 +296,7 @@ var Diagrams = (function (diagrams){
     models.Connection = Connection;
     models.ConnectionPoint = ConnectionPoint;
     diagrams.Models = models;
+
     return diagrams;
 }(Diagrams || {}));
 

@@ -64,27 +64,15 @@ var lf1Activation1 = new SequenceD.Models.Activation({owner:lifeline1});
 var lf2Activation1 = new SequenceD.Models.Activation({owner:lifeline2});
 var lf3Activation1 = new SequenceD.Models.Activation({owner:lifeline3});
 
-
 var messageOptions = {'class':'message'};
-var msg1 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf2Activation1});
+var msg1 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf3Activation1});
 diagram.addElement(msg1, messageOptions);
-var msg2 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf3Activation1});
+var msg2 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf3Activation1});
 diagram.addElement(msg2, messageOptions);
-var msg3 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf1Activation1});
+var msg3 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 diagram.addElement(msg3, messageOptions);
-var msg4 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf3Activation1});
+var msg4 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf2Activation1});
 diagram.addElement(msg4, messageOptions);
 var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 diagram.addElement(msg5, messageOptions);
-
-
-//var messageOptions = {'class':'message'};
-//var msg1 = createMessage(createPoint(250, 150), createPoint(500,150));
-//diagram.addElement(msg1, messageOptions);
-//var msg2 = createMessage(createPoint(250, 175), createPoint(500,175));
-//diagram.addElement(msg2, messageOptions);
-
-
-
-
 

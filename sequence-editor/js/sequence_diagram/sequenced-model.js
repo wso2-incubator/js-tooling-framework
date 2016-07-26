@@ -63,13 +63,7 @@ var SequenceD = (function (sequenced) {
 
         modelName : "Activation",
 
-        nameSpace : sequenced,
-
-        onOwnerMove: function(event){
-
-            var test = this;
-
-        }
+        nameSpace : sequenced
 
     });
 
@@ -98,6 +92,10 @@ var SequenceD = (function (sequenced) {
 
         destination: function(ConnectionPoint){
             return Diagrams.Models.Link.prototype.destination.call(this, ConnectionPoint);
+        },
+
+        makeParallel: function(){
+            return false;
         }
     });
 

@@ -20,6 +20,10 @@
     marker-end: url(#markerArrow);
 }
 
+.message:hover{
+    cursor: pointer;
+}
+
 .lifeline{
 }
 

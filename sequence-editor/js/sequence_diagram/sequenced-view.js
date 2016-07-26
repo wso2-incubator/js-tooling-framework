@@ -104,6 +104,20 @@ var SequenceD = (function (sequenced) {
         render: function (paperID) {
             // call super
             Diagrams.Views.LinkView.prototype.render.call(this, paperID);
+            var viewObj = this;
+            var drag = d3.drag()
+                .on("start",function(){
+                    viewObj.dragStart(d3.event);
+                })
+                .on("drag", function() {
+                    viewObj.dragMove(d3.event);
+                })
+                .on("end",function(){
+                    viewObj.dragStop();
+                });
+
+            this.d3el.call(drag);
+            return this.d3el;
         }
     });
 
@@ -123,6 +137,7 @@ var SequenceD = (function (sequenced) {
         render: function (paperID) {
             // call super
             Diagrams.Views.ConnectionPointView.prototype.render.call(this, paperID);
+            
         },
 
         getNextAvailableConnectionPoint: function(connectionPoint){

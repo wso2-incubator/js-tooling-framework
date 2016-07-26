@@ -214,7 +214,7 @@ var Diagrams = (function (diagrams){
         },
         // disable horizontal drag for links
         horizontalDrag: function(){
-            return true;
+            return false;
         },
 
         sourceMoved: function(event){
@@ -257,10 +257,12 @@ var Diagrams = (function (diagrams){
             var opts = options.options || {};
             opts.selector = opts.selector || ".editor";
             opts.diagram = opts.diagram || {};
-            opts.diagram.height = opts.diagram.height || "100%" ;
-            opts.diagram.width = opts.diagram.width || "100%" ;
+            opts.diagram.height = opts.diagram.height || "2400" ;
+            opts.diagram.width = opts.diagram.width || "2400" ;
             opts.diagram.class = opts.diagram.class || "diagram" ;
             opts.diagram.selector = opts.diagram.selector || ".diagram";
+            opts.diagram.wrapper = opts.diagram.wrapper || {};
+            opts.diagram.wrapper.id = opts.diagram.wrapper.id || "diagramWrapper";
             this.options = opts;
         },
 
@@ -274,10 +276,14 @@ var Diagrams = (function (diagrams){
 
             var svg = container.draw.svg(this.options.diagram);
 
-            var defs = svg.append("defs");
+            var definitions = svg.append("defs");
+
+            var mainGroup = svg.draw.group(svg).attr("id", this.options.diagram.wrapper.id)
+                .attr("width", "100%")
+                .attr("height", "100%");
 
             // add marker definitions
-            defs.append("marker")
+            definitions.append("marker")
                 .attr("id","markerArrow")
                 .attr("markerWidth","13")
                 .attr("markerHeight","13")
@@ -288,22 +294,22 @@ var Diagrams = (function (diagrams){
                     .attr("d", "M2,2 L2,11 L10,6 L2,2")
                     .attr("class","marker");
 
-            this.model.on("AddElement", this.onAddElement, this);
+            this.model.on("addElement", this.onAddElement, this);
 
-            this.d3el = svg;
-            this.el = svg.node();
-            return svg;
+            this.d3svg = svg;
+            this.d3el = mainGroup;
+            this.el = mainGroup.node();
+            return mainGroup;
         },
 
         onAddElement:function(element, opts){
-            var view = Diagrams.Utils.createViewForModel(element, opts);
-            view.render(this.options.diagram.selector);
+            this.renderViewForElement(element, opts);
         },
 
         renderViewForElement: function(element, renderOpts){
-
+            var view = Diagrams.Utils.createViewForModel(element, renderOpts);
+            view.render("#" + this.options.diagram.wrapper.id );
         }
-
     });
 
     views.DiagramElementView = DiagramElementView;
@@ -315,4 +321,5 @@ var Diagrams = (function (diagrams){
 
     diagrams.Views = views;
     return diagrams;
+
 }(Diagrams || {}));
