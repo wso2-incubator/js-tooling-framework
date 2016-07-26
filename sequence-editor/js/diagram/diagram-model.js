@@ -135,14 +135,14 @@ var Diagrams = (function (diagrams){
          */
         initialize: function(attrs, options) {
             DiagramElement.prototype.initialize.call(this, attrs, options);
-            //this.connectionPoint().on("ownerMoved", this.onOwnerMoved, this);
+            this.connectionPoint().on("elementMoved", this.onConnectionPointMoved, this);
         },
 
         modelName : "Connection",
 
         nameSpace : diagrams,
 
-        onOwnerMoved: function(event){
+        onConnectionPointMoved:function(event){
             this.point().move(event.dx, event.dy);
             this.trigger("connectingPointChanged", this.point());
         },
@@ -200,6 +200,7 @@ var Diagrams = (function (diagrams){
         initialize: function(attrs, options) {
             DiagramElement.prototype.initialize.call(this, attrs, options);
             this.connections = new Backbone.Collection([], {model: Connection, connectionPoint: this});
+            this.owner().on("elementMoved", this.onOwnerMoved, this);
         },
 
         modelName : "ConnectionPoint",
@@ -210,12 +211,11 @@ var Diagrams = (function (diagrams){
             var connection = new Connection({type:options.type, link:link, connectionPoint: this});
             this.connections.add(connection);
             this.trigger("connectionMade", connection);
-            this.owner().on("elementMoved", connection.onOwnerMoved, connection);
             return connection;
         },
 
         onOwnerMoved: function(event){
-            this.trigger("ownerMoved", event);
+            this.trigger("elementMoved", event);
         },
 
         /**
