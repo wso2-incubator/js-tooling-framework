@@ -1,6 +1,6 @@
 // Generated from NEL.g4 by ANTLR 4.5
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+var antlr4 = require('lib/antlr4/index');
 var NELListener = require('./NELListener').NELListener;
 var grammarFileName = "NEL.g4";
 

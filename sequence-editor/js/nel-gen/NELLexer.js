@@ -1,6 +1,6 @@
 // Generated from NEL.g4 by ANTLR 4.5
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+var antlr4 = require('lib/antlr4/index');
 
 
 var serializedATN = ["\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
