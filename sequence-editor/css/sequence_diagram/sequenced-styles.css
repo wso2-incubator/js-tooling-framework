@@ -17,7 +17,7 @@
 .message{
     stroke: #666666;
     stroke-width: 2.5px;
-    marker-end: url(#markerArrow);
+    marker-end: url('#markerArrow');
 }
 
 .message:hover{

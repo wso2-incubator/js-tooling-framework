@@ -6,7 +6,7 @@
    overflow: hidden;
 }
 
-.toolbar-container{
+.shapes-container{
    position: absolute;
    top:50px;
    left: 0;
@@ -51,6 +51,8 @@
    cursor: move;
    box-sizing: border-box;
 }
+
+svg text::selection { background: none; }
 
 .editor {
    margin: 0;
