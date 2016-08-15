@@ -43,7 +43,8 @@ var Diagrams = (function (diagrams){
             var dy= this.verticalDrag() ? event.dy : 0;
             d.x += dx;
             d.y += dy;
-            this.d3el.translate(d.x, d.y);
+            var snappedPoint = this.snapToGrid(new GeoCore.Models.Point({'x': d.x, 'y': d.y}));
+            this.d3el.translate(snappedPoint.x(), snappedPoint.y());
             this.model.trigger("elementMoved", {dx: dx, dy: dy});
         },
 
@@ -64,6 +65,17 @@ var Diagrams = (function (diagrams){
          * for custom behaviour.
          */
         dragStop: function () {
+        },
+
+        /**
+         * Snaps given point in to nearest grid.
+         *
+         * @param {Point} point
+         */
+        snapToGrid : function(point){
+            var newX = Math.round( point.x()/ this.diagramView().gridWidth()) * this.diagramView().gridWidth();
+            var newY = Math.round( point.y()/ this.diagramView().gridHeight()) * this.diagramView().gridHeight();
+            return new GeoCore.Models.Point({'x': newX, 'y': newY});
         },
 
         /**
@@ -89,6 +101,14 @@ var Diagrams = (function (diagrams){
                     this.model.unset(name);
                 }
             }
+        },
+
+        diagramView: function(diagramView){
+          if(_.isUndefined(diagramView)) {
+              return this.diagramViewRef;
+          }else{
+              this.diagramViewRef = diagramView;
+          }
         },
 
         /**
@@ -263,6 +283,9 @@ var Diagrams = (function (diagrams){
             opts.diagram.selector = opts.diagram.selector || ".diagram";
             opts.diagram.wrapper = opts.diagram.wrapper || {};
             opts.diagram.wrapper.id = opts.diagram.wrapper.id || "diagramWrapper";
+            opts.diagram.grid = opts.diagram.grid || {};
+            opts.diagram.grid.height =  opts.diagram.grid.height || 25;
+            opts.diagram.grid.width =  opts.diagram.grid.width || 25;
             this.options = opts;
         },
 
@@ -308,7 +331,16 @@ var Diagrams = (function (diagrams){
 
         renderViewForElement: function(element, renderOpts){
             var view = Diagrams.Utils.createViewForModel(element, renderOpts);
+            view.diagramView(this);
             view.render("#" + this.options.diagram.wrapper.id );
+        },
+
+        gridWidth: function(){
+            return this.options.diagram.grid.width;
+        },
+
+        gridHeight: function(){
+            return this.options.diagram.grid.height;
         }
     });
 
