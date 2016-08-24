@@ -45,6 +45,18 @@ var createMessage = function(start, end){
     return new SequenceD.Models.Message({source: start, destination: end});
 };
 
+
+//create a tool
+var calcTool = new Tools.Models.ToolBar({
+	toolId: "tool1",
+	toolImage:"images/icon1.png"
+});
+
+//render the tool with toolview
+var toolbar = new Tools.Views.ToolView({model:calcTool});
+toolbar.render();
+
+
 // create the model for diagram
 var diagram = new Diagrams.Models.Diagram({});
 

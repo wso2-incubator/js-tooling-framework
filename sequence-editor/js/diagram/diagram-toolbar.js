@@ -15,20 +15,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-Diagram.ToolBar = Backbone.View.extend(
-/** @lends ToolBar.prototype */
-{
-    /**
-     * @augments Backbone.View
-     * @constructs
-     * @class ToolBar Represents the tool bar for the diagram
-     * @param {Object} options Rendering options for the toolbar
-     */
-    initialize: function(options) {
 
+var Tools = (function (tools){
 
-
-    }
-
-});
+    var models = tools.Models || {};
+	var toolBar = Backbone.Model.extend(
+	    {
+	       
+	        initialize: function(attrs, options) {},
+	
+	        modelName : "ToolElement",
+	
+	        defaults: {
+	    	    toolId : "",
+	    	    toolImage: ""
+	    	}
+	    });
+	
+	 models.ToolBar = toolBar;
+	 tools.Models = models;
+     return tools;
+}(Tools || {}));
 
