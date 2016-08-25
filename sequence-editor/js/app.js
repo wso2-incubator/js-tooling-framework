@@ -47,14 +47,25 @@ var createMessage = function(start, end){
 
 
 //create a tool
-var calcTool = new Tools.Models.ToolBar({
+var calcTool = new Tools.Models.Tool({
 	toolId: "tool1",
 	toolImage:"images/icon1.png"
 });
 
+var calcTool2 = new Tools.Models.Tool({
+	toolId: "tool2",
+	toolImage:"images/icon1.png"
+});
+
+
+var toolGroup = new Tools.Models.ToolGroup();
+toolGroup.add(calcTool);
+toolGroup.add(calcTool2);
+
+
 //render the tool with toolview
-var toolbar = new Tools.Views.ToolView({model:calcTool});
-toolbar.render();
+var toolGroupView = new Tools.Views.ToolGroupView({collection:toolGroup});
+toolGroupView.render();
 
 
 // create the model for diagram

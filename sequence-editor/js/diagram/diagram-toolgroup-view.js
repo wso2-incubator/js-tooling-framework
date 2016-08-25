@@ -20,21 +20,26 @@ var Tools = (function (tools){
 
     var views = tools.Views || {};
 
-    var toolView = Backbone.View.extend({
+    var toolGroupView = Backbone.View.extend({
+       
+        el: '#tool-container',
 
-	toolTemplate: _.template( " <div id=\"<%=toolId%>\" class=\"tool-container\"> <img src=\"<%=toolImage%>\" class=\"tool-image\"  /></div>" ),
-	
-	initialize: function(){
-	   console.log("ToolView initialized");
-	},
-	
-	render: function(){
-	    this.$el.html(this.toolTemplate( this.model.attributes ));
+        initialize : function() {
+        },
+ 
+        render : function() {
+
+	    //$(this.el).empty();
+	    var self = this;
+	    this.collection.each(function(tool) {
+               var toolView = new Tools.Views.ToolView({ model: tool });
+	       self.$el.append(toolView.render().el);
+	    });
             return this;
-	}
+        }
 });
     
-views.ToolView = toolView;
+views.ToolGroupView = toolGroupView;
 tools.Views = views;
 return tools;
 

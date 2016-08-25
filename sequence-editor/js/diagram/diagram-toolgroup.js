@@ -15,27 +15,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 var Tools = (function (tools){
 
-    var views = tools.Views || {};
-
-    var toolView = Backbone.View.extend({
-
-	toolTemplate: _.template( " <div id=\"<%=toolId%>\" class=\"tool-container\"> <img src=\"<%=toolImage%>\" class=\"tool-image\"  /></div>" ),
+   	var models = tools.Models || {};
 	
-	initialize: function(){
-	   console.log("ToolView initialized");
-	},
+        var toolGroup = Backbone.Collection.extend({
+		model: Tools.Models.Tool
+	});
 	
-	render: function(){
-	    this.$el.html(this.toolTemplate( this.model.attributes ));
-            return this;
-	}
-});
-    
-views.ToolView = toolView;
-tools.Views = views;
-return tools;
-
+	models.ToolGroup = toolGroup;
+	tools.Models = models;
+        return tools;
 }(Tools || {}));
+

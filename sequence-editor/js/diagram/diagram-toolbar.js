@@ -19,7 +19,7 @@
 var Tools = (function (tools){
 
     var models = tools.Models || {};
-	var toolBar = Backbone.Model.extend(
+	var tool = Backbone.Model.extend(
 	    {
 	       
 	        initialize: function(attrs, options) {},
@@ -32,7 +32,7 @@ var Tools = (function (tools){
 	    	}
 	    });
 	
-	 models.ToolBar = toolBar;
+	 models.Tool = tool;
 	 tools.Models = models;
      return tools;
 }(Tools || {}));
