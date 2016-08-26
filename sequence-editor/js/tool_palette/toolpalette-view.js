@@ -15,16 +15,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 var Tools = (function (tools){
 
-   	var models = tools.Models || {};
-	
-        var toolPalatte = Backbone.Collection.extend({
-		model: Tools.Models.ToolGroupWrapper
-	});
-	
-	models.ToolPalatte = toolPalatte;
-	tools.Models = models;
-        return tools;
-}(Tools || {}));
+    var views = tools.Views || {};
 
+    var toolPalatteView = Backbone.View.extend({
+       
+        el: '#toolpalatte',
+
+        initialize : function() {
+        },
+ 
+        render : function() {
+
+	    var self = this;
+	    this.collection.each(function(groupWrapper) {
+               var groupWrapperView = new Tools.Views.ToolGroupWrapperView({ model: groupWrapper });
+               var wrapperHtml = groupWrapperView.render().el;
+	       self.$el.append(wrapperHtml);
+	    });
+            return this;
+        }
+});
+    
+views.ToolPalatteView = toolPalatteView;
+tools.Views = views;
+return tools;
+
+}(Tools || {}));

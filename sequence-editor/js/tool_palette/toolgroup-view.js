@@ -21,15 +21,12 @@ var Tools = (function (tools){
     var views = tools.Views || {};
 
     var toolGroupView = Backbone.View.extend({
-       
-        el: '#toolgroup-container',
-
+        
         initialize : function() {
         },
  
         render : function() {
 
-	    //$(this.el).empty();
 	    var self = this;
 	    this.collection.each(function(tool) {
                var toolView = new Tools.Views.ToolView({ model: tool });

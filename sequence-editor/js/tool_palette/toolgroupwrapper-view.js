@@ -23,8 +23,6 @@ var Tools = (function (tools){
     var toolGroupWrapperView = Backbone.View.extend({
        
         template: _.template($('#toolgroupWrapper').html()),
-        el: '#toolpalate',
-
 
         initialize : function() {
              console.log("toolGroupWrapperView init");
@@ -32,10 +30,11 @@ var Tools = (function (tools){
  
         render : function() {
             var htmContent = this.template(this.model.attributes);
-            console.log(htmContent);
             this.$el.html(htmContent);
-            var toolGroupView = new Tools.Views.ToolGroupView({ collection:  this.model.attributes.toolGroup });
-            var groupHtml = toolGroupView.render(); 
+            var toolGroupView = new Tools.Views.ToolGroupView({ collection:  this.model.attributes.toolGroup});
+            var groupHtml = toolGroupView.render().el; 
+            var groupDiv = this.$el.find("#toolgroup-container-" + this.model.attributes.toolGroupName);
+            groupDiv.html(groupHtml);
             return this;
         }
 });

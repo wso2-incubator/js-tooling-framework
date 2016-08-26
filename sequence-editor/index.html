@@ -9,31 +9,39 @@
     <link rel="stylesheet" type="text/css" href="css/app.css"/>
 </head>
 <body>
+<script type="text/template" id="toolgroupWrapper"> 
+	<div class="mybs_container groupwrapper">
+	       <div class="row mybs-row">
+			<div class="col-md-12">
+				<div class="panel panel-info panel-container">
+					<div class="panel-heading">
+						<h3 class="panel-title"><%=toolGroupName%></h3>
+						<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+					</div>
+					<div class="panel-body toolgroup-container" id="toolgroup-container-<%=toolGroupName%>"></div>
+				</div>
+			</div>
+		</div>
+        </div>
+     </script>
+
     <div id="root-container">
         <div class="header">
             <div class="toolbar-container">
             </div>
             <img class="logo" src="images/logo.svg"/>
-        </div>
-        <div class="shapes-container">
-            
-<div class="mybs_container" id="toolpalate">
-<script type="text/template" id="toolgroupWrapper">
-       <div class="row mybs-row">
-		<div class="col-md-12">
-			<div class="panel panel-info panel-container">
-				<div class="panel-heading">
-					<h3 class="panel-title"><%=toolGroupName%></h3>
-					<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-				</div>
-				<div class="panel-body" id="toolgroup-container"></div>
-			</div>
-		</div>
-	</div>
-</script>
+    </div>
 
-</div>
-        </div>
+
+  <div class="shapes-container">
+   <div id="toolpalatte">  
+     
+   </div>
+  </div>
+
+
+
+
         <div class="editor-container">
             <div class="editor-scroller">
                 <div class="editor gradient-pattern">
@@ -61,11 +69,13 @@
     <script src="js/tool_palette/toolgroup-view.js"></script>
     <script src="js/tool_palette/toolgroupwrapper.js"></script>
     <script src="js/tool_palette/toolgroupwrapper-view.js"></script>
+    <script src="js/tool_palette/toolpalette.js"></script>
+    <script src="js/tool_palette/toolpalette-view.js"></script>
 
     <script src="js/sequence_diagram/sequenced-model.js"></script>
     <script src="js/sequence_diagram/sequenced-view.js"></script>
     <script src="js/sequence_diagram/sequenced-utils.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/tool_palette/toolpalette.js"></script>
+ 
 </body>
 </html>
