@@ -17,30 +17,21 @@
         </div>
         <div class="shapes-container">
             
-<div class="mybs_container">
+<div class="mybs_container" id="toolpalate">
+<script type="text/template" id="toolgroupWrapper">
        <div class="row mybs-row">
 		<div class="col-md-12">
 			<div class="panel panel-info panel-container">
 				<div class="panel-heading">
-					<h3 class="panel-title">Life Lines</h3>
+					<h3 class="panel-title"><%=toolGroupName%></h3>
 					<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
 				</div>
-				<div class="panel-body toolgroup-container"></div>
-			</div>
-		</div>
-		
-	</div>
-	<div class="row mybs-row">
-		<div class="col-md-12">
-			<div class="panel panel-info panel-container">
-				<div class="panel-heading">
-					<h3 class="panel-title">Workers</h3>
-					<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-				</div>
-				<div class="panel-body toolgroup-container"></div>
+				<div class="panel-body" id="toolgroup-container"></div>
 			</div>
 		</div>
 	</div>
+</script>
+
 </div>
         </div>
         <div class="editor-container">
@@ -68,6 +59,8 @@
     <script src="js/tool_palette/tool-view.js"></script>
     <script src="js/tool_palette/toolgroup.js"></script>
     <script src="js/tool_palette/toolgroup-view.js"></script>
+    <script src="js/tool_palette/toolgroupwrapper.js"></script>
+    <script src="js/tool_palette/toolgroupwrapper-view.js"></script>
 
     <script src="js/sequence_diagram/sequenced-model.js"></script>
     <script src="js/sequence_diagram/sequenced-view.js"></script>

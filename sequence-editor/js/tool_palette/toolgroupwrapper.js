@@ -18,29 +18,21 @@
 
 var Tools = (function (tools){
 
-    var views = tools.Views || {};
-
-    var toolGroupView = Backbone.View.extend({
-       
-        el: '#toolgroup-container',
-
-        initialize : function() {
-        },
- 
-        render : function() {
-
-	    //$(this.el).empty();
-	    var self = this;
-	    this.collection.each(function(tool) {
-               var toolView = new Tools.Views.ToolView({ model: tool });
-	       self.$el.append(toolView.render().el);
-	    });
-            return this;
-        }
-});
-    
-views.ToolGroupView = toolGroupView;
-tools.Views = views;
-return tools;
-
+   	var models = tools.Models || {};
+	
+        var toolGroupWrapper = Backbone.Model.extend({
+		initialize: function(attrs, options) {},
+	
+	        modelName : "ToolGroupWrapper",
+	
+	        defaults: {
+	    	    toolGroupName : "",
+	    	    toolGroup: ""
+	    	}
+	});
+	
+	models.ToolGroupWrapper = toolGroupWrapper;
+	tools.Models = models;
+        return tools;
 }(Tools || {}));
+

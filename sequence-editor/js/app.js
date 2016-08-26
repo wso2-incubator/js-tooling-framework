@@ -57,15 +57,29 @@ var calcTool2 = new Tools.Models.Tool({
 	toolImage:"images/icon1.png"
 });
 
+var calcTool3 = new Tools.Models.Tool({
+	toolId: "tool3",
+	toolImage:"images/icon1.png"
+});
 
-var toolGroup = new Tools.Models.ToolGroup();
-toolGroup.add(calcTool);
-toolGroup.add(calcTool2);
+//create tool group
+var group = new Tools.Models.ToolGroup();
+group.add(calcTool);
+group.add(calcTool2);
 
+var group2 = new Tools.Models.ToolGroup();
+group2.add(calcTool3);
+
+
+var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({toolGroupName: "LifeLines", toolGroup:group});
+var toolGroupWrapper2 = new Tools.Models.ToolGroupWrapper({toolGroupName: "Workers", toolGroup:group2});
 
 //render the tool with toolview
-var toolGroupView = new Tools.Views.ToolGroupView({collection:toolGroup});
-toolGroupView.render();
+var wrapperView = new Tools.Views.ToolGroupWrapperView({model:toolGroupWrapper});
+wrapperView.render();
+
+var wrapperView2 = new Tools.Views.ToolGroupWrapperView({model:toolGroupWrapper2});
+//wrapperView2.render();
 
 
 // create the model for diagram
