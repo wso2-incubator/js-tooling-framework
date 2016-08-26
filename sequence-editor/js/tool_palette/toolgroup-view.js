@@ -22,7 +22,7 @@ var Tools = (function (tools){
 
     var toolGroupView = Backbone.View.extend({
        
-        el: '#tool-container',
+        el: '.toolgroup-container',
 
         initialize : function() {
         },
