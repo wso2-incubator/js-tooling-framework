@@ -298,7 +298,7 @@ var Diagrams = (function (diagrams){
 		position.x = ui.offset.left - $(this).offset().left;
 		position.y = ui.offset.top - $(this).offset().top;
 		console.log(position);
-                var lifeline4 = createLifeLine("LifeLine4",createPoint(1050, 50));
+                var lifeline4 = createLifeLine("LifeLine4",createPoint(position.x, position.y));
                 diagram.addElement(lifeline4, lifeLineOptions);
 	},
 
