@@ -16,7 +16,7 @@
 				<div class="panel panel-info panel-container">
 					<div class="panel-heading">
 						<h3 class="panel-title"><%=toolGroupName%></h3>
-						<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+						<span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up mybs-glypicon"></i></span>
 					</div>
 					<div class="panel-body toolgroup-container" id="toolgroup-container-<%=toolGroupName%>"></div>
 				</div>
@@ -32,25 +32,21 @@
             <img class="logo" src="images/logo.svg"/>
     </div>
 
+    <div class="shapes-container">
+       <div id="toolpalatte"> 
+       </div>
+    </div>
 
-  <div class="shapes-container">
-   <div id="toolpalatte">  
-     
-   </div>
-  </div>
-
-
-
-
-        <div class="editor-container">
+    <div class="editor-container" id="editorBottom" >
             <div class="editor-scroller">
                 <div class="editor gradient-pattern">
                 </div>
             </div>
-        </div>
+    </div>
     </div>
     <!-- Third party js libs -->
     <script src="lib/jquery_v1.9.1/jquery.js"></script>
+    <script src="lib/jquery-ui.js"></script>
     <script src="lib/bootstrap_v3.3.6/js/bootstrap.js"></script>
     <script src="lib/lodash_v4.13.1/lodash.js"></script>
     <script src="lib/backbone_v1.3.3/backbone.js"></script>

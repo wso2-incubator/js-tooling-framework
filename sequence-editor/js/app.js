@@ -59,7 +59,7 @@ var calcTool2 = new Tools.Models.Tool({
 
 var calcTool3 = new Tools.Models.Tool({
 	toolId: "tool3",
-	toolImage:"images/icon1.png"
+	toolImage:"images/icon2.png"
 });
 
 //create tool group
@@ -69,7 +69,6 @@ group.add(calcTool2);
 
 var group2 = new Tools.Models.ToolGroup();
 group2.add(calcTool3);
-
 
 
 var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({toolGroupName: "LifeLines", toolGroup:group});
@@ -83,11 +82,11 @@ var toolGroupWrapper2 = new Tools.Models.ToolGroupWrapper({toolGroupName: "Worke
 //wrapperView2.render();
 
 
-var toolPalatte = new Tools.Models.ToolPalatte();
-toolPalatte.add(toolGroupWrapper);
-toolPalatte.add(toolGroupWrapper2);
-var pallateView = new Tools.Views.ToolPalatteView({collection:toolPalatte});
-pallateView.render();
+var toolPalette = new Tools.Models.ToolPalatte();
+toolPalette.add(toolGroupWrapper);
+toolPalette.add(toolGroupWrapper2);
+var paletteView = new Tools.Views.ToolPalatteView({collection:toolPalette});
+paletteView.render();
 
 
 
@@ -121,5 +120,4 @@ var msg4 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf
 diagram.addElement(msg4, messageOptions);
 var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 diagram.addElement(msg5, messageOptions);
-
 

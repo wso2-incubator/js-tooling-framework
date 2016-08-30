@@ -264,6 +264,7 @@ var Diagrams = (function (diagrams){
 
     });
 
+
     var DiagramView = Backbone.View.extend(
     /** @lends DiagramView.prototype */
     {
@@ -288,6 +289,19 @@ var Diagrams = (function (diagrams){
             opts.diagram.grid.width =  opts.diagram.grid.width || 25;
             this.options = opts;
         },
+
+	handleDropEvent: function(event, ui) {
+		var newDraggedElem = $(ui.draggable).clone();
+		//var type = newDraggedElem.attr('id');
+		console.log("droped");
+		var position = {}
+		position.x = ui.offset.left - $(this).offset().left;
+		position.y = ui.offset.top - $(this).offset().top;
+		console.log(position);
+                var lifeline4 = createLifeLine("LifeLine4",createPoint(1050, 50));
+                diagram.addElement(lifeline4, lifeLineOptions);
+	},
+
 
         render: function(){
             var container = d3.select(this.options.selector);
@@ -322,6 +336,11 @@ var Diagrams = (function (diagrams){
             this.d3svg = svg;
             this.d3el = mainGroup;
             this.el = mainGroup.node();
+            this.htmlDiv = $(this.options.selector);
+            this.htmlDiv.droppable({
+		drop : this.handleDropEvent,
+		tolerance : "pointer"
+	    });
             return mainGroup;
         },
 
