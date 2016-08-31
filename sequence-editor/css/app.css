@@ -110,11 +110,16 @@ svg text::selection { background: none; }
 }
 
 
+.lifeline_selected{
+    background-color:#cc1;
+    stroke-width:3;
+    stroke:rgb(0,0,0);
+}
+
 .tool-image {
    width: 100%;
    height: 100%;
 }
-
 
 body{
    margin: 0;

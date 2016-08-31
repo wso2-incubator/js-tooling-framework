@@ -83,6 +83,17 @@ var SequenceD = (function (sequenced) {
                     return "translate(" + [ dx, dy ] + ")"
                 })
             };
+
+            rect.on("click", (function() {
+		    if (selected){
+		     	selected.classList.toggle("lifeline_selected");
+		    }
+		    if(this != selected) {
+		      	this.classList.toggle("lifeline_selected");
+		      	selected = this;
+		    }
+            }));
+
             return group;
         }
 

@@ -121,3 +121,4 @@ diagram.addElement(msg4, messageOptions);
 var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 diagram.addElement(msg5, messageOptions);
 
+selected ="";
