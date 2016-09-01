@@ -20,14 +20,14 @@ var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // Lifeline rectangle options
 lifeLineOptions.rect = {};
-lifeLineOptions.rect.width = 150;
-lifeLineOptions.rect.height = 50;
+lifeLineOptions.rect.width = 100;
+lifeLineOptions.rect.height = 30;
 lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
 // Lifeline options
 lifeLineOptions.line = {};
-lifeLineOptions.line.height = 800;
+lifeLineOptions.line.height = 500;
 lifeLineOptions.line.class = "lifeline-line";
 // Lifeline text options
 lifeLineOptions.text = {};
