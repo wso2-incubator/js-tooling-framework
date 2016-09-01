@@ -18,18 +18,18 @@
 
 var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
-// rectangle options
+// Lifeline rectangle options
 lifeLineOptions.rect = {};
-lifeLineOptions.rect.width = 200;
-lifeLineOptions.rect.height = 75;
+lifeLineOptions.rect.width = 150;
+lifeLineOptions.rect.height = 50;
 lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
-// line options
+// Lifeline options
 lifeLineOptions.line =  {};
 lifeLineOptions.line.height = 800;
 lifeLineOptions.line.class = "lifeline-line";
-// text options
+// Lifeline text options
 lifeLineOptions.text = {};
 lifeLineOptions.text.class = "lifeline-title";
 
@@ -45,80 +45,51 @@ var createMessage = function(start, end){
     return new SequenceD.Models.Message({source: start, destination: end});
 };
 
-
-//create a tool
-var calcTool = new Tools.Models.Tool({
+// Create tool palette elements
+var lifeline = new Tools.Models.Tool({
 	toolId: "tool1",
 	toolImage:"images/icon1.png"
 });
 
-var calcTool2 = new Tools.Models.Tool({
-	toolId: "tool2",
-	toolImage:"images/icon1.png"
-});
-
-var calcTool3 = new Tools.Models.Tool({
-	toolId: "tool3",
-	toolImage:"images/icon2.png"
-});
-
-//create tool group
+// Create tool group
 var group = new Tools.Models.ToolGroup();
-group.add(calcTool);
-group.add(calcTool2);
+group.add(lifeline);
+var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({toolGroupName: "SequenceDiagrams", toolGroup:group});
 
-var group2 = new Tools.Models.ToolGroup();
-group2.add(calcTool3);
-
-
-var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({toolGroupName: "LifeLines", toolGroup:group});
-var toolGroupWrapper2 = new Tools.Models.ToolGroupWrapper({toolGroupName: "Workers", toolGroup:group2});
-
-//render the tool with toolview
-//var wrapperView = new Tools.Views.ToolGroupWrapperView({model:toolGroupWrapper});
-//wrapperView.render();
-
-//var wrapperView2 = new Tools.Views.ToolGroupWrapperView({model:toolGroupWrapper2});
-//wrapperView2.render();
-
-
+// Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();
 toolPalette.add(toolGroupWrapper);
-toolPalette.add(toolGroupWrapper2);
 var paletteView = new Tools.Views.ToolPalatteView({collection:toolPalette});
 paletteView.render();
 
-
-
-// create the model for diagram
+// Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
 
-// create diagram view
+// Create the diagram view
 var diagramOptions = {selector : '.editor' };
 var diagramView = new Diagrams.Views.DiagramView({model: diagram, options:diagramOptions});
 diagramView.render();
 
-var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
-diagram.addElement(lifeline1, lifeLineOptions);
-var lifeline2 = createLifeLine("LifeLine2",createPoint(500, 50));
-diagram.addElement(lifeline2, lifeLineOptions);
-var lifeline3 = createLifeLine("LifeLine3",createPoint(750, 50));
-diagram.addElement(lifeline3, lifeLineOptions);
+// var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
+// diagram.addElement(lifeline1, lifeLineOptions);
+// var lifeline2 = createLifeLine("LifeLine2",createPoint(500, 50));
+// diagram.addElement(lifeline2, lifeLineOptions);
+// var lifeline3 = createLifeLine("LifeLine3",createPoint(750, 50));
+// diagram.addElement(lifeline3, lifeLineOptions);
 
-var lf1Activation1 = new SequenceD.Models.Activation({owner:lifeline1});
-var lf2Activation1 = new SequenceD.Models.Activation({owner:lifeline2});
-var lf3Activation1 = new SequenceD.Models.Activation({owner:lifeline3});
+// var lf1Activation1 = new SequenceD.Models.Activation({owner:lifeline1});
+// var lf2Activation1 = new SequenceD.Models.Activation({owner:lifeline2});
+// var lf3Activation1 = new SequenceD.Models.Activation({owner:lifeline3});
 
-var messageOptions = {'class':'message'};
-var msg1 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf3Activation1});
-diagram.addElement(msg1, messageOptions);
-var msg2 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf3Activation1});
-diagram.addElement(msg2, messageOptions);
-var msg3 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
-diagram.addElement(msg3, messageOptions);
-var msg4 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf2Activation1});
-diagram.addElement(msg4, messageOptions);
-var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
-diagram.addElement(msg5, messageOptions);
-
-selected ="";
+// var messageOptions = {'class':'message'};
+// var msg1 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf3Activation1});
+// diagram.addElement(msg1, messageOptions);
+// var msg2 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf3Activation1});
+// diagram.addElement(msg2, messageOptions);
+// var msg3 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
+// diagram.addElement(msg3, messageOptions);
+// var msg4 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf2Activation1});
+// diagram.addElement(msg4, messageOptions);
+// var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
+// diagram.addElement(msg5, messageOptions);
+// selected ="";
