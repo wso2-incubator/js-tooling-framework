@@ -17,87 +17,86 @@
  */
 
 var SequenceD = (function (sequenced) {
-
     var models = sequenced.Models = {};
 
     var LifeLine = Diagrams.Models.Shape.extend(
-    /** @lends LifeLine.prototype */
-    {
-        /**
-         * @augments Element
-         * @constructs
-         * @class LifeLine Represents the model for a LifeLine in Sequence Diagrams.
-         */
-        initialize: function(attrs, options) {
-            Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
-        },
+        /** @lends LifeLine.prototype */
+        {
+            /**
+             * @augments Element
+             * @constructs
+             * @class LifeLine Represents the model for a LifeLine in Sequence Diagrams.
+             */
+            initialize: function (attrs, options) {
+                Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
+            },
 
-        modelName : "LifeLine",
+            modelName: "LifeLine",
 
-        nameSpace : sequenced,
+            nameSpace: sequenced,
 
-        defaults:{
-            centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
-            title: "lifeline"
-        },
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({ x: 0, y: 0 }),
+                title: "lifeline"
+            },
 
-        createActivation: function(opts){
-            var activation = new  SequenceD.Models.Activation({owner: this}, opts);
-            this.addConnectionPoint(activation);
-            return activation;
-        }
-    });
+            createActivation: function (opts) {
+                var activation = new SequenceD.Models.Activation({ owner: this }, opts);
+                this.addConnectionPoint(activation);
+                return activation;
+            }
+        });
 
     var Activation = Diagrams.Models.ConnectionPoint.extend(
-    /** @lends Activation.prototype */
-    {
-        /**
-         * @augments ConnectionPoint
-         * @constructs
-         * @class Activation Represents the model for an activation in Sequence Diagrams.
-         */
-        initialize: function(attrs, options) {
-            Diagrams.Models.ConnectionPoint.prototype.initialize.call(this, attrs, options);
-            this.owner().addConnectionPoint(this);
-        },
+        /** @lends Activation.prototype */
+        {
+            /**
+             * @augments ConnectionPoint
+             * @constructs
+             * @class Activation Represents the model for an activation in Sequence Diagrams.
+             */
+            initialize: function (attrs, options) {
+                Diagrams.Models.ConnectionPoint.prototype.initialize.call(this, attrs, options);
+                this.owner().addConnectionPoint(this);
+            },
 
-        modelName : "Activation",
+            modelName: "Activation",
 
-        nameSpace : sequenced
+            nameSpace: sequenced
 
-    });
+        });
 
     var Message = Diagrams.Models.Link.extend(
-    /** @lends Message.prototype */
-    {
-        /**
-         * @augments Link
-         * @constructs
-         * @class Message Represents the model for a Message in Sequence Diagrams.
-         */
-        initialize: function(attrs, options) {
-            Diagrams.Models.Link.prototype.initialize.call(this, attrs, options);
-        },
+        /** @lends Message.prototype */
+        {
+            /**
+             * @augments Link
+             * @constructs
+             * @class Message Represents the model for a Message in Sequence Diagrams.
+             */
+            initialize: function (attrs, options) {
+                Diagrams.Models.Link.prototype.initialize.call(this, attrs, options);
+            },
 
-        modelName : "Message",
+            modelName: "Message",
 
-        nameSpace : sequenced,
+            nameSpace: sequenced,
 
-        defaults:{
-        },
+            defaults: {
+            },
 
-        source: function(ConnectionPoint){
-            return Diagrams.Models.Link.prototype.source.call(this, ConnectionPoint);
-        },
+            source: function (ConnectionPoint) {
+                return Diagrams.Models.Link.prototype.source.call(this, ConnectionPoint);
+            },
 
-        destination: function(ConnectionPoint){
-            return Diagrams.Models.Link.prototype.destination.call(this, ConnectionPoint);
-        },
+            destination: function (ConnectionPoint) {
+                return Diagrams.Models.Link.prototype.destination.call(this, ConnectionPoint);
+            },
 
-        makeParallel: function(){
-            return false;
-        }
-    });
+            makeParallel: function () {
+                return false;
+            }
+        });
 
     // set models
     models.Activation = Activation;
@@ -108,4 +107,4 @@ var SequenceD = (function (sequenced) {
 
     return sequenced;
 
-}(SequenceD || {}));
+} (SequenceD || {}));

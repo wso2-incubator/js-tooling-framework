@@ -22,7 +22,6 @@
  * Definition of Backbone Views required for Sequence Diagrams.
  */
 var SequenceD = (function (sequenced) {
-
     var views = sequenced.Views = sequenced.Views || {};
 
     var LifeLineView = Diagrams.Views.ShapeView.extend(

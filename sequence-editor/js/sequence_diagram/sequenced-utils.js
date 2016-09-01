@@ -15,10 +15,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 var SequenceD = (function (sequenced) {
-
     var utils = sequenced.Utils = sequenced.Utils || {};
-
     return sequenced;
 
 }(SequenceD || {}));

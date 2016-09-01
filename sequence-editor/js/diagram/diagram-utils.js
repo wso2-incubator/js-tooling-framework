@@ -15,7 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var Diagrams = (function (diagrams){
+
+var Diagrams = (function (diagrams) {
     var utils = diagrams.Utils || {};
 
     /**
@@ -25,12 +26,12 @@ var Diagrams = (function (diagrams){
      * @param {Object} [options] options for the view constructor
      * @returns {Object} view object created for the model
      */
-    var createViewForModel = function(model, options){
-        return new model.nameSpace.Views[model.modelName + "View"]({model:model, options:options});
+    var createViewForModel = function (model, options) {
+        return new model.nameSpace.Views[model.modelName + "View"]({ model: model, options: options });
     };
 
     utils.createViewForModel = createViewForModel;
     diagrams.Utils = utils;
     return diagrams;
 
-}(Diagrams || {}));
+} (Diagrams || {}));

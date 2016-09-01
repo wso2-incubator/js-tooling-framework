@@ -26,48 +26,48 @@ lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
 // Lifeline options
-lifeLineOptions.line =  {};
+lifeLineOptions.line = {};
 lifeLineOptions.line.height = 800;
 lifeLineOptions.line.class = "lifeline-line";
 // Lifeline text options
 lifeLineOptions.text = {};
 lifeLineOptions.text.class = "lifeline-title";
 
-var createPoint = function(x, y){
-    return new GeoCore.Models.Point({'x': x, 'y': y});
+var createPoint = function (x, y) {
+    return new GeoCore.Models.Point({ 'x': x, 'y': y });
 };
 
-var createLifeLine = function(title, center){
-    return new SequenceD.Models.LifeLine({title:title, centerPoint: center});
+var createLifeLine = function (title, center) {
+    return new SequenceD.Models.LifeLine({ title: title, centerPoint: center });
 };
 
-var createMessage = function(start, end){
-    return new SequenceD.Models.Message({source: start, destination: end});
+var createMessage = function (start, end) {
+    return new SequenceD.Models.Message({ source: start, destination: end });
 };
 
 // Create tool palette elements
 var lifeline = new Tools.Models.Tool({
 	toolId: "tool1",
-	toolImage:"images/icon1.png"
+	toolImage: "images/icon1.png"
 });
 
 // Create tool group
 var group = new Tools.Models.ToolGroup();
 group.add(lifeline);
-var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({toolGroupName: "SequenceDiagrams", toolGroup:group});
+var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "SequenceDiagrams", toolGroup: group });
 
 // Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();
 toolPalette.add(toolGroupWrapper);
-var paletteView = new Tools.Views.ToolPalatteView({collection:toolPalette});
+var paletteView = new Tools.Views.ToolPalatteView({ collection: toolPalette });
 paletteView.render();
 
 // Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
 
 // Create the diagram view
-var diagramOptions = {selector : '.editor' };
-var diagramView = new Diagrams.Views.DiagramView({model: diagram, options:diagramOptions});
+var diagramOptions = { selector: '.editor' };
+var diagramView = new Diagrams.Views.DiagramView({ model: diagram, options: diagramOptions });
 diagramView.render();
 
 // var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
