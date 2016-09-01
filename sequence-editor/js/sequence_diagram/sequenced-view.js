@@ -68,15 +68,21 @@ var SequenceD = (function (sequenced) {
             var d3Ref = this.getD3Ref();
             var group = d3Ref.draw.group()
                 .classed(prefs.class, true);
-            var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 10, 10, group)
+            var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 3, 3, group)
                 .classed(prefs.rect.class, true);
-            var line = d3Ref.draw.verticalLine(center, prefs.line.height, group)
-                .classed(prefs.line.class, true);
+            var rectBottom = d3Ref.draw.centeredRect(createPoint(center.get('x'), center.get('y') + prefs.line.height), prefs.rect.width, prefs.rect.height, 3, 3, group)
+            .classed(prefs.rect.class, true);
+            var line = d3Ref.draw.verticalLine(createPoint(center.get('x'), center.get('y')+ prefs.rect.height/2), prefs.line.height-prefs.rect.height, group)
+            .classed(prefs.line.class, true);
             var text = d3Ref.draw.centeredText(center, title, group)
                 .classed(prefs.text.class, true);
+            var textBottom = d3Ref.draw.centeredText(createPoint(center.get('x'), center.get('y') + prefs.line.height), title, group)
+                .classed(prefs.text.class, true);
             Object.getPrototypeOf(group).rect = rect;
+            Object.getPrototypeOf(group).rectBottom = rectBottom;
             Object.getPrototypeOf(group).line = line;
             Object.getPrototypeOf(group).title = text;
+            Object.getPrototypeOf(group).titleBottom = textBottom;
             Object.getPrototypeOf(group).translate = function(dx, dy){
                 this.attr("transform", function(){
                     return "translate(" + [ dx, dy ] + ")"
@@ -147,7 +153,7 @@ var SequenceD = (function (sequenced) {
         render: function (paperID) {
             // call super
             Diagrams.Views.ConnectionPointView.prototype.render.call(this, paperID);
-            
+
         },
 
         getNextAvailableConnectionPoint: function(connectionPoint){
