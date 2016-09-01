@@ -16,28 +16,25 @@
  * under the License.
  */
 
-var Tools = (function (tools){
-
+var Tools = (function (tools) {
     var views = tools.Views || {};
 
     var toolGroupView = Backbone.View.extend({
-        
-        initialize : function() {
+        initialize: function () {
         },
- 
-        render : function() {
 
-	    var self = this;
-	    this.collection.each(function(tool) {
-               var toolView = new Tools.Views.ToolView({ model: tool });
-	       self.$el.append(toolView.render().el);
-	    });
+        render: function () {
+            var self = this;
+            this.collection.each(function (tool) {
+                var toolView = new Tools.Views.ToolView({ model: tool });
+                self.$el.append(toolView.render().el);
+            });
             return this;
         }
-});
-    
-views.ToolGroupView = toolGroupView;
-tools.Views = views;
-return tools;
+    });
 
-}(Tools || {}));
+    views.ToolGroupView = toolGroupView;
+    tools.Views = views;
+    return tools;
+
+} (Tools || {}));

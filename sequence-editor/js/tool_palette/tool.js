@@ -16,24 +16,22 @@
  * under the License.
  */
 
-var Tools = (function (tools){
-
+var Tools = (function (tools) {
     var models = tools.Models || {};
-	var tool = Backbone.Model.extend(
-	    {
-	       
-	        initialize: function(attrs, options) {},
-	
-	        modelName : "ToolElement",
-	
-	        defaults: {
-	    	    toolId : "",
-	    	    toolImage: ""
-	    	}
-	    });
-	
-	 models.Tool = tool;
-	 tools.Models = models;
-     return tools;
-}(Tools || {}));
+
+	var tool = Backbone.Model.extend({
+		initialize: function (attrs, options) { },
+
+		modelName: "ToolElement",
+
+		defaults: {
+			toolId: "",
+			toolImage: ""
+		}
+	});
+
+	models.Tool = tool;
+	tools.Models = models;
+	return tools;
+} (Tools || {}));
 

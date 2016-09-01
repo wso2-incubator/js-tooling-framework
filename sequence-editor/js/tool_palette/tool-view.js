@@ -16,67 +16,35 @@
  * under the License.
  */
 
-var Tools = (function (tools){
-
+var Tools = (function (tools) {
     var views = tools.Views || {};
 
     var toolView = Backbone.View.extend({
 
-	toolTemplate: _.template( " <div id=\"<%=toolId%>\" class=\"tool-container\"> <img src=\"<%=toolImage%>\" class=\"tool-image\"  /></div>" ),
+        toolTemplate: _.template(" <div id=\"<%=toolId%>\" class=\"tool-container\"> <img src=\"<%=toolImage%>\" class=\"tool-image\"  /></div>"),
         
-        handleDragStopEvent: function(event, ui) {
-          console.log("handleDragStopEvent");
+        handleDragStopEvent: function (event, ui) {
+            console.log("handleDragStopEvent");
         },
 
-        /*
-	events: {
-		"dragstart": "dragStarted",
-                "drag": "dragOn",
-                "dragover": "dragOver",
-                "drop": "dropped",
-                "dragend": "dragEnded"
-	},
+        initialize: function () {
+            console.log("ToolView initialized");
 
-       dragStarted: function(e){
-		//e.preventDefault();
-	    var toolID = this.model.attributes.toolId;
-	    console.log("this dragStarted  " + toolID);
-       },
-       dragOn: function(e){
-		//e.preventDefault();
-	   var toolID = this.model.attributes.toolId;
-	   //console.log("this dragOn  " + toolID);
-       },
-       dragEnded: function(e){
-		//e.preventDefault();
-	    var toolID = this.model.attributes.toolId;
-	    console.log("this dragEnded " + toolID);
-            var lifeline4 = createLifeLine("LifeLine4",createPoint(950, 50));
-            //diagram.addElement(lifeline4, lifeLineOptions);
-       },
-       */
-	
-	initialize: function(){
-	   console.log("ToolView initialized");
-          
         },
 
-	
-	render: function(){
-	    this.$el.html(this.toolTemplate( this.model.attributes ));
-           
+        render: function () {
+            this.$el.html(this.toolTemplate(this.model.attributes));
             this.$el.draggable({
-		helper : 'clone',
-		cursor : 'move',
-		stop : this.handleDragStopEvent
-		});
-            
+                helper: 'clone',
+                cursor: 'move',
+                stop: this.handleDragStopEvent
+            });
             return this;
-	}
-});
-    
-views.ToolView = toolView;
-tools.Views = views;
-return tools;
+        }
+    });
 
-}(Tools || {}));
+    views.ToolView = toolView;
+    tools.Views = views;
+    return tools;
+
+} (Tools || {}));

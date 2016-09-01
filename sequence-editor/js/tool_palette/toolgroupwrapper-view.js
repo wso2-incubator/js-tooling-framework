@@ -16,45 +16,42 @@
  * under the License.
  */
 
-var Tools = (function (tools){
-
+var Tools = (function (tools) {
     var views = tools.Views || {};
 
     var toolGroupWrapperView = Backbone.View.extend({
-       
         template: _.template($('#toolgroupWrapper').html()),
 
-        initialize : function() {
-             console.log("toolGroupWrapperView init");
+        initialize: function () {
+            console.log("toolGroupWrapperView init");
         },
- 
-        render : function() {
+
+        render: function () {
             var htmContent = this.template(this.model.attributes);
             this.$el.html(htmContent);
-            var toolGroupView = new Tools.Views.ToolGroupView({ collection:  this.model.attributes.toolGroup});
-            var groupHtml = toolGroupView.render().el; 
+            var toolGroupView = new Tools.Views.ToolGroupView({ collection: this.model.attributes.toolGroup });
+            var groupHtml = toolGroupView.render().el;
             var groupDiv = this.$el.find("#toolgroup-container-" + this.model.attributes.toolGroupName);
             groupDiv.html(groupHtml);
             return this;
         }
-});
+    });
 
+    $(document).on('click', '.panel-heading span.clickable', function (e) {
+        var $this = $(this);
+        if (!$this.hasClass('panel-collapsed')) {
+            $this.parents('.panel').find('.panel-body').slideUp();
+            $this.addClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        } else {
+            $this.parents('.panel').find('.panel-body').slideDown();
+            $this.removeClass('panel-collapsed');
+            $this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        }
+    })
 
-$(document).on('click', '.panel-heading span.clickable', function(e){
-    var $this = $(this);
-	if(!$this.hasClass('panel-collapsed')) {
-		$this.parents('.panel').find('.panel-body').slideUp();
-		$this.addClass('panel-collapsed');
-		$this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-	} else {
-		$this.parents('.panel').find('.panel-body').slideDown();
-		$this.removeClass('panel-collapsed');
-		$this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-	}
-})
+    views.ToolGroupWrapperView = toolGroupWrapperView;
+    tools.Views = views;
+    return tools;
 
-views.ToolGroupWrapperView = toolGroupWrapperView;
-tools.Views = views;
-return tools;
-
-}(Tools || {}));
+} (Tools || {}));

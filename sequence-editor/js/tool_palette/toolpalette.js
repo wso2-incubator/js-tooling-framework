@@ -15,16 +15,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-var Tools = (function (tools){
 
+var Tools = (function (tools) {
    	var models = tools.Models || {};
-	
-        var toolPalatte = Backbone.Collection.extend({
+
+	var toolPalatte = Backbone.Collection.extend({
 		model: Tools.Models.ToolGroupWrapper
 	});
-	
+
 	models.ToolPalatte = toolPalatte;
 	tools.Models = models;
-        return tools;
-}(Tools || {}));
+	return tools;
+} (Tools || {}));
 

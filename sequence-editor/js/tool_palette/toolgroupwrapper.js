@@ -16,23 +16,20 @@
  * under the License.
  */
 
-var Tools = (function (tools){
-
+var Tools = (function (tools) {
    	var models = tools.Models || {};
-	
-        var toolGroupWrapper = Backbone.Model.extend({
-		initialize: function(attrs, options) {},
-	
-	        modelName : "ToolGroupWrapper",
-	
-	        defaults: {
-	    	    toolGroupName : "",
-	    	    toolGroup: ""
-	    	}
+
+	var toolGroupWrapper = Backbone.Model.extend({
+		initialize: function (attrs, options) { },
+		modelName: "ToolGroupWrapper",
+		defaults: {
+			toolGroupName: "",
+			toolGroup: ""
+		}
 	});
-	
+
 	models.ToolGroupWrapper = toolGroupWrapper;
 	tools.Models = models;
-        return tools;
-}(Tools || {}));
+	return tools;
+} (Tools || {}));
 
