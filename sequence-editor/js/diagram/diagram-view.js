@@ -295,13 +295,33 @@ var Diagrams = (function (diagrams) {
             handleDropEvent: function (event, ui) {
                 var newDraggedElem = $(ui.draggable).clone();
                 //var type = newDraggedElem.attr('id');
-                console.log("droped");
+                console.log("XXXXX  : " + ui.draggable.context.childNodes[0]);
+
+
+var id = ui.draggable.context.lastChild.id;
+                //var time = $('.id',  ui.draggable.context.childNodes[1])).text(),
+
+//var two = $(time);
+
+                console.log(id);
+
+
                 var position = {}
                 position.x = ui.offset.left - $(this).offset().left;
                 position.y = ui.offset.top - $(this).offset().top;
                 console.log(position);
-                var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
+
+                if(id == "log-mediator"){
+                var log = createFixedSizedMediator("Log Mediator", createPoint(position.x, position.y));
+                                diagram.addElement(log, lifeLineOptions);
+                }else if(id == "tool1"){
+var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
                 diagram.addElement(lifeline, lifeLineOptions);
+                }else{
+
+                }
+
+
             },
 
 
