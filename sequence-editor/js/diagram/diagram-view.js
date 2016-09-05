@@ -295,16 +295,11 @@ var Diagrams = (function (diagrams) {
             handleDropEvent: function (event, ui) {
                 var newDraggedElem = $(ui.draggable).clone();
                 //var type = newDraggedElem.attr('id');
-                console.log("XXXXX  : " + ui.draggable.context.childNodes[0]);
 
-
-var id = ui.draggable.context.lastChild.id;
+                var id = ui.draggable.context.lastChild.id;
                 //var time = $('.id',  ui.draggable.context.childNodes[1])).text(),
 
-//var two = $(time);
-
-                console.log(id);
-
+                //var two = $(time);
 
                 var position = {}
                 position.x = ui.offset.left - $(this).offset().left;
@@ -312,15 +307,14 @@ var id = ui.draggable.context.lastChild.id;
                 console.log(position);
 
                 if(id == "log-mediator"){
-                var log = createFixedSizedMediator("Log Mediator", createPoint(position.x, position.y));
+                var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
                                 diagram.addElement(log, lifeLineOptions);
                 }else if(id == "tool1"){
-var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
+                var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
                 diagram.addElement(lifeline, lifeLineOptions);
                 }else{
 
                 }
-
 
             },
 
@@ -362,6 +356,10 @@ var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
                 this.htmlDiv.droppable({
                     drop: this.handleDropEvent,
                     tolerance: "pointer"
+                });
+                this.htmlDiv.draggable({
+                    //drag: function( event, ui ) {
+                    //}
                 });
                 return mainGroup;
             },

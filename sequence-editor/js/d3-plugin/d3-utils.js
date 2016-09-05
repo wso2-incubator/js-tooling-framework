@@ -71,7 +71,7 @@ var D3Utils = (function (d3_utils) {
                 //.attr("fill", "steelblue")
                 .attr("fill-opacity", 0.01)
                 .attr("stroke-width", 2)
-                .style("filter", "url(#drop-shadow)")
+                //.style("filter", "url(#drop-shadow)")
                 .attr("rx",rx)
                 .attr("ry",ry);
         };

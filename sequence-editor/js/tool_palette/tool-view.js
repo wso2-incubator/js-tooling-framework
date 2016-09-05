@@ -28,12 +28,62 @@ var Tools = (function (tools) {
         },
 
         initialize: function () {
-            console.log("ToolView initialized");
-
         },
 
         render: function () {
             this.$el.html(this.toolTemplate(this.model.attributes));
+
+            var viewObj = this;
+
+       /*     var drag = d3.drag()
+                .on("start",function(){
+                   console.log("Drag Start initialized" + this);
+                })
+                .on("drag", function() {
+                    console.log("Dragging initialized" + this);
+                })
+                .on("end",function(){
+                 relCoords = d3.mouse($('svg').get(0));
+                var id = viewObj.model.attributes.toolId;
+                if(id == "log-mediator"){
+
+                if(diagram.selectedNode == null){
+                }else{
+
+                var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), relCoords[1]));
+                                                diagram.addElement(log, lifeLineOptions);
+
+                }
+
+                }else if(id == "tool1"){
+                var lifeline = createLifeLine("Lifeline", createPoint(relCoords[0]-240, 50));
+                diagram.addElement(lifeline, lifeLineOptions);
+                }else{
+
+                }
+
+                });
+
+            var svg = d3.select(".toolpalatteClass").append("svg")
+                .attr("width", 100)
+                .attr("height", 30);
+
+            var g = svg.append("g");
+
+            g.append("rect")
+                .attr("rx", 6)
+                .attr("ry", 6)
+                .attr("x", -12.5)
+                .attr("y", -12.5)
+                .attr("width", 25)
+                .attr("height", 25)
+                .attr("fill", "red")
+                .call(drag);
+
+                */
+
+//this.$el.html(svg);
+
             this.$el.draggable({
                 helper: 'clone',
                 cursor: 'move',

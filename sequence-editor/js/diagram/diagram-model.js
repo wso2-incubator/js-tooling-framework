@@ -22,6 +22,8 @@ var Diagrams = (function (diagrams) {
     var DiagramElement = Backbone.Model.extend(
         /** @lends DiagramElement.prototype */
         {
+
+            selectedNode : null,
             /**
              * @augments DiagramElement
              * @constructs
@@ -263,9 +265,12 @@ var Diagrams = (function (diagrams) {
 
                 var elements = new DiagramElements([], { diagram: this });
                 this.diagramElements(elements);
+                this.selectedNode = null;
             },
 
             modelName: "Diagram",
+
+            selectedNode : null,
 
             nameSpace: diagrams,
 
@@ -295,6 +300,7 @@ var Diagrams = (function (diagrams) {
     models.Link = Link;
     models.Connection = Connection;
     models.ConnectionPoint = ConnectionPoint;
+    //models.selectedNode = selectedNode;
     diagrams.Models = models;
 
     return diagrams;

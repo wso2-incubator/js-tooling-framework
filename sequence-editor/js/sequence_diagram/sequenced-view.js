@@ -35,6 +35,7 @@ var SequenceD = (function (sequenced) {
          */
         initialize: function(options) {
             Diagrams.Views.ShapeView.prototype.initialize.call(this, options);
+
         },
 
         handleDropEvent: function (event, ui) {
@@ -69,6 +70,7 @@ var SequenceD = (function (sequenced) {
         },
 
         drawlifeLine: function (center, title, prefs) {
+
             var d3Ref = this.getD3Ref();
             var group = d3Ref.draw.group()
                 .classed(prefs.class, true);
@@ -98,10 +100,18 @@ var SequenceD = (function (sequenced) {
                 })
             };
 
-
-middleRect.on("cc" , (function(){
-}));
-
+            var viewObj = this;
+            middleRect.on('mouseover', function() {
+                 diagram.selectedNode = viewObj.model;
+                 d3.select(this).
+                 style("fill", "green").
+                 style("fill-opacity", 0.1);
+               }).on('mouseout', function() {
+                 diagram.selectedNode = null;
+                 d3.select(this).
+                 style("fill-opacity", 0.01);
+               }).on('mouseup',function(data){
+               });
 
             rect.on("click", (function() {
 		    if (selected){
