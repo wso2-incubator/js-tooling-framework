@@ -54,7 +54,7 @@ var lifeline = new Tools.Models.Tool({
 // Create tool group
 var group = new Tools.Models.ToolGroup();
 group.add(lifeline);
-var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "SequenceDiagrams", toolGroup: group });
+var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "Sequence Diagrams",  toolGroupID: "SequenceDiagrams", toolGroup: group });
 
 // Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();

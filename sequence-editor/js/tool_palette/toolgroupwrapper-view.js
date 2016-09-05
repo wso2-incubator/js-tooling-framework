@@ -31,7 +31,7 @@ var Tools = (function (tools) {
             this.$el.html(htmContent);
             var toolGroupView = new Tools.Views.ToolGroupView({ collection: this.model.attributes.toolGroup });
             var groupHtml = toolGroupView.render().el;
-            var groupDiv = this.$el.find("#toolgroup-container-" + this.model.attributes.toolGroupName);
+            var groupDiv = this.$el.find("#toolgroup-container-" + this.model.attributes.toolGroupID);
             groupDiv.html(groupHtml);
             return this;
         }
