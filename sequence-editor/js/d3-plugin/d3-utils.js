@@ -33,6 +33,48 @@ var D3Utils = (function (d3_utils) {
         return parent.draw.circle(point.x(), point.y(), r);
     };
 
+    var basicRect = function(x, y, width, height, rx, ry, parent){
+            parent = parent || d3Ref;
+
+        var defs = parent.append("defs");
+
+        var filter = defs.append("filter")
+        .attr("id", "drop-shadow")
+        .attr("height", "130%");
+
+        filter.append("feGaussianBlur")
+        .attr("in", "SourceAlpha")
+        .attr("stdDeviation", 1)
+        .attr("result", "blur");
+
+        filter.append("feOffset")
+        .attr("in", "blur")
+        .attr("dx", 5)
+        .attr("dy", 5)
+        .attr("result", "offsetBlur");
+
+        var feMerge = filter.append("feMerge");
+
+        feMerge.append("feMergeNode")
+        .attr("in", "offsetBlur")
+        feMerge.append("feMergeNode")
+        .attr("in", "SourceGraphic");
+
+            rx = rx || 0;
+            ry = ry || 0;
+            return parent.append("rect")
+                .attr("x",x)
+                .attr("y",y)
+                .attr("width",width)
+                .attr("height",height)
+                //.attr("fill", "steelblue")
+                .attr("fill-opacity", 0.01)
+                .attr("stroke-width", 2)
+                //.style("filter", "url(#drop-shadow)")
+                .attr("rx",rx)
+                .attr("ry",ry);
+        };
+
     var rect = function(x, y, width, height, rx, ry, parent){
         parent = parent || d3Ref;
 
@@ -79,6 +121,14 @@ var D3Utils = (function (d3_utils) {
         rx = rx || 0;
         ry = ry || 0;
         return parent.draw.rect(center.x() - width/2, center.y() - height/2, width, height, rx, ry, parent);
+    };
+
+
+    var centeredBasicRect = function(center, width, height, rx, ry, parent){
+        parent = parent || d3Ref;
+        rx = rx || 0;
+        ry = ry || 0;
+        return parent.draw.basicRect(center.x() - width/2, center.y() - height/2, width, height, rx, ry, parent);
     };
 
     var line = function(x1, y1, x2, y2, parent){
@@ -157,6 +207,8 @@ var D3Utils = (function (d3_utils) {
         var draw = {};
         draw.centeredRect = centeredRect;
         draw.rect = rect;
+        draw.basicRect = basicRect;
+        draw.centeredBasicRect = centeredBasicRect;
         draw.line = line;
         draw.lineFromPoints = lineFromPoints;
         draw.verticalLine = verticalLine;

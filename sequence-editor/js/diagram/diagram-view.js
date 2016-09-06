@@ -296,12 +296,20 @@ var Diagrams = (function (diagrams) {
                 var newDraggedElem = $(ui.draggable).clone();
                 //var type = newDraggedElem.attr('id');
                 console.log("droped");
+                var id = ui.draggable.context.lastChild.id;
                 var position = {}
                 position.x = ui.offset.left - $(this).offset().left;
                 position.y = ui.offset.top - $(this).offset().top;
                 console.log(position);
-                var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
-                diagram.addElement(lifeline, lifeLineOptions);
+                if(id == "log-mediator"){
+                  var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
+                  diagram.addElement(log, lifeLineOptions);
+                }else if(id == "tool1"){
+                  var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
+                  diagram.addElement(lifeline, lifeLineOptions);
+                }else{
+
+                }
             },
 
 
@@ -342,6 +350,10 @@ var Diagrams = (function (diagrams) {
                 this.htmlDiv.droppable({
                     drop: this.handleDropEvent,
                     tolerance: "pointer"
+                });
+                this.htmlDiv.draggable({
+                 //drag: function( event, ui ) {
+                 //}
                 });
                 return mainGroup;
             },
