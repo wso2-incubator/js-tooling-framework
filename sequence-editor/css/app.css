@@ -121,10 +121,23 @@ svg text::selection { background: none; }
    height: 100%;
 }
 
+.delete-image {
+   width: 32px;
+   height: 32px;
+}
+
+.hidden-button {
+  display: none;
+  visibility: hidden;
+}
+.visible-button {
+   display: block;
+  visibility: visible;
+}
+
 body{
    margin: 0;
    padding: 0;
    width: 100vw;
    height: 100vh;
 }
-

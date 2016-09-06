@@ -92,4 +92,19 @@ diagramView.render();
 // diagram.addElement(msg4, messageOptions);
 // var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 // diagram.addElement(msg5, messageOptions);
-// selected ="";
+selected ="";
+selectedModel="";
+
+$("#delete-image").click(function(){
+    console.log("deleted");
+    var deletebutton = $('#deletebutton'); //get the needed div
+    deletebutton.removeClass("visible-button");
+    deletebutton.addClass("hidden-button");
+    if (selectedModel) {
+      diagram.removeElement(selectedModel);
+    }
+});
+
+$("#edit-image").click(function(){
+    alert("Edit properties");
+});
