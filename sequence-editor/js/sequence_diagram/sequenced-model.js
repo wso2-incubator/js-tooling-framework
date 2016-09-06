@@ -98,10 +98,40 @@ var SequenceD = (function (sequenced) {
             }
         });
 
+
+            var FixedSizedMediator = Diagrams.Models.Shape.extend(
+                    /** @lends FixedSizedMediator.prototype */
+                    {
+                        /**
+                         * @augments Element
+                         * @constructs
+                         * @class FixedSizedMediator Represents the model for a FixedSizedMediator in Sequence Diagrams.
+                         */
+                        initialize: function (attrs, options) {
+                            Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
+                        },
+
+                        modelName: "FixedSizedMediator",
+
+                        nameSpace: sequenced,
+
+                        defaults: {
+                            centerPoint: new GeoCore.Models.Point({ x: 0, y: 0 }),
+                            title: "Mediator"
+                        },
+
+                        /**createActivation: function (opts) {
+                            var activation = new SequenceD.Models.Activation({ owner: this }, opts);
+                            this.addConnectionPoint(activation);
+                            return activation;
+                        }*/
+                    });
+
     // set models
     models.Activation = Activation;
     models.Message = Message;
     models.LifeLine = LifeLine;
+    models.FixedSizedMediator = FixedSizedMediator;
 
     sequenced.Models = models;
 
