@@ -25,14 +25,6 @@ lifeLineOptions.rect.height = 30;
 lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
-
-lifeLineOptions.middleRect = {};
-lifeLineOptions.middleRect.width = 100;
-lifeLineOptions.middleRect.height = 500;
-lifeLineOptions.middleRect.roundX = 1;
-lifeLineOptions.middleRect.roundY = 1;
-lifeLineOptions.middleRect.class = "lifeline-middleRect";
-
 // Lifeline options
 lifeLineOptions.line = {};
 lifeLineOptions.line.height = 500;
@@ -49,11 +41,6 @@ var createLifeLine = function (title, center) {
     return new SequenceD.Models.LifeLine({ title: title, centerPoint: center });
 };
 
-
-var createFixedSizedMediator = function (title, center) {
-    return new SequenceD.Models.FixedSizedMediator({ title: title, centerPoint: center });
-};
-
 var createMessage = function (start, end) {
     return new SequenceD.Models.Message({ source: start, destination: end });
 };
@@ -64,15 +51,9 @@ var lifeline = new Tools.Models.Tool({
 	toolImage: "images/icon1.png"
 });
 
-var log_mediator = new Tools.Models.Tool({
-	toolId: "log-mediator",
-	toolImage: "images/icon2.png"
-});
-
 // Create tool group
 var group = new Tools.Models.ToolGroup();
 group.add(lifeline);
-group.add(log_mediator);
 var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "SequenceDiagrams", toolGroup: group });
 
 // Create tool palette
