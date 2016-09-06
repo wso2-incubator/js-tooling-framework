@@ -23,6 +23,7 @@ var Tools = (function (tools) {
 		initialize: function (attrs, options) { },
 		modelName: "ToolGroupWrapper",
 		defaults: {
+                        toolGroupID: "id-not-set",
 			toolGroupName: "",
 			toolGroup: ""
 		}

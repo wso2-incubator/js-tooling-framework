@@ -41,9 +41,11 @@ var SequenceD = (function (sequenced) {
             return false;
         },
 
+        thisModel:'',
+
         render: function (paperID) {
             Diagrams.Views.ShapeView.prototype.render.call(this, paperID);
-
+            thisModel = this.model;
             var lifeLine = this.drawlifeLine(this.modelAttr('centerPoint'), this.modelAttr('title'), this.options);
             var viewObj = this;
             var drag = d3.drag()
@@ -89,14 +91,47 @@ var SequenceD = (function (sequenced) {
                 })
             };
 
+            function showDeletebutton(svgObj, button){
+                  var imgRight = svgObj.x.baseVal.value + svgObj.width.baseVal.value + 4 ;
+                  var imgTop = svgObj.y.baseVal.value - svgObj.height.baseVal.value/2 - 4 ;
+                  button.css({
+                    position:'absolute',
+                    top: imgTop,
+                    left: imgRight,
+                    zIndex:5000
+                  });
+                  button.removeClass("hidden-button");
+                  button.addClass("visible-button");
+            }
+
+            function hideDeletebutton(svgObj, button){
+                  button.removeClass("visible-button");
+                  button.addClass("hidden-button");
+            }
+
             rect.on("click", (function() {
-		    if (selected){
-		     	selected.classList.toggle("lifeline_selected");
-		    }
-		    if(this != selected) {
-		      	this.classList.toggle("lifeline_selected");
-		      	selected = this;
-		    }
+                var deletebutton = $('#deletebutton'); //get the needed div
+        		    if (selected){
+                  if(this == selected) {
+                      selected.classList.toggle("lifeline_selected");
+                      hideDeletebutton(this, deletebutton);
+                      selected='';
+                  } else {
+                      selected.classList.toggle("lifeline_selected");
+          		      	this.classList.toggle("lifeline_selected");
+                      showDeletebutton(this, deletebutton);
+          		      	selected = this;
+                      //Need to define a way on how to get the model by giving an ID
+                      selectedModel = thisModel;
+          		    }
+        		    } else {
+                  this.classList.toggle("lifeline_selected");
+                  showDeletebutton(this, deletebutton);
+                  selected = this;
+                  selectedModel = thisModel;
+                }
+
+
             }));
 
             return group;

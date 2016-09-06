@@ -54,7 +54,7 @@ var lifeline = new Tools.Models.Tool({
 // Create tool group
 var group = new Tools.Models.ToolGroup();
 group.add(lifeline);
-var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "SequenceDiagrams", toolGroup: group });
+var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "Sequence Diagrams",  toolGroupID: "SequenceDiagrams", toolGroup: group });
 
 // Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();
@@ -92,4 +92,19 @@ diagramView.render();
 // diagram.addElement(msg4, messageOptions);
 // var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 // diagram.addElement(msg5, messageOptions);
-// selected ="";
+selected ="";
+selectedModel="";
+
+$("#delete-image").click(function(){
+    console.log("deleted");
+    var deletebutton = $('#deletebutton'); //get the needed div
+    deletebutton.removeClass("visible-button");
+    deletebutton.addClass("hidden-button");
+    if (selectedModel) {
+      diagram.removeElement(selectedModel);
+    }
+});
+
+$("#edit-image").click(function(){
+    alert("Edit properties");
+});
