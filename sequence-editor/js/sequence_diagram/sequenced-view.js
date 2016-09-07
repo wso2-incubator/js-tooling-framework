@@ -137,7 +137,7 @@ var SequenceD = (function (sequenced) {
             });
 
             rect.on("click", (function() {
-                var deletebutton = $('#deletebutton'); //get the needed div
+                var deletebutton = $('#udcontroldiv'); //get the needed div
         		    if (selected){
                   if(this == selected) {
                       selected.classList.toggle("lifeline_selected");

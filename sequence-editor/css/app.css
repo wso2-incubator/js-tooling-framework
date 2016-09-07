@@ -121,9 +121,9 @@ svg text::selection { background: none; }
    height: 100%;
 }
 
-.delete-image {
-   width: 32px;
-   height: 32px;
+.udcontrol-image {
+   width: 28px;
+   height: 28px;
 }
 
 .hidden-button {

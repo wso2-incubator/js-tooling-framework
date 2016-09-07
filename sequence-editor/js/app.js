@@ -115,17 +115,6 @@ lifeLineOptions.diagram = diagram;
 // diagram.addElement(msg5, messageOptions);
 selected ="";
 selectedModel="";
-
-$("#delete-image").click(function(){
-    console.log("deleted");
-    var deletebutton = $('#deletebutton'); //get the needed div
-    deletebutton.removeClass("visible-button");
-    deletebutton.addClass("hidden-button");
-    if (selectedModel) {
-      diagram.removeElement(selectedModel);
-    }
-});
-
-$("#edit-image").click(function(){
-    alert("Edit properties");
-});
+var udcontrol = new Dialogs.Controls.UpdateDeleteControler();
+var udcontrolView = new Dialogs.Views.UpdateDeletedControlerView({ model: udcontrol });
+udcontrolView.render();
