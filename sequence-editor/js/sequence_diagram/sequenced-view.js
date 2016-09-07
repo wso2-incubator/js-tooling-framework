@@ -218,7 +218,7 @@ var SequenceD = (function (sequenced) {
             {
                 var yOffset = this.model.connections.length  * 50;
             }
-            return _.cloneDeep(this.model.owner().get('centerPoint')).move(0, yOffset || 50);
+            return _.cloneDeep(this.model.owner().get('centerPoint').move(0, yOffset || 50));
         }
     });
 
