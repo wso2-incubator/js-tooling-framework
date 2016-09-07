@@ -80,15 +80,15 @@ var SequenceD = (function (sequenced) {
                 .classed(prefs.rect.class, true);
 
             var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'), center.get('y') + prefs.rect.height/2 + prefs.line.height/2), prefs.middleRect.width, prefs.middleRect.height, 3, 3, group)
-                .classed(prefs.middleRect.class, true);
+                .classed(prefs.middleRect.class, true)
+                .on("mousedown", function () {
+                    var m = d3.mouse(this);
+                    viewObj.mouseDown(prefs, center.x(), m[1]);
+                });
             var rectBottom = d3Ref.draw.centeredRect(createPoint(center.get('x'), center.get('y') + prefs.line.height), prefs.rect.width, prefs.rect.height, 3, 3, group)
             .classed(prefs.rect.class, true);
             var line = d3Ref.draw.verticalLine(createPoint(center.get('x'), center.get('y')+ prefs.rect.height/2), prefs.line.height-prefs.rect.height, group)
-            .classed(prefs.line.class, true)
-            .on("mousedown", function () {
-                var m = d3.mouse(this);
-                viewObj.mouseDown(prefs, m[0], m[1]);
-            });
+            .classed(prefs.line.class, true);
             var text = d3Ref.draw.centeredText(center, title, group)
                 .classed(prefs.text.class, true);
             var textBottom = d3Ref.draw.centeredText(createPoint(center.get('x'), center.get('y') + prefs.line.height), title, group)
@@ -218,7 +218,7 @@ var SequenceD = (function (sequenced) {
             {
                 var yOffset = this.model.connections.length  * 50;
             }
-            return _.cloneDeep(this.model.owner().get('centerPoint')).move(0, yOffset || 50);
+            return _.cloneDeep(this.model.owner().get('centerPoint').move(0, yOffset || 50));
         }
     });
 
