@@ -24,9 +24,10 @@ var Dialogs = (function (dialogs) {
     },
 
 		modelName: "UpdateDeleteControler",
-    controlInstance:'',
-    positionX:0,
-    positionY:0
+    lifeline:'',
+    x:0,
+    y:0,
+    visible:'false'
 	});
 
 	controls.UpdateDeleteControler = updateDeleteControler;

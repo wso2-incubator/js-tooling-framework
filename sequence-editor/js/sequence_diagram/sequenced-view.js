@@ -105,23 +105,7 @@ var SequenceD = (function (sequenced) {
                 })
             };
 
-            function showDeletebutton(svgObj, button){
-                  var imgRight = svgObj.x.baseVal.value + svgObj.width.baseVal.value + 4 ;
-                  var imgTop = svgObj.y.baseVal.value - svgObj.height.baseVal.value/2 - 4 ;
-                  button.css({
-                    position:'absolute',
-                    top: imgTop,
-                    left: imgRight,
-                    zIndex:5000
-                  });
-                  button.removeClass("hidden-button");
-                  button.addClass("visible-button");
-            }
 
-            function hideDeletebutton(svgObj, button){
-                  button.removeClass("visible-button");
-                  button.addClass("hidden-button");
-            }
 
             var viewObj = this;
             middleRect.on('mouseover', function() {
@@ -137,28 +121,33 @@ var SequenceD = (function (sequenced) {
             });
 
             rect.on("click", (function() {
-                var deletebutton = $('#udcontroldiv'); //get the needed div
         		    if (selected){
-                  if(this == selected) {
-                      selected.classList.toggle("lifeline_selected");
-                      hideDeletebutton(this, deletebutton);
-                      selected='';
-                  } else {
-                      selected.classList.toggle("lifeline_selected");
-          		      	this.classList.toggle("lifeline_selected");
-                      showDeletebutton(this, deletebutton);
-          		      	selected = this;
-                      //Need to define a way on how to get the model by giving an ID
-                      selectedModel = thisModel;
-          		    }
+                    if(this == selected) {
+                        selected.classList.toggle("lifeline_selected");
+                        udcontrol.set('visible',false);
+                        udcontrol.set('lifeline','');
+                        selected='';
+                    } else {
+                        selected.classList.toggle("lifeline_selected");
+            		      	this.classList.toggle("lifeline_selected");
+                        var imgRight = this.x.baseVal.value + this.width.baseVal.value + 4 ;
+                        var imgTop = this.y.baseVal.value - this.height.baseVal.value/2 - 4 ;
+                        udcontrol.set('visible',true);
+                        udcontrol.set('x',imgRight);
+                        udcontrol.set('y',imgTop);
+                        udcontrol.set('lifeline',thisModel);
+            		      	selected = this;
+            		    }
         		    } else {
-                  this.classList.toggle("lifeline_selected");
-                  showDeletebutton(this, deletebutton);
-                  selected = this;
-                  selectedModel = thisModel;
+                    this.classList.toggle("lifeline_selected");
+                    var imgRight = this.x.baseVal.value + this.width.baseVal.value + 4 ;
+                    var imgTop = this.y.baseVal.value - this.height.baseVal.value/2 - 4 ;
+                    udcontrol.set('visible',true);
+                    udcontrol.set('x',imgRight);
+                    udcontrol.set('y',imgTop);
+                    udcontrol.set('lifeline',thisModel);
+                    selected = this;
                 }
-
-
             }));
 
             return group;
@@ -297,16 +286,6 @@ var SequenceD = (function (sequenced) {
                             return "translate(" + [ dx, dy ] + ")"
                         })
                     };
-
-                    rect.on("click", (function() {
-        		    if (selected){
-        		     	selected.classList.toggle("lifeline_selected");
-        		    }
-        		    if(this != selected) {
-        		      	this.classList.toggle("lifeline_selected");
-        		      	selected = this;
-        		    }
-                    }));
 
                     return group;
                 }

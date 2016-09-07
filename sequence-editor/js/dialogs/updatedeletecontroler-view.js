@@ -24,11 +24,13 @@ var Dialogs = (function (dialogs) {
         el: '#udcontroldiv',
 
         initialize: function () {
+          this.listenTo(this.model, 'change', this.render);
+          var controlDiv = this.$el;
+
           $("#delete-image").click(function(){
               console.log("deleted the model");
-              var deletebutton = $('#udcontroldiv'); //get the needed div
-              deletebutton.removeClass("visible-button");
-              deletebutton.addClass("hidden-button");
+              controlDiv.removeClass("visible-button");
+              controlDiv.addClass("hidden-button");
               if (selectedModel) {
                 diagram.removeElement(selectedModel);
               }
@@ -40,7 +42,25 @@ var Dialogs = (function (dialogs) {
         },
 
         render: function () {
-            return this;
+          var isVisible = this.model.attributes.visible;
+          var x = this.model.attributes.x;
+          var y = this.model.attributes.y;
+          var lifeline = this.model.attributes.lifeline;
+          var udControlDiv = this.$el;//$('#udcontroldiv');
+          if (isVisible) {
+              udControlDiv.css({
+                position:'absolute',
+                top: y,
+                left: x,
+                zIndex:5000
+              });
+              udControlDiv.removeClass("hidden-button");
+              udControlDiv.addClass("visible-button");
+          } else {
+              udControlDiv.removeClass("visible-button");
+              udControlDiv.addClass("hidden-button");
+          }
+          return this;
         }
     });
 
