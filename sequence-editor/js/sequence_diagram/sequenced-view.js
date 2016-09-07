@@ -72,6 +72,8 @@ var SequenceD = (function (sequenced) {
 
         drawlifeLine: function (center, title, prefs) {
             var d3Ref = this.getD3Ref();
+            this.diagram = prefs.diagram;
+            var viewObj = this;
             var group = d3Ref.draw.group()
                 .classed(prefs.class, true);
             var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 3, 3, group)
@@ -82,7 +84,11 @@ var SequenceD = (function (sequenced) {
             var rectBottom = d3Ref.draw.centeredRect(createPoint(center.get('x'), center.get('y') + prefs.line.height), prefs.rect.width, prefs.rect.height, 3, 3, group)
             .classed(prefs.rect.class, true);
             var line = d3Ref.draw.verticalLine(createPoint(center.get('x'), center.get('y')+ prefs.rect.height/2), prefs.line.height-prefs.rect.height, group)
-            .classed(prefs.line.class, true);
+            .classed(prefs.line.class, true)
+            .on("mousedown", function () {
+                var m = d3.mouse(this);
+                viewObj.mouseDown(prefs, m[0], m[1]);
+            });
             var text = d3Ref.draw.centeredText(center, title, group)
                 .classed(prefs.text.class, true);
             var textBottom = d3Ref.draw.centeredText(createPoint(center.get('x'), center.get('y') + prefs.line.height), title, group)
@@ -156,6 +162,12 @@ var SequenceD = (function (sequenced) {
             }));
 
             return group;
+        },
+
+        mouseDown: function (prefs, x, y) {
+            prefs.diagram.clickedLifeLine = this.model;
+            prefs.diagram.position = this.model;
+            prefs.diagram.onLifelineClicked(x, y);
         }
 
     });
@@ -254,7 +266,7 @@ var SequenceD = (function (sequenced) {
                             viewObj.dragStop();
                         });
 
-                    lifeLine.call(drag);
+                    //lifeLine.call(drag);
 
                     this.d3el = lifeLine;
                     this.el = lifeLine.node();

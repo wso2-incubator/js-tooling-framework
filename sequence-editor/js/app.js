@@ -89,6 +89,8 @@ var diagramOptions = { selector: '.editor' };
 var diagramView = new Diagrams.Views.DiagramView({ model: diagram, options: diagramOptions });
 diagramView.render();
 
+lifeLineOptions.diagram = diagram;
+
 // var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
 // diagram.addElement(lifeline1, lifeLineOptions);
 // var lifeline2 = createLifeLine("LifeLine2",createPoint(500, 50));

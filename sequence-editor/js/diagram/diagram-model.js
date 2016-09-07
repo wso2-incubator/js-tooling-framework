@@ -274,9 +274,17 @@ var Diagrams = (function (diagrams) {
 
             nameSpace: diagrams,
 
+            clickedLifeLine: undefined,
+
+            lifeLineMap: {},
+
             addElement: function (element, opts) {
                 this.diagramElements().add(element, opts);
                 this.trigger("addElement", element, opts);
+
+                if (element instanceof SequenceD.Models.LifeLine) {
+                    this.lifeLineMap[element.attributes.centerPoint.attributes.x] = element;
+                }
             },
 
             removeElement: function (element, opts) {
@@ -297,6 +305,44 @@ var Diagrams = (function (diagrams) {
                 } else {
                     this.set('diagramElements', diaElements);
                 }
+            },
+
+            onLifelineClicked: function (x, y) {
+                this.trigger("llClicked", x, y);
+            },
+
+            position: undefined,
+
+            positionTemp: undefined,
+
+            dynamicMessage: undefined,
+
+            test:undefined,
+
+            createPoint: function(x, y){
+                return new GeoCore.Models.Point({'x': x, 'y': y});
+            },
+
+            createLifeLine: function(title, center){
+                return new SequenceD.Models.LifeLine({title:title, centerPoint: center});
+            },
+
+            getNearestLifeLine: function (xPosition) {
+                var distanceDiff = undefined;
+                var nearestKey = undefined;
+                for (var key in this.lifeLineMap) {
+                    if (nearestKey === undefined) {
+                        distanceDiff = Math.abs(xPosition - key);
+                        nearestKey = key;
+                    } else {
+                        if (distanceDiff > Math.abs(xPosition - key)) {
+                            distanceDiff = Math.abs(xPosition - key);
+                            nearestKey = key;
+                        }
+                    }
+                }
+
+                return this.lifeLineMap[nearestKey];
             }
 
         });

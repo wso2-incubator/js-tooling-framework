@@ -342,6 +342,7 @@ var Diagrams = (function (diagrams) {
                     .attr("class", "marker");
 
                 this.model.on("addElement", this.onAddElement, this);
+                this.model.on("llClicked", this.onLifelineClicked, this);
 
                 this.d3svg = svg;
                 this.d3el = mainGroup;
@@ -374,6 +375,48 @@ var Diagrams = (function (diagrams) {
 
             gridHeight: function () {
                 return this.options.diagram.grid.height;
+            },
+
+            onLifelineClicked: function (x, y) {
+
+                console.log("{" + x + "," + y + "}");
+                var line = this.d3svg.append("line")
+                    .attr("x1", x)
+                    .attr("y1", y)
+                    .attr("x2", x)
+                    .attr("y2", y)
+                    .attr("marker-end", "url(#markerArrow)")
+                    .attr("class","message")
+                    .attr("id", "dynamicLine");
+
+                var viewObj = this;
+                this.d3svg.on("mousemove", function () {
+                    var m = d3.mouse(this);
+                    line.attr("x2", m[0]);
+                    line.attr("y2", m[1]).attr("marker-end", "url(#markerArrow)");
+                });
+
+                this.d3svg.on("mouseup", function () {
+                    var m = d3.mouse(this);
+
+                    // Removing the registered mouse events from the svg
+                    viewObj.d3svg.on("mousemove", null)
+                        .on("mouseup", null);
+                    var l = document.getElementById("dynamicLine");
+                    var parent = l.parentNode;
+                    parent.removeChild(l);
+
+                    var invisibleLifeline = viewObj.model.getNearestLifeLine(m[0]);
+
+                    var invisibleActivation = new SequenceD.Models.Activation({owner:invisibleLifeline});
+                    var messageOptions = {'class':'message'};
+
+                    var lf1Activation1 = new SequenceD.Models.Activation({owner:viewObj.model.position});
+
+                    var dynamicMessage = new SequenceD.Models.Message({source: lf1Activation1, destination: invisibleActivation});
+
+                    viewObj.model.addElement(dynamicMessage, messageOptions);
+                });
             }
         });
 

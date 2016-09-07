@@ -44,6 +44,14 @@ var SequenceD = (function (sequenced) {
                 var activation = new SequenceD.Models.Activation({ owner: this }, opts);
                 this.addConnectionPoint(activation);
                 return activation;
+            },
+
+            createPoint: function(x, y){
+                return new GeoCore.Models.Point({'x': x, 'y': y});
+            },
+
+            createLifeLine: function(title, center){
+                return new SequenceD.Models.LifeLine({title:title, centerPoint: center});
             }
         });
 
