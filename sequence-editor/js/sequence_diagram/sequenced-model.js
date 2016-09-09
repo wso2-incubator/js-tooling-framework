@@ -20,9 +20,6 @@ var SequenceD = (function (sequenced) {
     var models = sequenced.Models = {};
 
 
-
-
-
 ////
 
 
@@ -30,14 +27,14 @@ var SequenceD = (function (sequenced) {
         /** @lends DiagramElement.prototype */
         {
 
-            selectedNode : null,
+            selectedNode: null,
             /**
              * @augments DiagramElement
              * @constructs
              * @class Element represents the model for elements in a diagram.
              */
             initialize: function (attrs, options) {
-            Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
+                Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
             },
 
             modelName: "FixedSizedMediator",
@@ -46,31 +43,31 @@ var SequenceD = (function (sequenced) {
 
             idAttribute: this.cid,
 
-                        defaults: {
-                            centerPoint: new GeoCore.Models.Point({ x: 0, y: 0 }),
-                            title: "Mediator"
-                        },
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
+                title: "Mediator"
+            },
         });
 
 
+    var FixedSizedMediators = Backbone.Collection.extend(
+        /** @lends DiagramElements.prototype */
+        {
+            /**
+             * @augments Backbone.Collection
+             * @constructs
+             * @class DiagramElements represents the collection for elements in a diagram.
+             */
+            initialize: function (models, options) {
+            },
 
-            var FixedSizedMediators = Backbone.Collection.extend(
-                /** @lends DiagramElements.prototype */
-                {
-                    /**
-                     * @augments Backbone.Collection
-                     * @constructs
-                     * @class DiagramElements represents the collection for elements in a diagram.
-                     */
-                    initialize: function (models, options) { },
+            modelName: "FixedSizedMediators",
 
-                    modelName: "FixedSizedMediators",
+            nameSpace: sequenced,
 
-                    nameSpace: sequenced,
+            model: FixedSizedMediator
 
-                    model: FixedSizedMediator
-
-                });
+        });
 
 
 ////
@@ -89,9 +86,9 @@ var SequenceD = (function (sequenced) {
 
 //var elements = new DiagramElements([], { diagram: this });
 
-var elements = new FixedSizedMediators([], { diagram: this });
+                var elements = new FixedSizedMediators([], {diagram: this});
 
-                var fixedSizedMediators = new FixedSizedMediators([], { diagram: this });
+                var fixedSizedMediators = new FixedSizedMediators([], {diagram: this});
                 this.fixedSizedMediators(fixedSizedMediators);
 
 
@@ -102,41 +99,41 @@ var elements = new FixedSizedMediators([], { diagram: this });
             nameSpace: sequenced,
 
             defaults: {
-                centerPoint: new GeoCore.Models.Point({ x: 0, y: 0 }),
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
                 title: "lifeline"
             },
 
             createActivation: function (opts) {
-                var activation = new SequenceD.Models.Activation({ owner: this }, opts);
+                var activation = new SequenceD.Models.Activation({owner: this}, opts);
                 this.addConnectionPoint(activation);
                 return activation;
             },
 
-            createPoint: function(x, y){
+            createPoint: function (x, y) {
                 return new GeoCore.Models.Point({'x': x, 'y': y});
             },
 
-            createLifeLine: function(title, center){
-                return new SequenceD.Models.LifeLine({title:title, centerPoint: center});
+            createLifeLine: function (title, center) {
+                return new SequenceD.Models.LifeLine({title: title, centerPoint: center});
             },
 
-            createFixedSizedMediator: function(title, center){
-                return new SequenceD.Models.FixedSizedMediator({title:title, centerPoint: center});
+            createFixedSizedMediator: function (title, center) {
+                return new SequenceD.Models.FixedSizedMediator({title: title, centerPoint: center});
             },
 
             addFixedSizedMediator: function (element, opts) {
-                            this.fixedSizedMediators().add(element, opts);
-                            this.trigger("addFixedSizedMediator", element, opts);
+                this.fixedSizedMediators().add(element, opts);
+                this.trigger("addFixedSizedMediator", element, opts);
 
             },
 
             fixedSizedMediators: function (fixedSizedMediators) {
-                            if (_.isUndefined(fixedSizedMediators)) {
-                                return this.get('fixedSizedMediators');
-                                //console.log("fixedSizedMediators is undefined");
-                            } else {
-                                this.set('fixedSizedMediators', fixedSizedMediators);
-                            }
+                if (_.isUndefined(fixedSizedMediators)) {
+                    return this.get('fixedSizedMediators');
+                    //console.log("fixedSizedMediators is undefined");
+                } else {
+                    this.set('fixedSizedMediators', fixedSizedMediators);
+                }
             },
 
 
@@ -177,8 +174,7 @@ var elements = new FixedSizedMediators([], { diagram: this });
 
             nameSpace: sequenced,
 
-            defaults: {
-            },
+            defaults: {},
 
             source: function (ConnectionPoint) {
                 return Diagrams.Models.Link.prototype.source.call(this, ConnectionPoint);
@@ -194,50 +190,51 @@ var elements = new FixedSizedMediators([], { diagram: this });
         });
 
 
-        var FixedSizedMediatorsX = Backbone.Collection.extend({
+    var FixedSizedMediatorsX = Backbone.Collection.extend({
 
 
-            initialize: function (models, options) { },
+        initialize: function (models, options) {
+        },
+
+        modelName: "FixedSizedMediator",
+
+        nameSpace: sequenced,
+
+        model: FixedSizedMediator
+
+    });
+
+    var FixedSizedMediatorX = Diagrams.Models.Shape.extend(
+        /** @lends FixedSizedMediator.prototype */
+        {
+            /**
+             * @augments Element
+             * @constructs
+             * @class FixedSizedMediator Represents the model for a FixedSizedMediator in Sequence Diagrams.
+             */
+            initialize: function (attrs, options) {
+                Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
+            },
 
             modelName: "FixedSizedMediator",
 
             nameSpace: sequenced,
 
-            model: FixedSizedMediator
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
+                title: "Mediator"
+            },
 
-        });
-
-            var FixedSizedMediatorX = Diagrams.Models.Shape.extend(
-                    /** @lends FixedSizedMediator.prototype */
-                    {
-                        /**
-                         * @augments Element
-                         * @constructs
-                         * @class FixedSizedMediator Represents the model for a FixedSizedMediator in Sequence Diagrams.
-                         */
-                        initialize: function (attrs, options) {
-                            Diagrams.Models.Shape.prototype.initialize.call(this, attrs, options);
-                        },
-
-                        modelName: "FixedSizedMediator",
-
-                        nameSpace: sequenced,
-
-                        defaults: {
-                            centerPoint: new GeoCore.Models.Point({ x: 0, y: 0 }),
-                            title: "Mediator"
-                        },
-
-                                    idAttribute: this.cid
+            idAttribute: this.cid
 
 
 
-                        /**createActivation: function (opts) {
+            /**createActivation: function (opts) {
                             var activation = new SequenceD.Models.Activation({ owner: this }, opts);
                             this.addConnectionPoint(activation);
                             return activation;
                         }*/
-                    });
+        });
 
     // set models
     models.Activation = Activation;
@@ -250,4 +247,4 @@ var elements = new FixedSizedMediators([], { diagram: this });
 
     return sequenced;
 
-} (SequenceD || {}));
+}(SequenceD || {}));

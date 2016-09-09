@@ -25,8 +25,7 @@ var Mediators = (function (mediators) {
         id: "TryBlockMediator",
         name: "TryBlock Mediator",
         icon: "images/TryBlockMediator.gif",
-        parameters: [
-        ]
+        parameters: []
     };
 
     // Add defined mediators to manipulators

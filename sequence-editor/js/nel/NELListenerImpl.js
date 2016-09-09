@@ -18,7 +18,7 @@
 
 var NELListener = require('js/nel-gen/NELListener').NELListener;
 
-NELListenerImpl = function() {
+NELListenerImpl = function () {
     NELListener.call(this); // inherit default listener
     return this;
 };

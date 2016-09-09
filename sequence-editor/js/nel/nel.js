@@ -22,10 +22,10 @@ var NELTools = (function (nel) {
     var NELLexer = require('js/nel-gen/NELLexer');
     var NELParser = require('js/nel-gen/NELParser');
 
-    nel.parseScriptTree = function(input){
+    nel.parseScriptTree = function (input) {
         var chars = new antlr4.InputStream(input);
         var lexer = new NELLexer.NELLexer(chars);
-        var tokens  = new antlr4.CommonTokenStream(lexer);
+        var tokens = new antlr4.CommonTokenStream(lexer);
         var parser = new NELParser.NELParser(tokens);
         parser.buildParseTrees = true;
         return parser.script();

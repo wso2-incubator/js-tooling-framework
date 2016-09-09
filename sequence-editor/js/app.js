@@ -43,30 +43,30 @@ lifeLineOptions.text = {};
 lifeLineOptions.text.class = "lifeline-title";
 
 var createPoint = function (x, y) {
-    return new GeoCore.Models.Point({ 'x': x, 'y': y });
+    return new GeoCore.Models.Point({'x': x, 'y': y});
 };
 
 var createLifeLine = function (title, center) {
-    return new SequenceD.Models.LifeLine({ title: title, centerPoint: center });
+    return new SequenceD.Models.LifeLine({title: title, centerPoint: center});
 };
 
 var createFixedSizedMediator = function (title, center) {
-    return new SequenceD.Models.FixedSizedMediator({ title: title, centerPoint: center });
+    return new SequenceD.Models.FixedSizedMediator({title: title, centerPoint: center});
 };
 
 var createMessage = function (start, end) {
-    return new SequenceD.Models.Message({ source: start, destination: end });
+    return new SequenceD.Models.Message({source: start, destination: end});
 };
 
 // Create tool palette elements
 var lifeline = new Tools.Models.Tool({
-	id: "tool1",
-	icon: "images/icon1.png"
+    id: "tool1",
+    icon: "images/icon1.png"
 });
 
 var log_mediator = new Tools.Models.Tool({
-	id: "log-mediator",
-	icon: "images/LogMediator.gif"
+    id: "log-mediator",
+    icon: "images/LogMediator.gif"
 });
 
 // Create tool group
@@ -80,20 +80,24 @@ for (var flowController in Mediators.flowControllers) {
     var tool = new Tools.Models.Tool(Mediators.flowControllers[flowController]);
     group.add(tool);
 }
-var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "Sequence Diagrams",  toolGroupID: "SequenceDiagrams", toolGroup: group });
+var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({
+    toolGroupName: "Sequence Diagrams",
+    toolGroupID: "SequenceDiagrams",
+    toolGroup: group
+});
 
 // Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();
 toolPalette.add(toolGroupWrapper);
-var paletteView = new Tools.Views.ToolPalatteView({ collection: toolPalette });
+var paletteView = new Tools.Views.ToolPalatteView({collection: toolPalette});
 paletteView.render();
 
 // Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
 
 // Create the diagram view
-var diagramOptions = { selector: '.editor' };
-var diagramView = new Diagrams.Views.DiagramView({ model: diagram, options: diagramOptions });
+var diagramOptions = {selector: '.editor'};
+var diagramView = new Diagrams.Views.DiagramView({model: diagram, options: diagramOptions});
 diagramView.render();
 
 lifeLineOptions.diagram = diagram;
@@ -120,8 +124,8 @@ lifeLineOptions.diagram = diagram;
 // diagram.addElement(msg4, messageOptions);
 // var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
 // diagram.addElement(msg5, messageOptions);
-selected ="";
-selectedModel="";
-var udcontrol = new Dialogs.Controls.UpdateDeleteControler({visible:false});
-var udcontrolView = new Dialogs.Views.UpdateDeletedControlerView({ model: udcontrol });
+selected = "";
+selectedModel = "";
+var udcontrol = new Dialogs.Controls.UpdateDeleteControler({visible: false});
+var udcontrolView = new Dialogs.Views.UpdateDeletedControlerView({model: udcontrol});
 udcontrolView.render();
