@@ -60,19 +60,26 @@ var createMessage = function (start, end) {
 
 // Create tool palette elements
 var lifeline = new Tools.Models.Tool({
-	toolId: "tool1",
-	toolImage: "images/icon1.png"
+	id: "tool1",
+	icon: "images/icon1.png"
 });
 
 var log_mediator = new Tools.Models.Tool({
-	toolId: "log-mediator",
-	toolImage: "images/icon2.png"
+	id: "log-mediator",
+	icon: "images/LogMediator.gif"
 });
 
 // Create tool group
 var group = new Tools.Models.ToolGroup();
 group.add(lifeline);
-group.add(log_mediator);
+for (var manipulator in Mediators.manipulators) {
+    var tool = new Tools.Models.Tool(Mediators.manipulators[manipulator]);
+    group.add(tool);
+}
+for (var flowController in Mediators.flowControllers) {
+    var tool = new Tools.Models.Tool(Mediators.flowControllers[flowController]);
+    group.add(tool);
+}
 var toolGroupWrapper = new Tools.Models.ToolGroupWrapper({ toolGroupName: "Sequence Diagrams",  toolGroupID: "SequenceDiagrams", toolGroup: group });
 
 // Create tool palette

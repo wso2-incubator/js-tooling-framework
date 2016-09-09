@@ -21,7 +21,7 @@ var Tools = (function (tools) {
 
     var toolView = Backbone.View.extend({
       
-        toolTemplate: _.template(" <div id=\"<%=toolId%>\" class=\"tool-container\"> <img src=\"<%=toolImage%>\" class=\"tool-image\"  /></div>"),
+        toolTemplate: _.template(" <div id=\"<%=id%>\" class=\"tool-container\"> <img src=\"<%=icon%>\" class=\"tool-image\"  /></div>"),
         handleDragStopEvent: function (event, ui) {
             console.log("handleDragStopEvent");
         },
@@ -31,8 +31,8 @@ var Tools = (function (tools) {
         },
 
         render: function () {
-            var toolId = this.model.attributes.toolId;
-            var toolImage = this.model.attributes.toolImage;
+            var id = this.model.attributes.id;
+            var icon = this.model.attributes.icon;
             this.$el.html(this.toolTemplate(this.model.attributes));
             this.$el.draggable({
                 helper: 'clone',

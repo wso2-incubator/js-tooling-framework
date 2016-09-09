@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html>
-
+<!doctype html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WSO2 Editor</title>
     <link rel="stylesheet" type="text/css" href="css/sequence_diagram/sequenced-styles.css" />
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap_v3.3.6/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
-    <link rel="stylesheet" type="text/css" href="css/jquery.css" />
     <link rel="stylesheet" type="text/css" href="css/app.css" />
 </head>
 
@@ -27,6 +28,56 @@
         </div>
      </script>
 
+
+     <div id="root-container">
+         <div class="header">
+             <div class="toolbar-container"></div>
+             <img class="logo" src="images/logo.svg" />
+         </div>
+     <div id="exTab1" class="container">
+
+			<div class="tab-content clearfix">
+			  <div class="tab-pane active" id="1a">
+          <div id="designEditor">
+            <div class="shapes-container">
+                <div id="toolpalatte">
+                </div>
+            </div>
+
+            <div class="editor-container" id="editorBottom">
+                <div class="editor-scroller">
+                    <div class="editor gradient-pattern">
+                      <div id="udcontroldiv" class="hidden-button" >
+                         <img id="edit-image" src="images\edit.png" class="udcontrol-image" />
+                         <img id="delete-image" src="images\delete.png" class="udcontrol-image" />
+                      </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+				</div>
+				<div class="tab-pane" id="2a">
+          <div id="sourceEditor">
+             <div width="500" height="800" background-color="yellow">
+                  <textarea  id="sourceEditorTextBox" wrap="logical" rows="50" cols="200"> </textarea>
+            </div>
+        </div>
+				</div>
+
+			</div>
+  <ul  class="nav nav-pills">
+			<li class="active">
+        <a  href="#1a" data-toggle="tab">Design</a>
+			</li>
+			<li><a href="#2a" data-toggle="tab">Source</a>
+			</li>
+		</ul>
+  </div>
+</div>
+
+
+
+<!--
     <div id="root-container">
         <div class="header">
             <div class="toolbar-container">
@@ -50,6 +101,7 @@
             </div>
         </div>
     </div>
+  -->
     <!-- Third party js libs -->
     <script src="lib/jquery_v1.9.1/jquery.js"></script>
 <!-- custom download of jquery-ui which has onlt drag and drop components can be download from here
@@ -78,7 +130,12 @@ http://jqueryui.com/download/#!version=1.12.0&themeParams=none&components=101000
     <script src="js/tool_palette/toolpalette-view.js"></script>
     <script src="js/dialogs/updatedeletecontroler.js"></script>
     <script src="js/dialogs/updatedeletecontroler-view.js"></script>
+    <script src="js/sequence_diagram/sequenced-model.js"></script>
+    <script src="js/mediators/manipulators.js"></script>
+    <script src="js/mediators/manipulators/log-mediator.js"></script>
 
+    <script src="js/mediators/flow_controllers.js"></script>
+    <script src="js/mediators/flow_controllers/try_block_mediator.js"></script>
     <script src="js/sequence_diagram/sequenced-model.js"></script>
     <script src="js/sequence_diagram/sequenced-view.js"></script>
     <script src="js/sequence_diagram/sequenced-utils.js"></script>
