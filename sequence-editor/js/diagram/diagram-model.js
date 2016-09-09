@@ -266,6 +266,7 @@ var Diagrams = (function (diagrams) {
                 var elements = new DiagramElements([], { diagram: this });
                 this.diagramElements(elements);
                 this.selectedNode = null;
+                this.deepestPointY = 100;
             },
 
             modelName: "Diagram",
@@ -273,8 +274,6 @@ var Diagrams = (function (diagrams) {
             selectedNode : null,
 
             nameSpace: diagrams,
-
-            clickedLifeLine: undefined,
 
             lifeLineMap: {},
 
@@ -311,7 +310,7 @@ var Diagrams = (function (diagrams) {
                 this.trigger("llClicked", x, y);
             },
 
-            position: undefined,
+            clickedLifeLine: undefined,
 
             positionTemp: undefined,
 
