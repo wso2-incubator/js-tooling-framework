@@ -301,12 +301,12 @@ var Diagrams = (function (diagrams) {
                 position.x = ui.offset.left - $(this).offset().left;
                 position.y = ui.offset.top - $(this).offset().top;
                 console.log(position);
-                if(id == "LogMediator"){
-                  //var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
-                  var mediator = diagram.selectedNode.createFixedSizedMediator("Log Mediator", createPoint(position.x, position.y));
-                  diagram.selectedNode.addFixedSizedMediator(mediator);
-
-                  //diagram.addElement(log, lifeLineOptions);
+                if(Mediators.manipulators[id]){
+                    var mediator = diagram.selectedNode.createFixedSizedMediator(Mediators.manipulators[id].name, createPoint(position.x, position.y));
+                    diagram.selectedNode.addFixedSizedMediator(mediator);
+                } else if(Mediators.flowControllers[id]){
+                    var mediator = diagram.selectedNode.createFixedSizedMediator(Mediators.flowControllers[id].name, createPoint(position.x, position.y));
+                    diagram.selectedNode.addFixedSizedMediator(mediator);
                 }else if(id == "tool1"){
                   var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
                   diagram.addElement(lifeline, lifeLineOptions);
