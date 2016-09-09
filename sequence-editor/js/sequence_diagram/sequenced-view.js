@@ -65,10 +65,22 @@ var SequenceD = (function (sequenced) {
 
             lifeLine.call(drag);
 
+            this.model.on("addFixedSizedMediator", this.onAddFixedSizedMediator, this);
+
             this.d3el = lifeLine;
             this.el = lifeLine.node();
             return lifeLine;
         },
+
+                    onAddFixedSizedMediator: function (element, opts) {
+                    var d3Ref = this.getD3Ref();
+                    console.log("Mediator added");
+                    var rectBottomXXX = d3Ref.draw.centeredRect(createPoint(diagram.selectedNode.get('centerPoint').get('x'),diagram.selectedNode.get('centerPoint').get('x')+50), this.prefs.rect.width, this.prefs.rect.height, 3, 3, this.group)
+                                  .classed(this.prefs.rect.class, true);
+                    //var mediatorText = d3Ref.draw.centeredText(createPoint(diagram.selectedNode.get('centerPoint').get('x'),diagram.selectedNode.get('centerPoint').get('x')+50), title, group)
+                                  // .classed(prefs.text.class, true);
+                        //this.renderViewForElement(element, opts);
+                    },
 
         drawlifeLine: function (center, title, prefs) {
             var d3Ref = this.getD3Ref();
@@ -76,6 +88,11 @@ var SequenceD = (function (sequenced) {
             var viewObj = this;
             var group = d3Ref.draw.group()
                 .classed(prefs.class, true);
+
+                this.group=group;
+                this.prefs=prefs;
+                this.center=center;
+                this.title = title;
             var rect = d3Ref.draw.centeredRect(center, prefs.rect.width, prefs.rect.height, 3, 3, group)
                 .classed(prefs.rect.class, true);
 
@@ -85,6 +102,11 @@ var SequenceD = (function (sequenced) {
                     var m = d3.mouse(this);
                     viewObj.mouseDown(prefs, center.x(), m[1]);
                 });
+
+
+
+
+
             var rectBottom = d3Ref.draw.centeredRect(createPoint(center.get('x'), center.get('y') + prefs.line.height), prefs.rect.width, prefs.rect.height, 3, 3, group)
             .classed(prefs.rect.class, true);
             var line = d3Ref.draw.verticalLine(createPoint(center.get('x'), center.get('y')+ prefs.rect.height/2), prefs.line.height-prefs.rect.height, group)
