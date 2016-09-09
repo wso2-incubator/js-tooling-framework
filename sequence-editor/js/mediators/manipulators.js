@@ -16,22 +16,17 @@
  * under the License.
  */
 
-var Tools = (function (tools) {
-    var models = tools.Models || {};
+var Mediators = (function (mediators) {
 
-	var tool = Backbone.Model.extend({
-		initialize: function (attrs, options) { },
+    var manipulators = mediators.manipulators = {};
 
-		modelName: "ToolElement",
+    // Methods
+    var get = function(mediatorId){
+        return manipulators[mediatorId];
+    };
 
-		defaults: {
-			id: "",
-			icon: ""
-		}
-	});
+    mediators.getManipulator = get;
 
-	models.Tool = tool;
-	tools.Models = models;
-	return tools;
-} (Tools || {}));
+    return mediators;
 
+}(Mediators || {}));

@@ -16,22 +16,25 @@
  * under the License.
  */
 
-var Tools = (function (tools) {
-    var models = tools.Models || {};
+var Mediators = (function (mediators) {
 
-	var tool = Backbone.Model.extend({
-		initialize: function (attrs, options) { },
+    var flowControllers = mediators.flowControllers = {};
 
-		modelName: "ToolElement",
+    //Define manipulator mediators
+    var tryBlockMediator = {
+        id: "TryBlockMediator",
+        name: "TryBlock Mediator",
+        icon: "images/TryBlockMediator.gif",
+        parameters: [
+        ]
+    };
 
-		defaults: {
-			id: "",
-			icon: ""
-		}
-	});
+    // Add defined mediators to manipulators
+    // Mediator id should be exactly match to name defining here.(Eg : "LogMediator")
+    flowControllers.TryBlockMediator = tryBlockMediator;
 
-	models.Tool = tool;
-	tools.Models = models;
-	return tools;
-} (Tools || {}));
+    mediators.flowControllers = flowControllers;
 
+    return mediators;
+
+}(Mediators || {}));
