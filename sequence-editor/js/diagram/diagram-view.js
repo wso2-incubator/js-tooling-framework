@@ -303,7 +303,7 @@ var Diagrams = (function (diagrams) {
                 console.log(position);
                 if(id == "LogMediator"){
                   //var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
-                  var mediator = diagram.selectedNode.createFixedSizedMediator("Log Mediator");
+                  var mediator = diagram.selectedNode.createFixedSizedMediator("Log Mediator", createPoint(position.x, position.y));
                   diagram.selectedNode.addFixedSizedMediator(mediator);
 
                   //diagram.addElement(log, lifeLineOptions);
