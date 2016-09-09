@@ -75,7 +75,7 @@ var SequenceD = (function (sequenced) {
                     onAddFixedSizedMediator: function (element, opts) {
                     var d3Ref = this.getD3Ref();
                     console.log("Mediator added");
-                    var rectBottomXXX = d3Ref.draw.centeredRect(createPoint(diagram.selectedNode.get('centerPoint').get('x'),diagram.selectedNode.get('centerPoint').get('x')+50), this.prefs.rect.width, this.prefs.rect.height, 3, 3, this.group)
+                    var rectBottomXXX = d3Ref.draw.centeredRect(createPoint(diagram.selectedNode.get('centerPoint').get('x'),element.get('centerPoint').get('y')), this.prefs.rect.width, this.prefs.rect.height, 3, 3, this.group)
                                   .classed(this.prefs.rect.class, true);
                     //var mediatorText = d3Ref.draw.centeredText(createPoint(diagram.selectedNode.get('centerPoint').get('x'),diagram.selectedNode.get('centerPoint').get('x')+50), title, group)
                                   // .classed(prefs.text.class, true);
