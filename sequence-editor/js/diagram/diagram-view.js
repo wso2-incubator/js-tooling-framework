@@ -301,7 +301,7 @@ var Diagrams = (function (diagrams) {
                 position.x = ui.offset.left - $(this).offset().left;
                 position.y = ui.offset.top - $(this).offset().top;
                 console.log(position);
-                if(id == "log-mediator"){
+                if(id == "LogMediator"){
                   //var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
                   var mediator = diagram.selectedNode.createFixedSizedMediator("Log Mediator");
                   diagram.selectedNode.addFixedSizedMediator(mediator);
