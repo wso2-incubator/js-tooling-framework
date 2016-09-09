@@ -17,20 +17,21 @@
  */
 
 var Tools = (function (tools) {
-   	var models = tools.Models || {};
+    var models = tools.Models || {};
 
-	var toolGroupWrapper = Backbone.Model.extend({
-		initialize: function (attrs, options) { },
-		modelName: "ToolGroupWrapper",
-		defaults: {
-                        toolGroupID: "id-not-set",
-			toolGroupName: "",
-			toolGroup: ""
-		}
-	});
+    var toolGroupWrapper = Backbone.Model.extend({
+        initialize: function (attrs, options) {
+        },
+        modelName: "ToolGroupWrapper",
+        defaults: {
+            toolGroupID: "id-not-set",
+            toolGroupName: "",
+            toolGroup: ""
+        }
+    });
 
-	models.ToolGroupWrapper = toolGroupWrapper;
-	tools.Models = models;
-	return tools;
-} (Tools || {}));
+    models.ToolGroupWrapper = toolGroupWrapper;
+    tools.Models = models;
+    return tools;
+}(Tools || {}));
 

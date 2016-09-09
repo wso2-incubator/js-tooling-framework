@@ -17,14 +17,14 @@
  */
 
 var Tools = (function (tools) {
-   	var models = tools.Models || {};
+    var models = tools.Models || {};
 
-	var toolGroup = Backbone.Collection.extend({
-		model: Tools.Models.Tool
-	});
+    var toolGroup = Backbone.Collection.extend({
+        model: Tools.Models.Tool
+    });
 
-	models.ToolGroup = toolGroup;
-	tools.Models = models;
-	return tools;
-} (Tools || {}));
+    models.ToolGroup = toolGroup;
+    tools.Models = models;
+    return tools;
+}(Tools || {}));
 

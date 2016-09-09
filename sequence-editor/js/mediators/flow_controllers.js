@@ -18,7 +18,7 @@
 
 var Mediators = (function (mediators) {
 
-    var flowControllers = mediators.flowControllers = {};
+    var flowControllers = mediators.flowControllers || {};
 
     // Methods
     var get = function(mediatorId){

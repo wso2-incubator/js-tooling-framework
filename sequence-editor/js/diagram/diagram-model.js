@@ -23,13 +23,14 @@ var Diagrams = (function (diagrams) {
         /** @lends DiagramElement.prototype */
         {
 
-            selectedNode : null,
+            selectedNode: null,
             /**
              * @augments DiagramElement
              * @constructs
              * @class Element represents the model for elements in a diagram.
              */
-            initialize: function (attrs, options) { },
+            initialize: function (attrs, options) {
+            },
 
             modelName: "DiagramElement",
 
@@ -37,8 +38,7 @@ var Diagrams = (function (diagrams) {
 
             idAttribute: this.cid,
 
-            defaults: {
-            }
+            defaults: {}
         });
 
     var Shape = DiagramElement.extend(
@@ -51,7 +51,7 @@ var Diagrams = (function (diagrams) {
              */
             initialize: function (attrs, options) {
                 DiagramElement.prototype.initialize.call(this, attrs, options);
-                var connectionPoints = new Backbone.Collection([], { model: ConnectionPoint, owner: this });
+                var connectionPoints = new Backbone.Collection([], {model: ConnectionPoint, owner: this});
                 this.connectionPoints = connectionPoints;
             },
 
@@ -69,8 +69,7 @@ var Diagrams = (function (diagrams) {
                 this.trigger("connectionPointAdded", cntPoints);
             },
 
-            defaults: {
-            }
+            defaults: {}
         });
 
     var Link = DiagramElement.extend(
@@ -91,8 +90,7 @@ var Diagrams = (function (diagrams) {
 
             nameSpace: diagrams,
 
-            defaults: {
-            },
+            defaults: {},
 
             /**
              * Gets or sets source connectionPoint for the link.
@@ -102,7 +100,7 @@ var Diagrams = (function (diagrams) {
                 if (connectionPoint === undefined) {
                     return this.get('source');
                 }
-                var connection = connectionPoint.connectLink(this, { type: 'outgoing' });
+                var connection = connectionPoint.connectLink(this, {type: 'outgoing'});
                 if (this.makeParallel()) {
                     connection.point().y(this.destination().point().y());
                 }
@@ -116,7 +114,7 @@ var Diagrams = (function (diagrams) {
                 if (connectionPoint === undefined) {
                     return this.get('destination');
                 }
-                var connection = connectionPoint.connectLink(this, { type: 'incoming' });
+                var connection = connectionPoint.connectLink(this, {type: 'incoming'});
                 if (this.makeParallel()) {
                     connection.point().y(this.source().point().y());
                 }
@@ -201,7 +199,7 @@ var Diagrams = (function (diagrams) {
              */
             initialize: function (attrs, options) {
                 DiagramElement.prototype.initialize.call(this, attrs, options);
-                this.connections = new Backbone.Collection([], { model: Connection, connectionPoint: this });
+                this.connections = new Backbone.Collection([], {model: Connection, connectionPoint: this});
                 this.owner().on("elementMoved", this.onOwnerMoved, this);
             },
 
@@ -210,7 +208,7 @@ var Diagrams = (function (diagrams) {
             nameSpace: diagrams,
 
             connectLink: function (link, options) {
-                var connection = new Connection({ type: options.type, link: link, connectionPoint: this });
+                var connection = new Connection({type: options.type, link: link, connectionPoint: this});
                 this.connections.add(connection);
                 this.trigger("connectionMade", connection);
                 return connection;
@@ -242,7 +240,8 @@ var Diagrams = (function (diagrams) {
              * @constructs
              * @class DiagramElements represents the collection for elements in a diagram.
              */
-            initialize: function (models, options) { },
+            initialize: function (models, options) {
+            },
 
             modelName: "DiagramElements",
 
@@ -263,7 +262,7 @@ var Diagrams = (function (diagrams) {
              */
             initialize: function (attrs, options) {
 
-                var elements = new DiagramElements([], { diagram: this });
+                var elements = new DiagramElements([], {diagram: this});
                 this.diagramElements(elements);
                 this.selectedNode = null;
                 this.deepestPointY = 100;
@@ -271,7 +270,7 @@ var Diagrams = (function (diagrams) {
 
             modelName: "Diagram",
 
-            selectedNode : null,
+            selectedNode: null,
 
             nameSpace: diagrams,
 
@@ -316,14 +315,14 @@ var Diagrams = (function (diagrams) {
 
             dynamicMessage: undefined,
 
-            test:undefined,
+            test: undefined,
 
-            createPoint: function(x, y){
+            createPoint: function (x, y) {
                 return new GeoCore.Models.Point({'x': x, 'y': y});
             },
 
-            createLifeLine: function(title, center){
-                return new SequenceD.Models.LifeLine({title:title, centerPoint: center});
+            createLifeLine: function (title, center) {
+                return new SequenceD.Models.LifeLine({title: title, centerPoint: center});
             },
 
             getNearestLifeLine: function (xPosition) {
@@ -356,4 +355,4 @@ var Diagrams = (function (diagrams) {
     diagrams.Models = models;
 
     return diagrams;
-} (Diagrams || {}));
+}(Diagrams || {}));

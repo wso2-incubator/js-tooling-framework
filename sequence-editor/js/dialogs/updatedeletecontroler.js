@@ -17,20 +17,20 @@
  */
 
 var Dialogs = (function (dialogs) {
-  var controls = dialogs.Controls || {};
+    var controls = dialogs.Controls || {};
 
-	var updateDeleteControler = Backbone.Model.extend({
-		initialize: function (attrs, options) {
-    },
+    var updateDeleteControler = Backbone.Model.extend({
+        initialize: function (attrs, options) {
+        },
 
-		modelName: "UpdateDeleteControler",
-    lifeline:'',
-    x:0,
-    y:0,
-    visible:'false'
-	});
+        modelName: "UpdateDeleteControler",
+        lifeline: '',
+        x: 0,
+        y: 0,
+        visible: 'false'
+    });
 
-	controls.UpdateDeleteControler = updateDeleteControler;
-	dialogs.Controls = controls;
-	return dialogs;
-} (Dialogs || {}));
+    controls.UpdateDeleteControler = updateDeleteControler;
+    dialogs.Controls = controls;
+    return dialogs;
+}(Dialogs || {}));

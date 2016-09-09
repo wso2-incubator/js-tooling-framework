@@ -28,7 +28,7 @@ var Tools = (function (tools) {
         render: function () {
             var self = this;
             this.collection.each(function (groupWrapper) {
-                var groupWrapperView = new Tools.Views.ToolGroupWrapperView({ model: groupWrapper });
+                var groupWrapperView = new Tools.Views.ToolGroupWrapperView({model: groupWrapper});
                 var wrapperHtml = groupWrapperView.render().el;
                 self.$el.append(wrapperHtml);
             });
@@ -40,4 +40,4 @@ var Tools = (function (tools) {
     tools.Views = views;
     return tools;
 
-} (Tools || {}));
+}(Tools || {}));

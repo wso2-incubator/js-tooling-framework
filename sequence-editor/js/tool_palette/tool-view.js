@@ -20,7 +20,7 @@ var Tools = (function (tools) {
     var views = tools.Views || {};
 
     var toolView = Backbone.View.extend({
-      
+
         toolTemplate: _.template(" <div id=\"<%=id%>\" class=\"tool-container\"> <img src=\"<%=icon%>\" class=\"tool-image\"  /></div>"),
         handleDragStopEvent: function (event, ui) {
             console.log("handleDragStopEvent");
@@ -39,38 +39,38 @@ var Tools = (function (tools) {
                 cursor: 'move',
                 stop: this.handleDragStopEvent
             });
-            
-/*
-            var viewObj = this; 
-            var svg = d3.select(this.$el[0]).append("svg").attr("width", 80).attr("height", 60);
-            var g = svg.append("g");
-            var drag = d3.drag()
-                 .on("start",function(){
-                    console.log("Drag Start initialized " + this);
-                 })
-                 .on("drag", function(d, i) {
-                     var d = {};
-                     console.log("Dragging initialized " + this);
-                     var x = d3.event.x;
-    		     var y = d3.event.y;
-   		     d3.select(this.parentNode).attr("transform", "translate(" + x + "," + y + ")");
-                 })
-                 .on("end",function(){
-                    relCoords = d3.mouse($('svg').get(0));
-                    if(toolId == "tool1"){
-		                var lifeline = createLifeLine("Lifeline", createPoint(relCoords[0]-240, 50));
-		                diagram.addElement(lifeline, lifeLineOptions);
-                    }      
-                 });
+
+            /*
+             var viewObj = this;
+             var svg = d3.select(this.$el[0]).append("svg").attr("width", 80).attr("height", 60);
+             var g = svg.append("g");
+             var drag = d3.drag()
+             .on("start",function(){
+             console.log("Drag Start initialized " + this);
+             })
+             .on("drag", function(d, i) {
+             var d = {};
+             console.log("Dragging initialized " + this);
+             var x = d3.event.x;
+             var y = d3.event.y;
+             d3.select(this.parentNode).attr("transform", "translate(" + x + "," + y + ")");
+             })
+             .on("end",function(){
+             relCoords = d3.mouse($('svg').get(0));
+             if(toolId == "tool1"){
+             var lifeline = createLifeLine("Lifeline", createPoint(relCoords[0]-240, 50));
+             diagram.addElement(lifeline, lifeLineOptions);
+             }
+             });
 
 
-            g.append("image").attr("x",0)
-                 .attr("y",0)
-                 .attr("width", 80)
-                 .attr("height", 60)
-                 .attr("xlink:href", toolImage)
-                 .call(drag);
-*/
+             g.append("image").attr("x",0)
+             .attr("y",0)
+             .attr("width", 80)
+             .attr("height", 60)
+             .attr("xlink:href", toolImage)
+             .call(drag);
+             */
 
             return this;
         }
@@ -80,4 +80,4 @@ var Tools = (function (tools) {
     tools.Views = views;
     return tools;
 
-} (Tools || {}));
+}(Tools || {}));

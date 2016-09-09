@@ -19,19 +19,20 @@
 var Tools = (function (tools) {
     var models = tools.Models || {};
 
-	var tool = Backbone.Model.extend({
-		initialize: function (attrs, options) { },
+    var tool = Backbone.Model.extend({
+        initialize: function (attrs, options) {
+        },
 
-		modelName: "ToolElement",
+        modelName: "ToolElement",
 
-		defaults: {
-			id: "",
-			icon: ""
-		}
-	});
+        defaults: {
+            id: "",
+            icon: ""
+        }
+    });
 
-	models.Tool = tool;
-	tools.Models = models;
-	return tools;
-} (Tools || {}));
+    models.Tool = tool;
+    tools.Models = models;
+    return tools;
+}(Tools || {}));
 

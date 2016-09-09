@@ -44,9 +44,9 @@ var Diagrams = (function (diagrams) {
                 var dy = this.verticalDrag() ? event.dy : 0;
                 d.x += dx;
                 d.y += dy;
-                var snappedPoint = this.snapToGrid(new GeoCore.Models.Point({ 'x': d.x, 'y': d.y }));
+                var snappedPoint = this.snapToGrid(new GeoCore.Models.Point({'x': d.x, 'y': d.y}));
                 this.d3el.translate(snappedPoint.x(), snappedPoint.y());
-                this.model.trigger("elementMoved", { dx: dx, dy: dy });
+                this.model.trigger("elementMoved", {dx: dx, dy: dy});
             },
 
             /**
@@ -78,7 +78,7 @@ var Diagrams = (function (diagrams) {
             snapToGrid: function (point) {
                 var newX = Math.round(point.x() / this.diagramView().gridWidth()) * this.diagramView().gridWidth();
                 var newY = Math.round(point.y() / this.diagramView().gridHeight()) * this.diagramView().gridHeight();
-                return new GeoCore.Models.Point({ 'x': newX, 'y': newY });
+                return new GeoCore.Models.Point({'x': newX, 'y': newY});
             },
 
             /**
@@ -218,7 +218,7 @@ var Diagrams = (function (diagrams) {
             },
 
             getNextAvailableConnectionPoint: function () {
-                return new GeoCore.Models.Point({ x: 0, y: 0 });
+                return new GeoCore.Models.Point({x: 0, y: 0});
             }
         });
 
@@ -301,16 +301,16 @@ var Diagrams = (function (diagrams) {
                 position.x = ui.offset.left - $(this).offset().left;
                 position.y = ui.offset.top - $(this).offset().top;
                 console.log(position);
-                if(Mediators.manipulators[id]){
+                if (Mediators.manipulators[id]) {
                     var mediator = diagram.selectedNode.createFixedSizedMediator(Mediators.manipulators[id].name, createPoint(position.x, position.y));
                     diagram.selectedNode.addFixedSizedMediator(mediator);
-                } else if(Mediators.flowControllers[id]){
+                } else if (Mediators.flowControllers[id]) {
                     var mediator = diagram.selectedNode.createFixedSizedMediator(Mediators.flowControllers[id].name, createPoint(position.x, position.y));
                     diagram.selectedNode.addFixedSizedMediator(mediator);
-                }else if(id == "tool1"){
-                  var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
-                  diagram.addElement(lifeline, lifeLineOptions);
-                }else{
+                } else if (id == "tool1") {
+                    var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
+                    diagram.addElement(lifeline, lifeLineOptions);
+                } else {
 
                 }
             },
@@ -356,8 +356,8 @@ var Diagrams = (function (diagrams) {
                     tolerance: "pointer"
                 });
                 this.htmlDiv.draggable({
-                 //drag: function( event, ui ) {
-                 //}
+                    //drag: function( event, ui ) {
+                    //}
                 });
                 return mainGroup;
             },
@@ -389,7 +389,7 @@ var Diagrams = (function (diagrams) {
                     .attr("x2", x)
                     .attr("y2", y)
                     .attr("marker-end", "url(#markerArrow)")
-                    .attr("class","message")
+                    .attr("class", "message")
                     .attr("id", "dynamicLine");
 
                 var viewObj = this;
@@ -411,12 +411,15 @@ var Diagrams = (function (diagrams) {
 
                     var invisibleLifeline = viewObj.model.getNearestLifeLine(m[0]);
 
-                    var invisibleActivation = new SequenceD.Models.Activation({owner:invisibleLifeline});
-                    var messageOptions = {'class':'message'};
+                    var invisibleActivation = new SequenceD.Models.Activation({owner: invisibleLifeline});
+                    var messageOptions = {'class': 'message'};
 
-                    var lf1Activation1 = new SequenceD.Models.Activation({owner:viewObj.model.clickedLifeLine});
+                    var lf1Activation1 = new SequenceD.Models.Activation({owner: viewObj.model.clickedLifeLine});
 
-                    var dynamicMessage = new SequenceD.Models.Message({source: lf1Activation1, destination: invisibleActivation});
+                    var dynamicMessage = new SequenceD.Models.Message({
+                        source: lf1Activation1,
+                        destination: invisibleActivation
+                    });
 
                     viewObj.model.addElement(dynamicMessage, messageOptions);
                 });
@@ -433,4 +436,4 @@ var Diagrams = (function (diagrams) {
     diagrams.Views = views;
     return diagrams;
 
-} (Diagrams || {}));
+}(Diagrams || {}));

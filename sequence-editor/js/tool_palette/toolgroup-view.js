@@ -26,7 +26,7 @@ var Tools = (function (tools) {
         render: function () {
             var self = this;
             this.collection.each(function (tool) {
-                var toolView = new Tools.Views.ToolView({ model: tool });
+                var toolView = new Tools.Views.ToolView({model: tool});
                 self.$el.append(toolView.render().el);
             });
             return this;
@@ -37,4 +37,4 @@ var Tools = (function (tools) {
     tools.Views = views;
     return tools;
 
-} (Tools || {}));
+}(Tools || {}));

@@ -27,11 +27,11 @@ var Diagrams = (function (diagrams) {
      * @returns {Object} view object created for the model
      */
     var createViewForModel = function (model, options) {
-        return new model.nameSpace.Views[model.modelName + "View"]({ model: model, options: options });
+        return new model.nameSpace.Views[model.modelName + "View"]({model: model, options: options});
     };
 
     utils.createViewForModel = createViewForModel;
     diagrams.Utils = utils;
     return diagrams;
 
-} (Diagrams || {}));
+}(Diagrams || {}));

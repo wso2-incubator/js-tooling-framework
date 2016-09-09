@@ -29,7 +29,7 @@ var Tools = (function (tools) {
         render: function () {
             var htmContent = this.template(this.model.attributes);
             this.$el.html(htmContent);
-            var toolGroupView = new Tools.Views.ToolGroupView({ collection: this.model.attributes.toolGroup });
+            var toolGroupView = new Tools.Views.ToolGroupView({collection: this.model.attributes.toolGroup});
             var groupHtml = toolGroupView.render().el;
             var groupDiv = this.$el.find("#toolgroup-container-" + this.model.attributes.toolGroupID);
             groupDiv.html(groupHtml);
@@ -54,4 +54,4 @@ var Tools = (function (tools) {
     tools.Views = views;
     return tools;
 
-} (Tools || {}));
+}(Tools || {}));

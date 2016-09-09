@@ -27,11 +27,12 @@ var GeoCore = (function (geo) {
              * @constructs
              * @class Point Represents a point in paper.
              */
-            initialize: function (attrs, options) { },
+            initialize: function (attrs, options) {
+            },
 
             /**
              * Default point is {0,0}.
-              */
+             */
             defaults: {
                 x: 0,
                 y: 0
@@ -117,7 +118,8 @@ var GeoCore = (function (geo) {
              * @constructs
              * @class Line represents a line in paper.
              */
-            initialize: function (attrs, options) { },
+            initialize: function (attrs, options) {
+            },
 
             /**
              * default line is a 0 length line at 0,0.
@@ -168,4 +170,4 @@ var GeoCore = (function (geo) {
 
     return geo;
 
-} (GeoCore || {}));
+}(GeoCore || {}));
