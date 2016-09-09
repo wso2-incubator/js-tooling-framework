@@ -214,7 +214,7 @@ var Diagrams = (function (diagrams) {
             },
 
             onConnectionMade: function (connection) {
-                connection.point(this.getNextAvailableConnectionPoint());
+                connection.point(this.getNextAvailableConnectionPoint(connection));
             },
 
             getNextAvailableConnectionPoint: function () {
@@ -411,7 +411,7 @@ var Diagrams = (function (diagrams) {
                     var invisibleActivation = new SequenceD.Models.Activation({owner:invisibleLifeline});
                     var messageOptions = {'class':'message'};
 
-                    var lf1Activation1 = new SequenceD.Models.Activation({owner:viewObj.model.position});
+                    var lf1Activation1 = new SequenceD.Models.Activation({owner:viewObj.model.clickedLifeLine});
 
                     var dynamicMessage = new SequenceD.Models.Message({source: lf1Activation1, destination: invisibleActivation});
 

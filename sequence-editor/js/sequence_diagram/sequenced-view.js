@@ -155,7 +155,6 @@ var SequenceD = (function (sequenced) {
 
         mouseDown: function (prefs, x, y) {
             prefs.diagram.clickedLifeLine = this.model;
-            prefs.diagram.position = this.model;
             prefs.diagram.onLifelineClicked(x, y);
         }
 
@@ -213,12 +212,14 @@ var SequenceD = (function (sequenced) {
 
         },
 
-        getNextAvailableConnectionPoint: function(connectionPoint){
-            if(!_.isEqual(this.model.connections.length, 0))
-            {
-                var yOffset = this.model.connections.length  * 50;
+        getNextAvailableConnectionPoint: function(connecion){
+            var nextYCoordinate = diagram.deepestPointY + 50;
+            var nextXCoordinate = this.model.owner().get('centerPoint').x();
+
+            if (_.isEqual(connecion.type(), "incoming")) {
+                lifeLineOptions.diagram.deepestPointY = nextYCoordinate;
             }
-            return _.cloneDeep(this.model.owner().get('centerPoint').move(0, yOffset || 50));
+            return new GeoCore.Models.Point({'x': nextXCoordinate, 'y': nextYCoordinate});
         }
     });
 
