@@ -77,8 +77,8 @@ var SequenceD = (function (sequenced) {
                     console.log("Mediator added");
                     var rectBottomXXX = d3Ref.draw.centeredRect(createPoint(diagram.selectedNode.get('centerPoint').get('x'),element.get('centerPoint').get('y')), this.prefs.rect.width, this.prefs.rect.height, 3, 3, this.group)
                                   .classed(this.prefs.rect.class, true);
-                    //var mediatorText = d3Ref.draw.centeredText(createPoint(diagram.selectedNode.get('centerPoint').get('x'),diagram.selectedNode.get('centerPoint').get('x')+50), title, group)
-                                  // .classed(prefs.text.class, true);
+                   var mediatorText = d3Ref.draw.centeredText(createPoint(diagram.selectedNode.get('centerPoint').get('x'),element.get('centerPoint').get('y')), element.get('title'), this.group)
+                                  .classed(this.prefs.text.class, true);
                         //this.renderViewForElement(element, opts);
                     },
 
