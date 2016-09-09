@@ -302,8 +302,11 @@ var Diagrams = (function (diagrams) {
                 position.y = ui.offset.top - $(this).offset().top;
                 console.log(position);
                 if(id == "log-mediator"){
-                  var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
-                  diagram.addElement(log, lifeLineOptions);
+                  //var log = createFixedSizedMediator("Log Mediator", createPoint(diagram.selectedNode.get('centerPoint').get('x'), position.y));
+                  var mediator = diagram.selectedNode.createFixedSizedMediator("Log Mediator");
+                  diagram.selectedNode.addFixedSizedMediator(mediator);
+
+                  //diagram.addElement(log, lifeLineOptions);
                 }else if(id == "tool1"){
                   var lifeline = createLifeLine("Lifeline", createPoint(position.x, 50));
                   diagram.addElement(lifeline, lifeLineOptions);
