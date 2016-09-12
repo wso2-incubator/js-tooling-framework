@@ -103,10 +103,6 @@ var SequenceD = (function (sequenced) {
                     viewObj.mouseDown(prefs, center.x(), m[1]);
                 });
 
-
-
-
-
             var rectBottom = d3Ref.draw.centeredRect(createPoint(center.get('x'), center.get('y') + prefs.line.height), prefs.rect.width, prefs.rect.height, 3, 3, group)
             .classed(prefs.rect.class, true);
             var line = d3Ref.draw.verticalLine(createPoint(center.get('x'), center.get('y')+ prefs.rect.height/2), prefs.line.height-prefs.rect.height, group)
@@ -136,6 +132,7 @@ var SequenceD = (function (sequenced) {
                 style("fill", "green").
                 style("fill-opacity", 0.1);
             }).on('mouseout', function() {
+                diagram.destinationLifeLine = diagram.selectedNode;
                 diagram.selectedNode = null;
                 d3.select(this).
                 style("fill-opacity", 0.01);
@@ -234,14 +231,15 @@ var SequenceD = (function (sequenced) {
 
         },
 
-        getNextAvailableConnectionPoint: function(connecion){
+        getNextAvailableConnectionPoint: function(connecion, x, y){
             var nextYCoordinate = diagram.deepestPointY + 50;
             var nextXCoordinate = this.model.owner().get('centerPoint').x();
 
-            if (_.isEqual(connecion.type(), "incoming")) {
-                lifeLineOptions.diagram.deepestPointY = nextYCoordinate;
-            }
-            return new GeoCore.Models.Point({'x': nextXCoordinate, 'y': nextYCoordinate});
+            // TODO: Until the layout finalize we will be drawing the message without offsetting dynamically
+            //if (_.isEqual(connecion.type(), "incoming")) {
+            //    lifeLineOptions.diagram.deepestPointY = nextYCoordinate;
+            //}
+            return new GeoCore.Models.Point({'x': nextXCoordinate, 'y': diagram.sourceLifeLineY});
         }
     });
 
@@ -278,7 +276,7 @@ var SequenceD = (function (sequenced) {
                             viewObj.dragStop();
                         });
 
-                    //lifeLine.call(drag);
+                    lifeLine.call(drag);
 
                     this.d3el = lifeLine;
                     this.el = lifeLine.node();
