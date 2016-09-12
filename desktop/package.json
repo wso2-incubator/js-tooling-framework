@@ -1,5 +1,13 @@
 {
   "name"    : "wso2-tooling",
   "version" : "0.0.1",
-  "main"    : "main.js"
+  "main"    : "main.js",
+  "author": {
+    "name": "WSO2",
+    "url": "https://wso2.com"
+  },
+  "repository": {
+    "url": "https://github.com/wso2-incubator/js-tooling-framework"
+  },
+  "license": "Apache 2.0"
 }
