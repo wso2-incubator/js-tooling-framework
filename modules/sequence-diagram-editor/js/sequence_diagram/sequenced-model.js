@@ -74,7 +74,7 @@ var SequenceD = (function (sequenced) {
 
                 var position = this.calculateIndex(element, element.get('centerPoint').get('y'));
                 var index = position.index;
-                this.children().add(element, {at:index});
+                this.children().add(element, {at: index});
 
                 //this.trigger("addChild", element, opts);
                 //this.trigger("addChildProcessor", element, opts);
@@ -95,9 +95,9 @@ var SequenceD = (function (sequenced) {
                     }
                 });
                 if (_.isUndefined(previousChild)) {
-                    if(this.children().size() == 0){
+                    if (this.children().size() == 0) {
                         position.index = 0;
-                    }else {
+                    } else {
                         position.index = this.children().indexOf(element);
                     }
                 } else {
@@ -262,7 +262,22 @@ var SequenceD = (function (sequenced) {
                 //here add properties you want to see in property panel, but those need to be defined in above getSchema() method
                 return editableProperties;
             },
+            getPropertyPane: function (point) {
+                var pane = new JSONEditor(document.getElementById("propertyPane"), {
+                    schema: this.getSchema(),
+                    no_additional_properties: true,
+                    disable_properties: true,
+                    disable_edit_json: true
+                });
+                var thisLifeline = this;
+                pane.setValue(this.getEditableProperties());
+                pane.watch('root.Title', function () {
+                    $("#save-image").css({opacity: 1});
+                    //thisLifeline.set('title', pane.getValue().Title); //commented as this results recursive call and updated to theolder value.
+                });
 
+                return pane;
+            },
             leftUpperConer: function (point) {
                 if (_.isUndefined(point)) {
                     return this.viewAttributes.leftUpperConer;
@@ -317,13 +332,15 @@ var SequenceD = (function (sequenced) {
             addChild: function (element, opts) {
                 //this.children().add(element, opts);
 
-                if(element instanceof SequenceD.Models.Processor) {
+                if (element instanceof SequenceD.Models.Processor) {
                     var position = this.calculateIndex(element, element.get('centerPoint').get('y'));
                     var index = position.index;
                     this.children().add(element, {at: index});
-                }
-                if (!_.isUndefined(opts) && opts.direction == 'inbound') {
-                    diagram.addElement(element, opts);
+                } else if (!_.isUndefined(opts)) {
+                    //diagram.addElement(element, opts);
+                    var position = this.calculateIndex(element, element.centerPoint.get('y'));
+                    var index = position.index;
+                    this.children().add(element, {at: index});
                 }
 
                 //this.trigger("addChild", element, opts);
@@ -345,9 +362,9 @@ var SequenceD = (function (sequenced) {
                     }
                 });
                 if (_.isUndefined(previousChild)) {
-                    if(this.children().size() == 0){
+                    if (this.children().size() == 0) {
                         position.index = 0;
-                    }else {
+                    } else {
                         position.index = this.children().indexOf(element);
                     }
                 } else {
@@ -426,13 +443,87 @@ var SequenceD = (function (sequenced) {
             }
         });
 
+    var MessageLink = Diagrams.Models.DiagramElement.extend(
+        /** @lends MessageLink.prototype */
+        {
+            /**
+             * @augments Link
+             * @constructs
+             * @class MessageLink Represents the model for a Message in Sequence Diagrams.
+             */
+            initialize: function (attrs, options) {
+                Diagrams.Models.DiagramElement.prototype.initialize.call(this, attrs, options);
+                this.sourcePoint = attrs.source;
+                this.destinationPoint = attrs.destination;
+            },
+
+            modelName: "MessageLink",
+
+            nameSpace: sequenced,
+
+            defaults: {},
+
+            source: function (messagePoint) {
+                if (messagePoint) {
+                    this.sourcePoint = messagePoint;
+                } else {
+                    return this.sourcePoint;
+                }
+            },
+
+            destination: function (messagePoint) {
+                if (messagePoint) {
+                    this.destinationPoint = messagePoint;
+                } else {
+                    return this.destinationPoint;
+                }
+            }
+
+        });
+
+    var MessagePoint = Diagrams.Models.DiagramElement.extend(
+        /** @lends MessagePoint.prototype */
+        {
+            /**
+             * @augments DiagramElement
+             * @constructs
+             * @class MessagePoint Represents the connection point in a diagram.
+             */
+            initialize: function (attrs, options) {
+                Diagrams.Models.DiagramElement.prototype.initialize.call(this, attrs, options);
+                this.centerPoint = new GeoCore.Models.Point({x: attrs.x, y: attrs.y});
+                this.direction = attrs.direction;
+            },
+
+            modelName: "MessagePoint",
+
+            nameSpace: sequenced,
+
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0})
+            },
+
+            setY: function (y) {
+                this.get('centerPoint').set('y', y);
+            },
+
+            setX: function (x) {
+                this.get('centerPoint').set('x', x);
+            },
+
+            setMessage: function (Message) {
+                this.message = Message;
+            }
+
+        });
+
     // set models
     models.Activation = Activation;
     models.Message = Message;
     models.LifeLine = LifeLine;
-    models.FixedSizedMediator = FixedSizedMediator;
-    models.FixedSizedMediators = FixedSizedMediators;
     models.Processor = Processor;
+    models.MessagePoint = MessagePoint;
+    models.MessageLink = MessageLink;
 
     sequenced.Models = models;
 
