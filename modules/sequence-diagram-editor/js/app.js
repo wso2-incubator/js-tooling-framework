@@ -60,7 +60,6 @@ var createMessage = function (start, end) {
     return new SequenceD.Models.Message({source: start, destination: end});
 };
 
-
 // Create tool palette elements
 //var lifeline = new Tools.Models.Tool({
 //    id: "LifeLine",
@@ -134,7 +133,7 @@ var diagram = new Diagrams.Models.Diagram({});
 // Create the diagram view
 var diagramOptions = {selector: '.editor'};
 var diagramView = new Diagrams.Views.DiagramView({model: diagram, options: diagramOptions});
-diagramView.render();
+//diagramView.render();
 var diagramViewElements = [];
 
 lifeLineOptions.diagram = diagram;
@@ -194,3 +193,19 @@ function TreeNode (value, type,cStart, cEnd) {
 // This is a map of constants as --> constantType: constantValue
 // Ex: HttpEP: "http://localhost/test/test2"
 var definedConstants = {};
+
+// Configuring dynamic  tab support
+var tab = new Diagrams.Models.Tab({
+    resourceId:"seq_1",
+    hrefId:"#seq_1",
+    resourceTitle:"Resource1",
+    createdTab:false
+});
+
+var tabListView = new Diagrams.Views.TabListView({model:tab});
+tabListView.render(tab);
+var diagramObj1 = new Diagrams.Models.Diagram({});
+tab.addDiagramForTab(diagramObj1);
+
+
+
