@@ -1,7 +1,17 @@
 {
-  "name"    : "wso2-tooling",
-  "version" : "0.0.1",
-  "main"    : "main.js",
+  "name": "wso2-tooling",
+  "version": "0.0.1",
+  "description": "WSO2 Integration Server Tooling",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ../modules/sequence-diagram-editor/index.html",
+    "clean": "rm -rf ./dist",
+    "copyModules": "mkdir -p modules && cp -r ../modules/* modules",
+    "dist:win": "npm run clean && npm run copyModules && build --win",
+    "dist:mac": "npm run clean && npm run copyModules && build --mac",
+    "dist:linux": "npm run clean && npm run copyModules && build --linux tar.gz",
+    "dist": "npm run clean && npm run copyModules && build --linux tar.gz"
+  },
   "author": {
     "name": "WSO2",
     "url": "https://wso2.com"
@@ -9,5 +19,19 @@
   "repository": {
     "url": "https://github.com/wso2-incubator/js-tooling-framework"
   },
-  "license": "Apache 2.0"
+  "license": "Apache 2.0",
+  "devDependencies": {
+    "asar": "^0.12.3",
+    "electron": "^1.3.4",
+    "electron-builder": "^7.10.1",
+    "electron-packager": "^8.1.0",
+    "fs-extra": "^0.30.0"
+  },
+  "build": {
+    "appId": "wso2.integrationserver.tooling",
+    "app-category-type": "public.app-category.productivity",
+    "dmg": {},
+    "win": {},
+    "linux": {}
+  }
 }
