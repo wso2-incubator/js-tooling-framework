@@ -245,7 +245,6 @@ border-radius: 1px;
  background:"#232323";
 }
 
-
 .monaco-editor {
   margin-top: 10px;
 }
@@ -278,4 +277,12 @@ border-radius: 1px;
     width: calc(100vw - 274px);
     background-color: #fff;
     overflow: hidden;
+}
+
+.close-icon {
+    cursor: pointer;
+}
+
+.circle-hide {
+    display: none;
 }
