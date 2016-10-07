@@ -5,10 +5,14 @@
   "main": "main.js",
   "scripts": {
     "start": "electron ../modules/sequence-diagram-editor/index.html",
-    "clean": "rm -rf ./dist",
-    "copyModules": "mkdir -p modules && cp -r ../modules/* modules",
-    "dist": "npm run clean && npm run copyModules && build",
-    "dist-all": "npm run clean && npm run copyModules && build -mwl --x64 --ia32",
+    "clean:dist": "rm -rf ./dist",
+    "clean:module": "rm -rf ./modules",
+    "copy-module": "mkdir -p modules && cp -r ../modules/* modules",
+    "create-distribution": "rm -rf distribution && mkdirp distribution",
+    "build-dist": "npm run clean:dist && npm run copy-module && build",
+    "copy-dist": "copyfiles -f dist/*.zip distribution",
+    "dist": "run-s create-distribution build-dist copy-dist clean:module clean:dist",
+    "dist-all": "npm run clean:dist && npm run copy-module && build -mwl --x64 --ia32",
     "prerelease:mac": "rm -rf distribution/mac && mkdirp distribution/mac",
     "release:mac": "copyfiles -f dist/mac/*.zip distribution/mac",
     "prerelease:win32": "rm -rf distribution/win32 && mkdirp distribution/win32",
@@ -20,7 +24,7 @@
     "prerelease:linux64": "rm -rf distribution/linux64 && mkdirp distribution/linux64",
     "release:linux64": "copyfiles -f dist/wso2-tooling-0.0.1.zip distribution/linux64",
     "release": "run-p release:*",
-    "all": "run-s dist-all release clean"
+    "all": "run-s dist-all release clean:module clean:dist"
   },
   "author": {
     "name": "WSO2",
