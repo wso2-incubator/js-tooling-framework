@@ -16,6 +16,8 @@
  * under the License.
  */
 
+
+
 var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // Lifeline rectangle options
@@ -52,119 +54,106 @@ var createLifeLine = function (title, center, cssClass) {
     return new SequenceD.Models.LifeLine({title: title, centerPoint: center, cssClass: cssClass});
 };
 
-var createFixedSizedMediator = function (title, center) {
-    return new SequenceD.Models.FixedSizedMediator({title: title, centerPoint: center});
-};
-
-var createMessage = function (start, end) {
-    return new SequenceD.Models.Message({source: start, destination: end});
-};
-
-// Create tool palette elements
-//var lifeline = new Tools.Models.Tool({
-//    id: "LifeLine",
-//    title: "Lifeline",
-//    icon: "images/icon1.png",
-//    dragCursorOffset : { left: 30, top: 40 },
-//    createCloneCallback : function(view){
-//        function cloneCallBack() {
-//            var svgRoot = view.createSVGForDraggable();
-//            var line = svgRoot.draw.line(30, 10, 30, 60, svgRoot).attr("class", 'lifeline-tool-line');
-//            var rect = svgRoot.draw.basicRect(0, 0, 60, 20, 0, 0, svgRoot).attr("class", 'lifeline-tool-rect');
-//            return svgRoot.getDraggableRoot();
-//        }
-//        return cloneCallBack;
-//    },
-//});
-
-
 // Create main tool group
-var mainToolGroup = new Tools.Models.ToolGroup();
-//mainToolGroup.add(lifeline);
+var mainToolGroup = new Tools.Models.ToolGroup({
+    toolGroupName: "Main Elements",
+    toolGroupID: "main-tool-group"
+});
 
 for (var lifeline in MainElements.lifelines) {
     var tool = new Tools.Models.Tool(MainElements.lifelines[lifeline]);
-    mainToolGroup.add(tool);
+    mainToolGroup.toolCollection.add(tool);
 }
 
-var mainToolGroupWrapper = new Tools.Models.ToolGroupWrapper({
-    toolGroupName: "Main Elements",
-    toolGroupID: "main-tool-group",
-    toolGroup: mainToolGroup
+// Create mediators tool group
+var mediatorsToolGroup = new Tools.Models.ToolGroup({
+    toolGroupName: "Mediators",
+    toolGroupID: "mediators-tool-group"
 });
 
-// Create mediators tool group
-var mediatorsToolGroup = new Tools.Models.ToolGroup();
 for (var manipulator in Processors.manipulators) {
     var tool = new Tools.Models.Tool(Processors.manipulators[manipulator]);
-    mediatorsToolGroup.add(tool);
+    mediatorsToolGroup.toolCollection.add(tool);
 }
 for (var flowController in Processors.flowControllers) {
     var tool = new Tools.Models.Tool(Processors.flowControllers[flowController]);
-    mediatorsToolGroup.add(tool);
+    mediatorsToolGroup.toolCollection.add(tool);
 }
-var mediatorsToolGroupWrapper = new Tools.Models.ToolGroupWrapper({
-    toolGroupName: "Mediators",
-    toolGroupID: "mediators-tool-group",
-    toolGroup: mediatorsToolGroup
-});
 
 // Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();
-toolPalette.add(mainToolGroupWrapper);
-toolPalette.add(mediatorsToolGroupWrapper);
+toolPalette.add(mainToolGroup);
+toolPalette.add(mediatorsToolGroup);
+
 var paletteView = new Tools.Views.ToolPalatteView({collection: toolPalette});
 paletteView.render();
 
+//  TODO refactor and move to proper backbone classes
+$(function () {
+    var scrWidth = $("#page-content").width();
+    var treeContainer = $("#tree-container");
+    var rightContainer = $("#right-container");
+    //TODO: remove
+    treeContainer.resizable({
+        ghost: false,
+        minWidth: scrWidth / 16,
+        maxWidth: scrWidth / 2,
+        resize: function (event, el) {
+           // rightContainer.css("width", scrWidth - el.size.width);
+        }
+    });
 
-$(".shapes-container").resizable({
-    ghost: false,
-    minWidth: 175,
-    maxWidth: 500,
-    resize: function (event, ui) {
-        var newWidth = ui.size.width;
-        $(".editor-container").css("left", newWidth);
-    }
+    var toolContainer = $("#tool-palette");
+    var editorContainer = $("#editor-container");
+    var propertyContainer = $(".property-container");
+    //toolContainer.width(scrWidth / 8);
+    toolContainer.resizable({
+        ghost: false,
+        minWidth: 170,
+        maxWidth: rightContainer.width() / 3,
+        resize: function (event, el) {
+            editorContainer.css("width", rightContainer.width() - el.size.width - propertyContainer.width() - 10);
+        }
+    });
+    //TODO: remove + 1
+    // editorContainer.css("padding-left", toolContainer.width() + 1);
+
+    var $tree = $("#tree");
+    initTree($tree);
+
+    var removed = false;
+    $("#tree-add-api").on('click',function (e) {
+        $tree.find("> li > ul").append("<li><input/></li>")
+        removed = false;
+        $tree.find('input').focus();
+    });
+    var addApi = function (e) {
+        if(!removed){
+            removed = true;
+            var $input = $tree.find('input');
+            $input.parent('li').remove();
+            var name = $input.val();
+            if(name != ""){
+                $tree.find("> li > ul").append("<li>" + name + "</li>")
+            }
+        }
+    };
+    $tree.on("blur", "input", addApi);
+    $tree.on('keypress', function (e) {
+        if (e.which === 13) {
+            addApi(e)
+        }
+    });
+
 });
 
 // Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
-
-// Create the diagram view
-var diagramOptions = {selector: '.editor'};
-//var diagramView = new Diagrams.Views.DiagramView({model: diagram, options: diagramOptions});
-//diagramView.render();
 var diagramViewElements = [];
 
-//lifeLineOptions.diagram = defaultView.model;
 
-// var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
-// diagram.addElement(lifeline1, lifeLineOptions);
-// var lifeline2 = createLifeLine("LifeLine2",createPoint(500, 50));
-// diagram.addElement(lifeline2, lifeLineOptions);
-// var lifeline3 = createLifeLine("LifeLine3",createPoint(750, 50));
-// diagram.addElement(lifeline3, lifeLineOptions);
-
-// var lf1Activation1 = new SequenceD.Models.Activation({owner:lifeline1});
-// var lf2Activation1 = new SequenceD.Models.Activation({owner:lifeline2});
-// var lf3Activation1 = new SequenceD.Models.Activation({owner:lifeline3});
-
-// var messageOptions = {'class':'message'};
-// var msg1 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf3Activation1});
-// diagram.addElement(msg1, messageOptions);
-// var msg2 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf3Activation1});
-// diagram.addElement(msg2, messageOptions);
-// var msg3 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
-// diagram.addElement(msg3, messageOptions);
-// var msg4 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf2Activation1});
-// diagram.addElement(msg4, messageOptions);
-// var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
-// diagram.addElement(msg5, messageOptions);
 selected = "";
 selectedModel = "";
-var udcontrol = new Dialogs.Controls.UpdateDeleteControler({visible: false});
-var udcontrolView = new Dialogs.Views.UpdateDeletedControlerView({model: udcontrol});
-udcontrolView.render();
 
 //var ppModel = new Editor.Views.PropertyPaneModel();
 var ppView = new Editor.Views.PropertyPaneView();
