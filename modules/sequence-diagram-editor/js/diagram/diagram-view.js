@@ -823,6 +823,26 @@ var Diagrams = (function (diagrams) {
                     }
                 }
 
+            calculateViewBoxLimits: function () {
+                if(this.d3el){
+                    var wrapperBBx = this.d3el.node().getBBox();
+                }
+                var defaultViewBoxSize = this.options.diagram.viewBoxSize;
+                var maxWidth = (wrapperBBx.width ? wrapperBBx.x  + wrapperBBx.width : defaultViewBoxSize) + this.options.diagram.padding;
+                var maxHeight = (wrapperBBx.height ? wrapperBBx.y  + wrapperBBx.height : defaultViewBoxSize) + this.options.diagram.padding;
+                // make sure viewBox always keep default size as lower boundary in zoom range when current content doesn't exceed its bbox
+                if(maxWidth < defaultViewBoxSize){
+                    maxWidth = defaultViewBoxSize;
+                }
+                var newlimits = {
+                    x:  (wrapperBBx.x ? wrapperBBx.x : 0) - this.options.diagram.padding,
+                    y:  (wrapperBBx.y ? wrapperBBx.y : 0) - this.options.diagram.padding,
+                    x2: (maxWidth >= maxHeight) ? maxWidth : maxHeight, // use which ever is the larger
+                    // so that the whole content will appear at lower boundary of zoom scale
+                    y2: (maxHeight >= maxWidth) ? maxHeight : maxWidth
+                };
+                this.panAndZoom.limits = newlimits;
+                this.trigger("viewBoxLimitsUpdated", newlimits);
             },
 
             /**
