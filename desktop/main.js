@@ -24,7 +24,13 @@ let mainWindow;
 
 function createWindow () {
 	// Create the browser window
-	mainWindow = new BrowserWindow({width: 800, height: 600, })
+	mainWindow = new BrowserWindow({
+		width: 1200,
+		height: 800,
+		minWidth: 1200,
+		minHeight: 800,
+		fullscreen: true
+	})
 	
 	// Load the index.html of the application
 	mainWindow.loadURL(`file://${__dirname}/modules/sequence-diagram-editor/index.html`)
