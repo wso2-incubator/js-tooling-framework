@@ -48,7 +48,11 @@ var Processors = (function (processors) {
             },
             {
                 key: "logLevel",
-                value: "info"
+                value: "SIMPLE"
+            },
+            {
+                key: "logCategory",
+                value: "INFO"
             },
             {
                 key: "description",
@@ -64,11 +68,24 @@ var Processors = (function (processors) {
                     LogLevel: {
                         "type": "string",
                         "enum": [
-                            "debug",
-                            "info",
-                            "error"
+                            "SIMPLE",
+                            "CUSTOM",
+                            "HEADERS",
+                            "FULL"
                         ],
-                        "default": "info"
+                        "default": "SIMPLE"
+                    },
+                    LogCategory: {
+                        "type": "string",
+                        "enum": [
+                            "INFO",
+                            "ERROR",
+                            "WARN",
+                            "FATAL",
+                            "DEBUG",
+                            "TRACE"
+                        ],
+                        "default": "INFO"
                     },
                     Description: {"type": "string"}
                 }
@@ -78,11 +95,15 @@ var Processors = (function (processors) {
             var editableProperties = {};
             editableProperties.Message = parameters[0];
             editableProperties.LogLevel = parameters[1];
-            editableProperties.Description = parameters[2];
+            editableProperties.LogCategory = parameters[2];
+            editableProperties.Description = parameters[3];
             return editableProperties;
         },
         getMySubTree: function (model) {
-            return new TreeNode("LogMediator", "LogMediator", "log(\"Test\"", ");");
+            var parameters = model.get('parameters').parameters;
+            alert(model.get('parameters').parameters[1].value);
+            var log_configStart =  "log(level=\"" + parameters[1].value + "\"," + "status=\"" + parameters[0].value + "\"";
+            return new TreeNode("LogMediator", "LogMediator", log_configStart, ");");
         }
     };
 
