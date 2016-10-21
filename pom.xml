@@ -35,7 +35,6 @@
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -46,27 +45,27 @@
                             <tasks>
                                 <unzip dest="target/">
                                     <fileset dir="desktop/dist/linux32/">
-                                        <filename regex="wso2-tooling-1\.0\.0(-.*)?-ia32\.zip"/>
+                                        <filename regex="wso2-tooling-\d*\.\d*\.\d*(-.*)?-ia32\.zip"/>
                                     </fileset>
                                 </unzip>
                                 <unzip dest="target/">
                                     <fileset dir="desktop/dist/linux64/">
-                                        <filename regex="wso2-tooling-1\.0\.0(-.*)?\.zip"/>
+                                        <filename regex="wso2-tooling-\d*\.\d*\.\d*(-.*)?\.zip"/>
                                     </fileset>
                                 </unzip>
                                 <unzip dest="target/">
                                     <fileset dir="desktop/dist/macOS/">
-                                        <filename regex="wso2-tooling-1\.0\.0(-.*)?-mac\.zip"/>
+                                        <filename regex="wso2-tooling-\d*\.\d*\.\d*(-.*)?-mac\.zip"/>
                                     </fileset>
                                 </unzip>
                                 <unzip dest="target/">
                                     <fileset dir="desktop/dist/win32/">
-                                        <filename regex="wso2-tooling-1\.0\.0(-.*)?-ia32-win\.zip"/>
+                                        <filename regex="wso2-tooling-\d*\.\d*\.\d*(-.*)?-ia32-win\.zip"/>
                                     </fileset>
                                 </unzip>
                                 <unzip dest="target/">
                                     <fileset dir="desktop/dist/win64/">
-                                        <filename regex="wso2-tooling-1\.0\.0(-.*)?-win\.zip"/>
+                                        <filename regex="wso2-tooling-\d*\.\d*\.\d*(-.*)?-win\.zip"/>
                                     </fileset>
                                 </unzip>
                             </tasks>
@@ -91,10 +90,8 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-
                 </executions>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -118,7 +115,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 </project>
