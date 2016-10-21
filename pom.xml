@@ -28,7 +28,7 @@
     <groupId>org.wso2.js.tooling</groupId>
     <version>1.0.0-SNAPSHOT</version>
     <artifactId>wso2-tooling</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>WSO2 Integration Server - Tooling</name>
     <description>WSO2 Integration Server - Tooling</description>
     <url>http://wso2.org</url>
