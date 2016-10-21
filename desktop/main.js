@@ -28,8 +28,7 @@ function createWindow () {
 		width: 1200,
 		height: 800,
 		minWidth: 1200,
-		minHeight: 800,
-		fullscreen: true
+		minHeight: 800
 	})
 	
 	// Load the index.html of the application
