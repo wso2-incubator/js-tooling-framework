@@ -61,6 +61,11 @@
             </excludes>
             <fileMode>644</fileMode>
         </fileSet>
+        <fileSet>
+            <directory>lib</directory>
+            <outputDirectory>libs</outputDirectory>
+            <fileMode>644</fileMode>
+        </fileSet>
     </fileSets>
 
     <files> 
