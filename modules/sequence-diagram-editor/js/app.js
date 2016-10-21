@@ -207,3 +207,17 @@ preview.render();
 tab.preview(preview);
 
 
+defaultView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline);
+defaultView.model.sourceLifeLineCounter(1);
+defaultView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline);
+defaultView.model.resourceLifeLineCounter(1);
+
+var sourceLifelineTextElements = document.getElementsByClassName("lifeline-title");
+for (var i = 0; i < sourceLifelineTextElements.length; i++) {
+    if (sourceLifelineTextElements[i].innerHTML == "Source") {
+        sourceLifelineTextElements[i].style.color = "Green";
+    }
+}
+
+
+
