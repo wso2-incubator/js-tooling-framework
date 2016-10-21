@@ -20,7 +20,7 @@
     <baseDirectory>wso2-tooling-${project.version}</baseDirectory>
     <id>WSO2 JS Tooling</id>
     <formats>
-        <format>zip</format>
+        <format>jar</format>
     </formats>
 
     <fileSets> 
