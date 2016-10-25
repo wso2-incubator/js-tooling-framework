@@ -19,13 +19,16 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const path = require('path');
 var serviceProcess;
 
 let mainWindow;
 
 function createService(){
+
+	var appDir = `${__dirname}`;
 	const spawn = require('child_process').spawn;
-	serviceProcess = spawn('java', ['-jar', '/path/to/jar']);
+	serviceProcess = spawn('java', ['-jar', appDir + path.sep + "services" + path.sep + "workspace-service.jar"]);
 
 	serviceProcess.stdout.on('data', function(data){
 		console.log('Service log: ' + data);

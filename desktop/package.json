@@ -7,7 +7,9 @@
     "start": "electron ../modules/sequence-diagram-editor/index.html",
     "clean:dist": "rm -rf ./dist",
     "clean:module": "rm -rf ./modules",
-    "copy-module": "mkdir -p modules && cp -r ../modules/* modules",
+    "copy-module": "mkdir -p modules && cp -r ../modules/* modules && npm run copy-service",
+    "copy-service": "npm run build-service && mkdir -p services && mv ../services/workspace-service/target/workspace*.jar services/workspace-service.jar",
+    "build-service": "cd ../services/workspace-service/ && mvn clean install && cd ../../desktop",
     "build-dist": "npm run clean:dist && npm run copy-module && build",
     "dist": "run-s build-dist remove-unpackedfolders clean:module",
     "dist-all": "npm run clean:dist && npm run copy-module && build -mwl --x64 --ia32",
@@ -34,6 +36,9 @@
   "repository": {
     "url": "https://github.com/wso2-incubator/js-tooling-framework"
   },
+  "dependencies": {
+    "asar": "^0.12.3"
+  },
   "license": "Apache 2.0",
   "devDependencies": {
     "asar": "^0.12.3",
@@ -47,6 +52,7 @@
   "build": {
     "appId": "wso2.integrationserver.tooling",
     "app-category-type": "public.app-category.productivity",
+    "asar": false,
     "mac": {
       "target": [
         "zip"
