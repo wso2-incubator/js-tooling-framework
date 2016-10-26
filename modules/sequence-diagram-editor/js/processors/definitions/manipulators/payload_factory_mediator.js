@@ -41,7 +41,50 @@ var Processors = (function (processors) {
             }
             return cloneCallBack;
         },
-        parameters: [],
+        parameters: [
+            {
+                key: "configurationFile",
+                value: "Configuration file"
+            },
+            {
+                key: "message",
+                value: "Message"
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        propertyPaneSchema: [
+            {
+                key: "configurationFile",
+                text: "Configuration File"
+            },
+            {
+                key: "message",
+                text: "Message"
+            },
+            {
+                key: "description",
+                text: "Description"
+            }
+        ],
+        saveMyProperties: function (model, inputs) {
+            model.get("parameters").parameters = [
+                {
+                    key: "configurationFile",
+                    value: inputs.configurationFile.value
+                },
+                {
+                    key: "message",
+                    value: inputs.message.value
+                },
+                {
+                    key: "description",
+                    value: inputs.description.value
+                }
+            ];
+        },
         getMySubTree: function (model) {
             return new TreeNode("payloadFactoryMediator", "payloadFactoryMediator", "payloadFactory {", "}");
         }

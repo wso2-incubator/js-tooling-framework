@@ -1,4 +1,3 @@
-
 var Editor = (function (editor) {
     var views = editor.Views || {};
 
@@ -38,61 +37,13 @@ var Editor = (function (editor) {
                     $('#property-container1').css("width", 20);
                     $('#expand-image').attr("src", "images/leftarrow.svg");
                     $('#propertyPaneContainer').hide();
-                    $('#propertySave').hide();
                 } else {
                     $('#property-container1').css("width", 240);
                     $('#expand-image').attr("src", "images/rightarrow.svg");
                     $('#propertyPaneContainer').show();
-                    $('#propertySave').show();
                 }
             });
-
-            $('#propertySave').on('click', this.updateResourceProperties);
         },
-
-        updateResourceProperties: function () {
-            if (propertyPane.schema.title === "Resource") {
-                defaultView.model.attributes.path = propertyPane.editors['root.Path'].value;
-                defaultView.model.attributes.get = propertyPane.editors['root.Get'].value;
-                defaultView.model.attributes.put = propertyPane.editors['root.Put'].value;
-                defaultView.model.attributes.post = propertyPane.editors['root.Post'].value;
-            }
-        },
-
-        onSaveImageClick: function() {
-            if ($('#save-image').css('opacity') == 1) {
-                //TODO This need to be handled in generic way
-                ppView.dataObject.set('title', propertyPane.getValue().Title);
-                $('#save-image').css({opacity: 0.4});
-            }
-        },
-
-        createPropertyPane: function (schema, editableProperties, dataModel) {
-            this.dataObject = dataModel;
-            if (propertyPane) {
-                propertyPane.destroy();
-            }
-            propertyPane = new JSONEditor(document.getElementById("propertyPane"),{
-                schema: schema,
-                no_additional_properties: true,
-                disable_properties:true,
-                disable_edit_json:true
-            });
-
-            propertyPane.setValue(editableProperties);
-
-            propertyPane.watch('root',function() {
-                $("#save-image").css({ opacity: 1 });
-                //commented as this results recursive call and updated to the older value.
-                //thisLifeline.set('title', pane.getValue().Title);
-            });
-
-
-            $('#save-image').click(this.onSaveImageClick);
-
-            return propertyPane;
-        },
-
         render: function () {
             var schema = this.model.attributes.schema;
             var editableProperties = this.model.attributes.editableProperties;

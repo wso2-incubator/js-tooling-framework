@@ -16,6 +16,9 @@
  * under the License.
  */
 
+
+
+var eventManager = new Diagrams.Models.EventManager({});
 var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // Lifeline rectangle options
@@ -25,7 +28,13 @@ lifeLineOptions.rect.height = 30;
 lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
-var defaultView = undefined;
+
+// Setting the default service parameters
+serviceProduces = "MediaType.APPLICATION_JSON"
+serviceBasePath = "/stock";
+servicePackageName = "com.sample";
+serviceTags = "stock_info,stock_update";
+serviceDescription = "Rest api for get stocks details";
 
 // Lifeline middle-rect options
 lifeLineOptions.middleRect = {};
@@ -49,129 +58,105 @@ var createPoint = function (x, y) {
 
 var diagramD3el = undefined;
 
-var createLifeLine = function (title, center, cssClass) {
-    return new SequenceD.Models.LifeLine({title: title, centerPoint: center, cssClass: cssClass});
+var createLifeLine = function (title, center, cssClass, parameters, saveMyProperties) {
+    return new SequenceD.Models.LifeLine({
+        title: title,
+        centerPoint: center,
+        cssClass: cssClass,
+        parameters: parameters,
+        saveMyProperties: saveMyProperties
+    });
 };
-
-var createFixedSizedMediator = function (title, center) {
-    return new SequenceD.Models.FixedSizedMediator({title: title, centerPoint: center});
-};
-
-var createMessage = function (start, end) {
-    return new SequenceD.Models.Message({source: start, destination: end});
-};
-
-// Create tool palette elements
-//var lifeline = new Tools.Models.Tool({
-//    id: "LifeLine",
-//    title: "Lifeline",
-//    icon: "images/icon1.png",
-//    dragCursorOffset : { left: 30, top: 40 },
-//    createCloneCallback : function(view){
-//        function cloneCallBack() {
-//            var svgRoot = view.createSVGForDraggable();
-//            var line = svgRoot.draw.line(30, 10, 30, 60, svgRoot).attr("class", 'lifeline-tool-line');
-//            var rect = svgRoot.draw.basicRect(0, 0, 60, 20, 0, 0, svgRoot).attr("class", 'lifeline-tool-rect');
-//            return svgRoot.getDraggableRoot();
-//        }
-//        return cloneCallBack;
-//    },
-//});
-
 
 // Create main tool group
-var mainToolGroup = new Tools.Models.ToolGroup();
-//mainToolGroup.add(lifeline);
+var mainToolGroup = new Tools.Models.ToolGroup({
+    toolGroupName: "Main Elements",
+    toolGroupID: "main-tool-group"
+});
 
 for (var lifeline in MainElements.lifelines) {
     var tool = new Tools.Models.Tool(MainElements.lifelines[lifeline]);
-    mainToolGroup.add(tool);
+    mainToolGroup.toolCollection.add(tool);
 }
 
-var mainToolGroupWrapper = new Tools.Models.ToolGroupWrapper({
-    toolGroupName: "Main Elements",
-    toolGroupID: "main-tool-group",
-    toolGroup: mainToolGroup
+// Create mediators tool group
+var mediatorsToolGroup = new Tools.Models.ToolGroup({
+    toolGroupName: "Mediators",
+    toolGroupID: "mediators-tool-group"
 });
 
-// Create mediators tool group
-var mediatorsToolGroup = new Tools.Models.ToolGroup();
 for (var manipulator in Processors.manipulators) {
     var tool = new Tools.Models.Tool(Processors.manipulators[manipulator]);
-    mediatorsToolGroup.add(tool);
+    mediatorsToolGroup.toolCollection.add(tool);
 }
 for (var flowController in Processors.flowControllers) {
     var tool = new Tools.Models.Tool(Processors.flowControllers[flowController]);
-    mediatorsToolGroup.add(tool);
+    mediatorsToolGroup.toolCollection.add(tool);
 }
-var mediatorsToolGroupWrapper = new Tools.Models.ToolGroupWrapper({
-    toolGroupName: "Mediators",
-    toolGroupID: "mediators-tool-group",
-    toolGroup: mediatorsToolGroup
-});
 
 // Create tool palette
 var toolPalette = new Tools.Models.ToolPalatte();
-toolPalette.add(mainToolGroupWrapper);
-toolPalette.add(mediatorsToolGroupWrapper);
+toolPalette.add(mainToolGroup);
+toolPalette.add(mediatorsToolGroup);
+
 var paletteView = new Tools.Views.ToolPalatteView({collection: toolPalette});
 paletteView.render();
 
+//  TODO refactor and move to proper backbone classes
+$(function () {
+    var scrWidth = $("#page-content").width();
+    var treeContainer = $("#tree-container");
+    var rightContainer = $("#right-container");
+    //TODO: remove
+    treeContainer.resizable({
+        ghost: false,
+        minWidth: scrWidth / 16,
+        maxWidth: scrWidth / 2,
+        resize: function (event, el) {
+           // rightContainer.css("width", scrWidth - el.size.width);
+        }
+    });
 
-$(".shapes-container").resizable({
-    ghost: false,
-    minWidth: 175,
-    maxWidth: 500,
-    resize: function (event, ui) {
-        var newWidth = ui.size.width;
-        $(".editor-container").css("left", newWidth);
-    }
+    var toolContainer = $("#tool-palette");
+    var editorContainer = $("#editor-container");
+    var propertyContainer = $(".property-container");
+    //toolContainer.width(scrWidth / 8);
+    toolContainer.resizable({
+        ghost: false,
+        minWidth: 170,
+        maxWidth: rightContainer.width() / 3,
+        resize: function (event, el) {
+            editorContainer.css("width", rightContainer.innerWidth() - toolContainer.outerWidth(true) - propertyContainer.outerWidth(true));
+        }
+    });
+
+    var tree = new Tree({
+        root: new TreeItem({
+            name: "MyProj",
+            isDir: true,
+            children: new TreeItemList([
+                new TreeItem({
+                    name: "Dir",
+                    isDir: true,
+                    children: new TreeItemList([new TreeItem({name: "MyAP2"})])
+                }),
+                new TreeItem({name: "MyAP3"})])
+        })
+    });
+    new TreeView({model: tree}).render();
+    tree.on("select",function (e) {
+        console.log(e.path);
+        console.log(e.name);
+    });
+
+
 });
 
 // Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
-
-// Create the diagram view
-var diagramOptions = {selector: '.editor'};
-//var diagramView = new Diagrams.Views.DiagramView({model: diagram, options: diagramOptions});
-//diagramView.render();
-var diagramViewElements = [];
-
-//lifeLineOptions.diagram = defaultView.model;
-
-// var lifeline1 = createLifeLine("LifeLine1",createPoint(250, 50));
-// diagram.addElement(lifeline1, lifeLineOptions);
-// var lifeline2 = createLifeLine("LifeLine2",createPoint(500, 50));
-// diagram.addElement(lifeline2, lifeLineOptions);
-// var lifeline3 = createLifeLine("LifeLine3",createPoint(750, 50));
-// diagram.addElement(lifeline3, lifeLineOptions);
-
-// var lf1Activation1 = new SequenceD.Models.Activation({owner:lifeline1});
-// var lf2Activation1 = new SequenceD.Models.Activation({owner:lifeline2});
-// var lf3Activation1 = new SequenceD.Models.Activation({owner:lifeline3});
-
-// var messageOptions = {'class':'message'};
-// var msg1 = new SequenceD.Models.Message({source: lf1Activation1, destination: lf3Activation1});
-// diagram.addElement(msg1, messageOptions);
-// var msg2 = new SequenceD.Models.Message({source: lf2Activation1, destination: lf3Activation1});
-// diagram.addElement(msg2, messageOptions);
-// var msg3 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
-// diagram.addElement(msg3, messageOptions);
-// var msg4 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf2Activation1});
-// diagram.addElement(msg4, messageOptions);
-// var msg5 = new SequenceD.Models.Message({source: lf3Activation1, destination: lf1Activation1});
-// diagram.addElement(msg5, messageOptions);
-selected = "";
-selectedModel = "";
-var udcontrol = new Dialogs.Controls.UpdateDeleteControler({visible: false});
-var udcontrolView = new Dialogs.Views.UpdateDeletedControlerView({model: udcontrol});
-udcontrolView.render();
-
-//var ppModel = new Editor.Views.PropertyPaneModel();
-var ppView = new Editor.Views.PropertyPaneView();
-propertyPane = ''; //ppView.createPropertyPane(schema, properties);
-endpointLifelineCounter = 0;
-resourceLifelineCounter = 0;
+var diagramViewElements = [],
+    ppView,
+    definedConstants = [];
 
 function TreeNode(value, type, cStart, cEnd) {
     this.object = undefined;
@@ -190,41 +175,69 @@ function TreeNode(value, type, cStart, cEnd) {
     };
 }
 
-// defining the constants such as the endpoints, this variable need to be positioned properly when restructuring
-// This is a map of constants as --> constantType: constantValue
-// Ex: HttpEP: "http://localhost/test/test2"
-var definedConstants = {};
+function initTabs(){
+    diagramViewElements = [];
+    selected = "";
+    selectedModel = "";
 
-// Configuring dynamic  tab support
-var tab = new Diagrams.Models.Tab({
-    resourceId: "seq_1",
-    hrefId: "#seq_1",
-    resourceTitle: "Resource",
-    createdTab: false
+    ppView = new Editor.Views.PropertyPaneView();
+    propertyPane = ''; //ppView.createPropertyPane(schema, properties);
+    endpointLifelineCounter = 0;
+    resourceLifelineCounter = 0;
+
+    // Configuring dynamic  tab support
+    var tab = new Diagrams.Models.Tab({
+        resourceId: "seq_1",
+        hrefId: "#seq_1",
+        resourceTitle: "Resource",
+        createdTab: false
+    });
+
+    var tabListView = new Diagrams.Views.TabListView({model: tab});
+    tabListView.render(tab);
+    var diagramObj1 = new Diagrams.Models.Diagram({});
+    tab.addDiagramForTab(diagramObj1);
+    var tabId1 = tab.get("resourceId");
+    var linkId1 = tab.get("hrefId");
+    //Enabling tab activation at page load
+    $('.tabList a[href="#' + tabId1 + '"]').tab('show');
+    var dgModel1 = tab.getDiagramOfTab(tab.attributes.diagramForTab.models[0].cid);
+    dgModel1.CurrentDiagram(dgModel1);
+    var svgUId1 = tabId1 + "4";
+    var options = {selector: linkId1, wrapperId: svgUId1};
+    // get the current diagram view for the tab
+    var currentView1 = dgModel1.createDiagramView(dgModel1, options);
+    // set current tab's diagram view as default view
+    currentView1.currentDiagramView(currentView1);
+    tab.setDiagramViewForTab(currentView1);
+    // mark tab as visited
+    tab.setSelectedTab();
+    var preview = new Diagrams.Views.DiagramOutlineView({mainView: currentView1});
+    preview.render();
+    tab.preview(preview);
+
+    defaultView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline,
+                                  [{
+                                      key: "title",
+                                      value: MainElements.lifelines.SourceLifeline.title
+                                  }], {saveMyProperties: MainElements.lifelines.SourceLifeline.saveMyProperties});
+    defaultView.model.sourceLifeLineCounter(1);
+    defaultView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline,
+                                  MainElements.lifelines.ResourceLifeline.parameters,
+                                  {saveMyProperties: MainElements.lifelines.ResourceLifeline.saveMyProperties});
+    defaultView.model.resourceLifeLineCounter(1);
+    //create initial arrow between source and resource
+    var currentSource = defaultView.model.diagramSourceElements().models[0];
+    var currentResource = defaultView.model.diagramResourceElements().models[0];
+    tabListView.drawInitArrow(currentSource,currentResource,defaultView);
+
+}
+
+$(document).ready(function(){
+    $("#empty-workspace-wrapper").show();
+    $("#resource-tabs-wrapper").hide();
+    $("#breadcrumbRow").hide();
+    $("#serviceAndSourceButtonsRow").hide();
 });
-
-var tabListView = new Diagrams.Views.TabListView({model: tab});
-tabListView.render(tab);
-var diagramObj1 = new Diagrams.Models.Diagram({});
-tab.addDiagramForTab(diagramObj1);
-var tabId1 = tab.get("resourceId");
-var linkId1 = tab.get("hrefId");
-//Enabling tab activation at page load
-$('.tabList a[href="#' + tabId1 + '"]').tab('show');
-var dgModel1 = tab.getDiagramOfTab(tab.attributes.diagramForTab.models[0].cid);
-dgModel1.CurrentDiagram(dgModel1);
-var svgUId1 = tabId1 + "4";
-var options = {selector: linkId1, wrapperId: svgUId1};
-// get the current diagram view for the tab
-var currentView1 = dgModel1.createDiagramView(dgModel1, options);
-// set current tab's diagram view as default view
-currentView1.currentDiagramView(currentView1);
-tab.setDiagramViewForTab(currentView1);
-// mark tab as visited
-tab.setSelectedTab();
-var preview = new Diagrams.Views.DiagramOutlineView({mainView: currentView1});
-preview.render();
-tab.preview(preview);
-
 
 

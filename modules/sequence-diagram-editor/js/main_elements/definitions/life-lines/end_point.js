@@ -40,6 +40,31 @@ var MainElements = (function (mainElements) {
                 return div.node();
             }
             return cloneCallBack;
+        },
+        propertyPaneSchema: [
+            {
+                key: "title",
+                text: "Title"
+            },
+            {
+                key: "url",
+                text: "URL"
+            }
+        ],
+        parameters: [
+            {
+                key: "url",
+                value: "https://"
+            }
+        ],
+        saveMyProperties: function (model, inputs) {
+            model.attributes.title = inputs.title.value;
+            model.attributes.parameters = [
+                {
+                    key: "url",
+                    value: inputs.url.value
+                }
+            ];
         }
     };
 

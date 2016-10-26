@@ -16,18 +16,44 @@
  * under the License.
  */
 
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const path = require('path');
+var serviceProcess;
 
 let mainWindow;
 
+function createService(){
+
+	var appDir = `${__dirname}`;
+	const spawn = require('child_process').spawn;
+	serviceProcess = spawn('java', ['-jar', appDir + path.sep + "services" + path.sep + "workspace-service.jar"]);
+
+	serviceProcess.stdout.on('data', function(data){
+		console.log('Service log: ' + data);
+	});
+
+	serviceProcess.stderr.on('data', function(data){
+		console.log('Service error: ' + data);
+	});
+
+	serviceProcess.on('close', function(code){
+		console.log('Service closed: ' + code);
+	});
+}
+
 function createWindow () {
 	// Create the browser window
-	mainWindow = new BrowserWindow({width: 800, height: 600, })
+	mainWindow = new BrowserWindow({
+		width: 1200,
+		height: 800,
+		minWidth: 1200,
+		minHeight: 800
+	});
 	
 	// Load the index.html of the application
-	mainWindow.loadURL(`file://${__dirname}/modules/sequence-diagram-editor/index.html`)
+	mainWindow.loadURL(`file://${__dirname}/modules/sequence-diagram-editor/index.html`);
 
 	// Open the DevTools
 	//mainWindow.webContents.openDevTools()
@@ -37,13 +63,16 @@ function createWindow () {
 		// Dereference the window object, usually you would store windows
     	// in an array if your app supports multi windows, this is the time
     	// when you should delete the corresponding element.
-		mainWindow = null
-	})
+		mainWindow = null;
+	});
 }
 
 // This method will be called when Electron has finished initialization and is 
 // ready to create browser windows. Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', function(){
+	createService();
+	createWindow();
+});
 
 // Quit application when all windows are closed.
 app.on('window-all-closed', function () {
@@ -52,7 +81,9 @@ app.on('window-all-closed', function () {
 	if (process.platform !== 'darwin') {
 		app.quit()
 	}
-})
+	// kill the service child process
+	serviceProcess.kill();
+});
 
 app.on('activate', function () {
 	// On macOS it's common to re-create a window in the app when the
@@ -60,4 +91,4 @@ app.on('activate', function () {
 	if (mainWindow === null) {
 		createWindow()
 	}
-})
+});

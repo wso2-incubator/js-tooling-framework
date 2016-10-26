@@ -328,9 +328,11 @@ var Diagrams = (function (diagrams) {
 
                 var elements = new DiagramElements([], {diagram: this});
                 var resources = new DiagramElements([], {diagram: this});
+                var sources = new DiagramElements([], {diagram: this});
                 var endPoints = new DiagramElements([], {diagram: this});
                 this.diagramElements(elements);
                 this.diagramResourceElements(resources);
+                this.diagramSourceElements(sources);
                 this.diagramEndpointElements(endPoints);
                 this.selectedNode = null;
                 this.destinationLifeLine = null;
@@ -340,8 +342,10 @@ var Diagrams = (function (diagrams) {
                 this.X = 0;
                 this.highestLifeline = null;
                 var resourceCounter = 0;
+                var sourceCounter = 0;
                 var endpointCounter = 0;
                 this.resourceLifeLineCounter(resourceCounter);
+                this.sourceLifeLineCounter(sourceCounter);
                 this.endpointLifeLineCounter(endpointCounter);
                 this.CurrentDiagram();
             },
@@ -393,12 +397,24 @@ var Diagrams = (function (diagrams) {
 
             },
 
+            // setter/getter of endpoint element count
+            sourceLifeLineCounter: function (sCounter) {
+                if (_.isUndefined(sCounter)) {
+                    return this.get('sourceLifelineCounter');
+                } else {
+                    this.set('sourceLifelineCounter', sCounter);
+                }
+
+            },
+
             addElement: function (element, opts) {
                 //this.trigger("addElement", element, opts);
 
                 if (element instanceof SequenceD.Models.LifeLine) {
                     if(element.attributes.title.startsWith("Resource")) {
                         this.diagramResourceElements().add(element, opts);
+                    } else if (element.attributes.title.startsWith("Source")) {
+                        this.diagramSourceElements().add(element, opts);
                     } else {
                         this.diagramEndpointElements().add(element, opts);
                     }
@@ -406,14 +422,6 @@ var Diagrams = (function (diagrams) {
                 } else{
                     this.trigger("addElement", element, opts);
                 }
-            },
-
-            removeElement: function (element, opts) {
-                var index = this.diagramElements().indexOf(element);
-                //TODO need to implement this 
-                //var elements = this.diagramElements();
-                //delete elements[index];
-                this.trigger("removeElement", element, opts);
             },
 
             getElement: function (id) {
@@ -434,6 +442,14 @@ var Diagrams = (function (diagrams) {
                     return this.get('diagramResourceElements');
                 } else {
                     this.set('diagramResourceElements', diaElements);
+                }
+            },
+
+            diagramSourceElements: function (diaElements) {
+                if (_.isUndefined(diaElements)) {
+                    return this.get('diagramSourceElements');
+                } else {
+                    this.set('diagramSourceElements', diaElements);
                 }
             },
 
@@ -490,10 +506,31 @@ var Diagrams = (function (diagrams) {
                 var TreeRoot;
 
                 var buildTree = function (resourceModel) {
-                    var rootNode = new TreeNode("Resource", "Resource", "resource passthrough (message m) {", "}");
+                    // Until the message variabe concept introduce to the tooling we will be creating a message called response on behalf of the user
+                    var rootNode = new TreeNode("Resource", "Resource", "resource passthrough (message m) {\nmessage response;", "}");
                     for (var itr = 0; itr < (resourceModel.get('children').models).length; itr++) {
                         var mediator = (resourceModel.get('children').models)[itr];
-                        rootNode.getChildren().push((mediator.get('getMySubTree')).getMySubTree(mediator));
+
+                        // Check whether the mediator is a message point from the resource to the source.
+                        // If so handle it differently
+                        if (mediator instanceof SequenceD.Models.MessagePoint) {
+                            // Check the message point is from resource to the source
+                            if (mediator.get('message').get('destination').get('parent').get('title') === "Source") {
+                                var node = new TreeNode("ResponseMsg", "ResponseMsg", "reply response", ";");
+                                rootNode.getChildren().push(node);
+                            }else if(mediator.get('message').get('destination').get('parent').get('cssClass') === "endpoint"){
+                                //This section will handle "invoke" mediator transformation.
+                                endpoint = mediator.get('message').get('destination').get('parent').get('parameters')[0].value;
+                                uri = mediator.get('message').get('destination').get('parent').get('parameters')[1].value;
+                                // When we define the properties, need to extract the endpoint from the property
+                                definedConstants["HTTPEP"] = {name: endpoint, value: uri};
+
+                                var invokeNode = new TreeNode("InvokeMediator", "InvokeMediator", ("response = invoke(endpointKey=" + endpoint + ", messageKey=m)"), ";");
+                                rootNode.getChildren().push(invokeNode);
+                            }
+                        } else {
+                            rootNode.getChildren().push((mediator.get('getMySubTree')).getMySubTree(mediator));
+                        }
                     }
                     console.log(rootNode);
                     return rootNode;
@@ -501,7 +538,7 @@ var Diagrams = (function (diagrams) {
 
                 var finalSource = "";
 
-                var includeConstants = function () {
+                var includeConstants = function (resourceModel) {
                     // TODO: Need to handle this properly
                     // Defining the global constants
                     for (var key in definedConstants) {
@@ -513,12 +550,11 @@ var Diagrams = (function (diagrams) {
 
                     // For the moment we are injecting the API methods directly hardcoded here at the moment.
                     // After the properties view implementation those can be dynamically changed
-
                     finalSource += "\n" +
-                        ((defaultView.model.get('get')==true) ? '@GET\n' : '') +
-                        ((defaultView.model.get('put')==true) ? '@PUT\n' : '') +
-                        ((defaultView.model.get('post')==true) ? '@POST\n' : '') +
-                        '@Path ("' + defaultView.model.get('path') +'")\n'
+                        ((resourceModel.get('parameters')[2].value==true) ? '@GET\n' : '') +
+                        ((resourceModel.get('parameters')[3].value==true) ? '@PUT\n' : '') +
+                        ((resourceModel.get('parameters')[4].value==true) ? '@POST\n' : '') +
+                        '@Path ("' + resourceModel.get('parameters')[1].value +'")\n'
                 };
 
                 var traverse = function (tree, finalSource) {
@@ -537,7 +573,7 @@ var Diagrams = (function (diagrams) {
                     return finalSource;
                 };
                 TreeRoot = buildTree(defaultView.model.get('diagramResourceElements').models[0]);
-                includeConstants();
+                includeConstants(defaultView.model.get('diagramResourceElements').models[0]);
                 return traverse((TreeRoot), finalSource);
             },
 
@@ -554,28 +590,6 @@ var Diagrams = (function (diagrams) {
                 defaultView.model.attributes.diagramResourceElements.length = 0;
                 defaultView.model.attributes.diagramEndpointElements.models = [];
                 defaultView.model.attributes.diagramEndpointElements.length = 0;
-            },
-
-            getDefinitionSchema: function () {
-                return {
-                    title: "Resource",
-                    type: "object",
-                    properties: {
-                        Path: {"type": "string"},
-                        Get: {"type": "boolean"},
-                        Put: {"type": "boolean"},
-                        Post: {"type": "boolean"}
-                    }
-                };
-            },
-
-            getDefinitionEditableProperties: function (point) {
-                var editableProperties = {};
-                editableProperties.Path = this.attributes.path;
-                editableProperties.Get = this.attributes.get;
-                editableProperties.Put = this.attributes.put;
-                editableProperties.Post = this.attributes.post;
-                return editableProperties;
             },
 
             defaults: {
@@ -604,6 +618,54 @@ var Diagrams = (function (diagrams) {
             model: Diagram
 
         });
+    var EventManager = Backbone.Model.extend(
+        /** @lends Eventmanager.prototype */
+        {
+            idAttribute: this.cid,
+            modelName: "EventManager",
+            /**
+             * @augments Backbone.Model
+             * @constructs
+             * @class Handles validations of the diagram
+             */
+            initialize: function (attrs, options) {
+                this.draggedElement();
+                this.isActivated();
+                this.currentType();
+                this.invalid = false;
+            },
+            //keep the current dragged element type
+            currentType: function (type) {
+                if (_.isUndefined(type)) {
+                    return this.get('currentType');
+                } else {
+                    this.set('currentType', type);
+                }
+            },
+            draggedElement: function (element) {
+                if (_.isUndefined(element)) {
+                    return this.get('draggedElement');
+                } else {
+                    this.set('draggedElement', element);
+                }
+            },
+            // check the current activated element's valid drops
+            isActivated: function (activatedType) {
+                if (activatedType != null) {
+                    if (this.currentType() != "Resource" && this.currentType() != "EndPoint" && this.currentType() != "Source") {
+                        // validation for active endpoints
+                        if (activatedType.includes("EndPoint") || activatedType.includes("Source")) {
+                            this.invalid = true;
+                        }
+                        else {
+                            this.invalid = false;
+                        }
+                    }
+                }
+            }
+
+        });
+    models.EventManager = EventManager;
     models.DiagramElement = DiagramElement;
     models.DiagramElements = DiagramElements;
     models.Diagram = Diagram;

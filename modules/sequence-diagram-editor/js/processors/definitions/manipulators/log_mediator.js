@@ -41,85 +41,80 @@ var Processors = (function (processors) {
             }
             return cloneCallBack;
         },
-        parameters: [
+        propertyPaneSchema: [
             {
-                key: "level",
-                label: "Log Level",
-                required: true,
-                value: {
-                    type: "String",
-                    values: [
-                        {key: "full", label: "FULL"}, {key: "simple", label: "SIMPLE"},
-                        {key: "headers", label: "HEADERS"}, {key: "custom", label: "CUSTOM"}
-                    ]
-                }
-
+                key: "message",
+                text: "Log message"
             },
             {
-                key: "category",
-                label: "Log Category",
-                required: true,
-                value: {
-                    type: "String",
-                    values: [
-                        {key: "trace", label: "Trace"}, {key: "debug", label: "DEBUG"}, {key: "info", label: "INFO"}
-                        , {key: "warn", label: "WARN"}, {key: "error", label: "ERROR"}, {key: "fatal", label: "FATAL"}
-                    ]
-                }
+                key: "logLevel",
+                dropdown: "Log Level",
+                values: ["simple", "custom", "headers", "full"]
             },
             {
-                key: "separator",
-                label: "Log Separator",
-                required: false,
-                value: {
-                    type: "String"
-                }
+                key: "logCategory",
+                dropdown: "Log Category",
+                values: ["info", "error", "warn", "fatal", "debug", "trace"]
             },
             {
                 key: "description",
-                label: "Log Description",
-                required: false,
-                value: {
-                    type: "String"
-                }
-            },
-            {
-                key: "property",
-                label: "Properties",
-                required: false,
-                value: {
-                    type: "Array",
-                    parameters: [
-                        {
-                            key: "name",
-                            label: "Property Name",
-                            required: true,
-                            value: {
-                                type: "String"
-                            }
-                        },
-                        {
-                            key: "value",
-                            label: "Property Value",
-                            required: false,
-                            value: {
-                                type: "String"
-                            }
-                        },
-                        {
-                            key: "expression",
-                            label: "Property Expression",
-                            required: false,
-                            value: {
-                                type: "String"
-                            }
-                        }
-                    ]
-                }
+                text: "Description"
             }
         ],
+        parameters: [
+            {
+                key: "message",
+                value: "Log message"
+            },
+            {
+                key: "logLevel",
+                value: "simple"
+            },
+            {
+                key: "logCategory",
+                value: "info"
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        saveMyProperties: function (model, inputs) {
+            var selectedLogLevel;
+            var selectedLogCategory;
+            if (inputs.logLevel.value !== "") {
+                selectedLogLevel = inputs.logLevel.value;
+            } else {
+                selectedLogLevel = model.get("parameters").parameters[1].value;
+            }
+            if (inputs.logCategory.value !== "") {
+                selectedLogCategory = inputs.logCategory.value;
+            } else {
+                selectedLogCategory = model.get("parameters").parameters[2].value;
+            }
+            model.get("parameters").parameters = [
+                {
+                    key: "message",
+                    value: inputs.message.value
+                },
+                {
+                    key: "logLevel",
+                    value: selectedLogLevel
+                },
+                {
+                    key: "logCategory",
+                    value: selectedLogCategory
+                },
+                {
+                    key: "description",
+                    value: inputs.description.value
+                }
+            ];
+        },
         getMySubTree: function (model) {
-            return new TreeNode("LogMediator", "LogMediator", "log(\"Test\"", ");");
+            var parameters = model.get('parameters').parameters;
+            var log_configStart =  "log(level=\"" + parameters[1].value + "\"," + "status=\"" + parameters[0].value + "\"";
+            return new TreeNode("LogMediator", "LogMediator", log_configStart, ");");
         }
     };
 
