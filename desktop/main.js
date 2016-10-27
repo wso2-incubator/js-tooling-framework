@@ -15,31 +15,55 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const electron = require('electron'),
+		app = electron.app,
+		BrowserWindow = electron.BrowserWindow,
+		path = require('path'),
+		fs = require('fs'),
+		appDir = app.getAppPath(),
+		Log = require('log');
 
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const path = require('path');
-var serviceProcess;
+var logger = new Log('info'),
+ 	logsDir = appDir + path.sep + ".." + path.sep + ".." + path.sep + "logs",
+	pageURL = "file:" + appDir + "/modules/sequence-diagram-editor/index.html",
+	serviceProcess,
+	mainWindow;
 
-let mainWindow;
+function createLogger(){
+	if (!fs.existsSync(logsDir)){
+		fs.mkdirSync(logsDir);
+	}
+	fs.access(logsDir, fs.W_OK, function(err) {
+		if(err){
+			logger.error("can't write to log folder.");
+		}
+		else{
+			logger = new Log('info', fs.createWriteStream(logsDir + path.sep + "app.log"));
+		}
+	});
+}
 
 function createService(){
 
-	var appDir = `${__dirname}`;
+	var logsDirSysProp = "-DlogsDirectory=" + logsDir;
+
+	var log4jConfPath = appDir + path.sep + "conf" + path.sep + "log4j.properties";
+	var log4jConfProp = "-Dlog4j.configuration=" + "file:" + log4jConfPath;
+	var debugArgs="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=6006";
+
 	const spawn = require('child_process').spawn;
-	serviceProcess = spawn('java', ['-jar', appDir + path.sep + "services" + path.sep + "workspace-service.jar"]);
+	serviceProcess = spawn('java', [log4jConfProp, logsDirSysProp, '-jar', appDir + path.sep + "services" + path.sep + "workspace-service.jar"]);
 
 	serviceProcess.stdout.on('data', function(data){
-		console.log('Service log: ' + data);
+		logger.info('Service info: ' + data);
 	});
 
 	serviceProcess.stderr.on('data', function(data){
-		console.log('Service error: ' + data);
+		logger.error('Service error: ' + data);
 	});
 
 	serviceProcess.on('close', function(code){
-		console.log('Service closed: ' + code);
+		logger.debug('Service closed: ' + code);
 	});
 }
 
@@ -51,9 +75,9 @@ function createWindow () {
 		minWidth: 1200,
 		minHeight: 800
 	});
-	
+
 	// Load the index.html of the application
-	mainWindow.loadURL(`file://${__dirname}/modules/sequence-diagram-editor/index.html`);
+	mainWindow.loadURL(pageURL);
 
 	// Open the DevTools
 	//mainWindow.webContents.openDevTools()
@@ -70,6 +94,7 @@ function createWindow () {
 // This method will be called when Electron has finished initialization and is 
 // ready to create browser windows. Some APIs can only be used after this event occurs.
 app.on('ready', function(){
+	createLogger();
 	createService();
 	createWindow();
 });
