@@ -15,22 +15,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const electron = require('electron'),
+		app = electron.app,
+		BrowserWindow = electron.BrowserWindow,
+		path = require('path'),
+		fs = require('fs'),
+		appDir = app.getAppPath(),
+		Log = require('log');
 
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const path = require('path');
-var fs = require('fs');
-var Log = require('log');
-var logger = new Log('info');
-var appDir = `${__dirname}`;
-var logsDir = appDir + path.sep + ".." + path.sep + ".." + path.sep + "logs";
+var logger = new Log('info'),
+ 	logsDir = appDir + path.sep + ".." + path.sep + ".." + path.sep + "logs",
+	pageURL = "file:" + appDir + "/modules/sequence-diagram-editor/index.html",
+	serviceProcess,
+	mainWindow;
 
-var serviceProcess;
-
-let mainWindow;
-
-function createLog(){
+function createLogger(){
 	if (!fs.existsSync(logsDir)){
 		fs.mkdirSync(logsDir);
 	}
@@ -76,9 +75,9 @@ function createWindow () {
 		minWidth: 1200,
 		minHeight: 800
 	});
-	
+
 	// Load the index.html of the application
-	mainWindow.loadURL(`file://${__dirname}/modules/sequence-diagram-editor/index.html`);
+	mainWindow.loadURL(pageURL);
 
 	// Open the DevTools
 	//mainWindow.webContents.openDevTools()
@@ -95,7 +94,7 @@ function createWindow () {
 // This method will be called when Electron has finished initialization and is 
 // ready to create browser windows. Some APIs can only be used after this event occurs.
 app.on('ready', function(){
-	createLog();
+	createLogger();
 	createService();
 	createWindow();
 });
