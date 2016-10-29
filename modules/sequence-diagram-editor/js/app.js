@@ -66,7 +66,6 @@ var createLifeLine = function (title, center, cssClass, utils) {
         utils: utils
     });
 };
-
 // Create main tool group
 var mainToolGroup = new Tools.Models.ToolGroup({
     toolGroupName: "Main Elements",

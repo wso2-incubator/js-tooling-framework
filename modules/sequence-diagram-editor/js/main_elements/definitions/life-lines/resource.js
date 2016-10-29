@@ -109,7 +109,8 @@ var MainElements = (function (mainElements) {
                         value: inputs.post.checked
                     }
                 ];
-            }
+            },
+            textModel : "undefined"
         }
     };
 
