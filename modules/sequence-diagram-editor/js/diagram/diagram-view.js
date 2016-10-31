@@ -907,6 +907,10 @@ var Diagrams = (function (diagrams) {
                     y: options.y
                 };
                 propertySVG = svg.draw.propertySVG(svgOptions);
+                propertySVG.on("click", function () {
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
 
                 var rect = propertySVG.append("rect")
                     .attr("id", "property-pane")

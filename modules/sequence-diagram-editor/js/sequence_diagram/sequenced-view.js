@@ -245,7 +245,7 @@ var SequenceD = (function (sequenced) {
                             optionsMenuGroup.classed("option-menu-hide", false);
                             optionsMenuGroup.classed("option-menu-show", true);
 
-                            if (diagram.selectedOptionsGroup) {
+                            if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                                 diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                                 diagram.selectedOptionsGroup.classed("option-menu-show", false);
                             }
@@ -919,8 +919,8 @@ var SequenceD = (function (sequenced) {
                     if (optionsMenuGroup.classed("option-menu-hide")) {
                         optionsMenuGroup.classed("option-menu-hide", false);
                         optionsMenuGroup.classed("option-menu-show", true);
-                        
-                        if (diagram.selectedOptionsGroup) {
+
+                        if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                             diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                             diagram.selectedOptionsGroup.classed("option-menu-show", false);
                         }
@@ -1348,7 +1348,7 @@ var SequenceD = (function (sequenced) {
                             optionsMenuGroup.classed("option-menu-hide", false);
                             optionsMenuGroup.classed("option-menu-show", true);
                             
-                            if (diagram.selectedOptionsGroup) {
+                            if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                                 diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                                 diagram.selectedOptionsGroup.classed("option-menu-show", false);
                             }
