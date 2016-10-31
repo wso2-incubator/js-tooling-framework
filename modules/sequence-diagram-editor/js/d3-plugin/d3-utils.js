@@ -105,7 +105,7 @@ var D3Utils = (function (d3_utils) {
             .attr("rx", rx)
             .attr("ry", ry);
     };
-    var genericRect = function (x, y, width, height, rx, ry, parent, colour,textModel) {
+    var genericRect = function (x, y, width, height, rx, ry, parent, colour, textModel) {
         parent = parent || d3Ref;
         // get TextModel and if dynamicRectWidth is not 130 add that as width
         var modelId = textModel.cid;
@@ -128,17 +128,17 @@ var D3Utils = (function (d3_utils) {
             .attr("id",modelId);
     };
 
-    var genericCenteredRect = function (center, width, height, rx, ry, parent, colour,textModel) {
+    var genericCenteredRect = function (center, width, height, rx, ry, parent, colour, textModel) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour,textModel);
+        return parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour, textModel);
     };
 //GENERIC TEXT BOX CREATION
-    var genericTextRect = function (center,width,height,rx,ry,textContent,x,y,parent,colour,textModel){
+    var genericTextRect = function (center,width,height,rx,ry,textContent,x,y,parent,colour, textModel){
         parent = parent || d3Ref;
 
-        var rect =parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour,textModel);
+        var rect =parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour, textModel);
         var text = rect.draw.genericTextElement(center.x(), center.y(), textContent, rect,txtModel)
             .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle');
         return parent;
@@ -276,16 +276,15 @@ var D3Utils = (function (d3_utils) {
      * @param parameters Model parameters of the selected element
      * @param propertyPaneSchema Property rendering schema of the selected element
      * @param rect Property window rectangle
-     * @param rectY Rectangle top y coordinate
      * @returns {*} Created form element
      */
-    var form = function (parent, parameters, propertyPaneSchema, rect, rectY) {
+    var form = function (parent, parameters, propertyPaneSchema, rect) {
         parent = parent || d3Ref;
 
         var foreignObject = parent.append("foreignObject")
             .attr("x", 23)
             .attr("y", 20)
-            .attr("width", "200")
+            .attr("width", "240")
             .attr("height", "100%");
 
         var form = foreignObject.append("xhtml:form")
@@ -300,19 +299,23 @@ var D3Utils = (function (d3_utils) {
             var property = propertyPaneSchema[i];
 
             if (property.text) {
-                //append a textbox
+                //append a label for the textbox
                 next = "label";
                 rectangleHeight = getCurrentRectHeight(rectangleHeight, previous, next);
-                appendLabel(form, property.text);
+                var label = appendLabel(form, property.text);
+                label.attr("style", "display: block;");
+                //append a textbox
                 appendTextBox(form, parameters[i].value, property.key);
                 rectangleHeight += (heights.label + heights.label_textBox + heights.textBox);
                 previous = "textbox";
 
             } else if (property.dropdown) {
-                //append a dropdown
+                //append a label before dropdown
                 next = "label";
                 rectangleHeight = getCurrentRectHeight(rectangleHeight, previous, next);
-                appendLabel(form, property.dropdown);
+                var label = appendLabel(form, property.dropdown);
+                label.attr("style", "display: block;");
+                //append the dropdown
                 var selected = parameters[i].value;
                 var dropdownValues = [];
                 property.values.forEach(function (value, index) {
@@ -322,7 +325,7 @@ var D3Utils = (function (d3_utils) {
                         dropdownValues[index] = {value: value.toLowerCase(), text: value};
                     }
                 });
-                appendDropdown(form, dropdownValues, property.key, i);
+                appendDropdown(form, dropdownValues, property.key, i, selected);
                 rectangleHeight += (heights.label + heights.label_textBox + heights.textBox);
                 previous = "dropdown";
 
@@ -362,8 +365,8 @@ var D3Utils = (function (d3_utils) {
         }
     };
     var updateParentOnLayoutChange = function () {
-        if (defaultView.selectedNode.get('utils').utils.textModel != null) {
-            model = defaultView.selectedNode.get('utils').utils.textModel;
+        if (defaultView.selectedNode.attributes.textModel != null) {
+            model = defaultView.selectedNode.attributes.textModel;
             // updating any parent elements if exists:TODO: can be updated to be fired onBlur
             if (model.hasParent === true) {
                 // This could be made into a objectList if there are multiple
@@ -377,16 +380,14 @@ var D3Utils = (function (d3_utils) {
      */
     var saveProperties = function () {
         var inputs = $('#property-form')[0].getElementsByTagName("input");
-        defaultView.selectedNode.get('utils').utils.saveMyProperties(defaultView.selectedNode, inputs);
-
+        defaultView.selectedNode.get("utils").saveMyProperties(defaultView.selectedNode, inputs);
         //TODO FOR TEXT GENERIC
-        if(defaultView.selectedNode.get('utils').utils.textModel != null){
+        if(defaultView.selectedNode.attributes.textModel != null){
             var int = Number(7) || 7.7;
             var dlength =  ((inputs.title.value.length+1) * 8);
-            var txtm = defaultView.selectedNode.get('utils').utils.textModel;
+            var txtm = defaultView.selectedNode.attributes.textModel;
             txtm.textChanged(dlength);
         }
-
         //render title in selected lifeline
         if (inputs.title) {
             resetMainElementTitle(inputs.title.value);
@@ -430,17 +431,18 @@ var D3Utils = (function (d3_utils) {
     };
 
     var appendLabel = function (parent, value) {
-        parent.append("label")
+        return parent.append("label")
             .attr("class", "property-label")
             .text(value);
     };
 
-    var appendDropdown = function (parent, optionsList, name, count) {
+    var appendDropdown = function (parent, optionsList, name, count, selectedValue) {
         var input = parent.append("input")
             .attr("name", name)
             .attr("id", name)
             .attr("class", "property-dropdown")
-            .attr("list", "dropdown-" + count);
+            .attr("list", "dropdown-" + count)
+            .attr("value", selectedValue);
 
         var datalist = input.append("datalist")
             .attr("id", "dropdown-" + count);
@@ -456,14 +458,21 @@ var D3Utils = (function (d3_utils) {
             }
         }
 
-        input.on("change", saveProperties);
         parent.append("br");
         parent.append("br");
-
+        var currentValue = "";
         input.on("click", function () {
-            this.focus();
-            this.value = "";
-        });
+                if (this.value !== "") {
+                    currentValue = this.value;
+                }
+                this.value = "";
+            })
+            .on("change", saveProperties)
+            .on("blur", function () {
+                if (this.value === "") {
+                    this.value = currentValue;
+                }
+            })
     };
 
     var group = function (parent) {

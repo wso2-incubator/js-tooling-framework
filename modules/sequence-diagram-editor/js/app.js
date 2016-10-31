@@ -58,12 +58,14 @@ var createPoint = function (x, y) {
 
 var diagramD3el = undefined;
 
-var createLifeLine = function (title, center, cssClass, utils) {
+var createLifeLine = function (title, center, cssClass, utils, parameters, textModel) {
     return new SequenceD.Models.LifeLine({
         title: title,
         centerPoint: center,
         cssClass: cssClass,
-        utils: utils
+        utils: utils,
+        parameters: parameters,
+        textModel: textModel
     });
 };
 // Create main tool group
@@ -153,7 +155,6 @@ $(function () {
 // Create the model for the diagram
 var diagram = new Diagrams.Models.Diagram({});
 var diagramViewElements = [],
-    ppView,
     definedConstants = [];
 
 function TreeNode(value, type, cStart, cEnd) {
@@ -177,9 +178,7 @@ function initTabs(){
     diagramViewElements = [];
     selected = "";
     selectedModel = "";
-
-    ppView = new Editor.Views.PropertyPaneView();
-    propertyPane = ''; //ppView.createPropertyPane(schema, properties);
+    
     endpointLifelineCounter = 0;
     resourceLifelineCounter = 0;
 
@@ -214,11 +213,9 @@ function initTabs(){
     preview.render();
     tab.preview(preview);
 
-    defaultView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline,
-        {utils: MainElements.lifelines.SourceLifeline.utils});
+    defaultView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline);
     defaultView.model.sourceLifeLineCounter(1);
-    defaultView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline,
-        {utils: MainElements.lifelines.ResourceLifeline.utils});
+    defaultView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline);
     defaultView.model.resourceLifeLineCounter(1);
     //create initial arrow between source and resource
     var currentSource = defaultView.model.diagramSourceElements().models[0];

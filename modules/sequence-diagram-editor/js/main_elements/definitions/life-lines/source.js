@@ -40,17 +40,38 @@ var MainElements = (function (mainElements) {
             }
             return cloneCallBack;
         },
+        propertyPaneSchema: [
+            {
+                key: "title",
+                text: "Title"
+            }
+        ],
+        parameters: [
+            {
+                key: "title",
+                value: "Title"
+            }
+        ],
+        textModel : "undefined",
         utils: {
-            propertyPaneSchema: [
-                {
-                    key: "title",
-                    text: "Title"
-                }
-            ],
+            getMyPropertyPaneSchema : function () {
+                return MainElements.lifelines.SourceLifeline.propertyPaneSchema;
+            },
+            getMyParameters: function (model) {
+                return [{
+                        key: "title",
+                        value: model.attributes.title
+                    }];
+            },
             saveMyProperties: function (model, inputs) {
                 model.attributes.title = inputs.title.value;
-            },
-            textModel :"undefined"
+                model.attributes.parameters = [
+                    {
+                        key: "title",
+                        value: inputs.title.value
+                    }
+                ];
+            }
         }
     };
 

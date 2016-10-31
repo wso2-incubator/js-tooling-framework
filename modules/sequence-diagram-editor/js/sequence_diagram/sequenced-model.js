@@ -158,19 +158,7 @@ var SequenceD = (function (sequenced) {
                 height : 300,
                 viewAttributes: {colour: "#ffffff"}
             },
-
-            getPropertyPane: function (point) {
-                var pane = new JSONEditor(document.getElementById("propertyPane"), {
-                    schema: this.getSchema(),
-                    no_additional_properties: true,
-                    disable_properties: true,
-                    disable_edit_json: true
-                });
-                var thisLifeline = this;
-                pane.setValue(this.getEditableProperties());
-
-                return pane;
-            },
+            
             leftUpperConer: function (point) {
                 if (_.isUndefined(point)) {
                     return this.viewAttributes.leftUpperConer;
@@ -205,8 +193,8 @@ var SequenceD = (function (sequenced) {
                 return new SequenceD.Models.FixedSizedMediator({title: title, centerPoint: center});
             },
 
-            createProcessor: function (title, center, type, model, viewAttributes, utils,textModel) {
-                return new SequenceD.Models.ProcessorFactory(title, center, model.type, model, viewAttributes, utils,textModel);
+            createProcessor: function (title, center, type, model, viewAttributes, parameters, utils, textModel) {
+                return new SequenceD.Models.ProcessorFactory(title, center, model.type, model, viewAttributes, parameters, utils, textModel);
             },
 
             addChild: function (element, opts) {

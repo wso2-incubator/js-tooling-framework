@@ -41,26 +41,32 @@ var Processors = (function (processors) {
             }
             return cloneCallBack;
         },
+        parameters: [
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        propertyPaneSchema: [
+            {
+                key: "description",
+                text: "Description"
+            }
+        ],
         utils: {
-            parameters: [
-                {
-                    key: "description",
-                    value: "Description"
-                }
-            ],
-            getSchema: function () {
-                return {
-                    title: "Switch Mediator",
-                    type: "object",
-                    properties: {
-                        Description: {"type": "string"}
-                    }
-                };
+            getMyPropertyPaneSchema : function () {
+                return Processors.flowControllers.SwitchMediator.propertyPaneSchema;
             },
-            getEditableProperties: function (parameters) {
-                var editableProperties = {};
-                editableProperties.Description = parameters[0];
-                return editableProperties;
+            getMyParameters: function (model) {
+                return model.attributes.parameters;
+            },
+            saveMyProperties: function (model, inputs) {
+                model.attributes.parameters = [
+                    {
+                        key: "description",
+                        value: inputs.description.value
+                    }
+                ];
             },
             getMySubTree: function (model) {
                 return new TreeNode("SwitchMediator", "SwitchMediator");

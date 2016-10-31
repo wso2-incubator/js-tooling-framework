@@ -103,7 +103,7 @@ var SequenceD = (function (sequenced) {
                 if (this.model.model.type === "UnitProcessor") {
 
                     var height = 0;
-                    if (this.model.get('utils').utils.outputs) {
+                    if (this.model.get('utils').outputs) {
                         height = this.model.getHeight();
                     } else {
                         height = this.model.getHeight() - 20;
@@ -186,7 +186,7 @@ var SequenceD = (function (sequenced) {
                         .classed("mediator-title", true);
                     var inputText = d3Ref.draw.textElement(center.x() + 20 - this.model.getWidth()/2,
                         (center.y() + 35 - height/2),
-                        this.generateInputOutputString(this.model.get('utils').utils.getInputParams()),
+                        this.generateInputOutputString(this.model.get('utils').getInputParams(this.model)),
                         group)
                         .classed("input-output-text", true);
                     var inputTri = d3Ref.draw.inputTriangle(center.x() + 5 - this.model.getWidth()/2,
@@ -195,10 +195,10 @@ var SequenceD = (function (sequenced) {
 
                     //this.generateInputOutputString(this.model.get('utils').utils.getInputParams());
 
-                    if (this.model.get('utils').utils.outputs) {
+                    if (this.model.get('utils').outputs) {
                         var outputText = d3Ref.draw.textElement(center.x() + 20 - this.model.getWidth()/2,
                             (center.y() + 58 - this.model.getHeight()/2),
-                            this.generateInputOutputString(this.model.get('utils').utils.getOutputParams()),
+                            this.generateInputOutputString(this.model.get('utils').getOutputParams()),
                             group)
                             .classed("input-output-text", true);
                         var outputTri = d3Ref.draw.outputTriangle(center.x() + 5 - this.model.getWidth()/2,
@@ -232,9 +232,6 @@ var SequenceD = (function (sequenced) {
                             optionsMenuGroup
                         ];
                     }
-
-                    group.rect = rectBottomXXX;
-                    group.title = mediatorText;
 
                     group.rect = rectBottomXXX;
                     group.title = mediatorText;
@@ -283,8 +280,10 @@ var SequenceD = (function (sequenced) {
 
                             defaultView.selectedNode = viewObj.model;
                             defaultView.drawPropertiesPane(d3Ref, options,
-                                viewObj.model.get('utils').utils.parameters,
-                                getPropertyPaneSchema(viewObj.model));
+                                                           viewObj.model.get('utils').getMyParameters(
+                                                               viewObj.model),
+                                                           viewObj.model.get('utils').getMyPropertyPaneSchema(
+                                                               viewObj.model));
                         }
                     });
 
@@ -300,14 +299,10 @@ var SequenceD = (function (sequenced) {
                                 break;
                             }
                         }
-
-                        if (propertyPane) {
-                            propertyPane.destroy();
-                        }
                     });
 
                     var getPropertyPaneSchema = function (model) {
-                        return model.get('utils').utils.propertyPaneSchema;
+                        return ;
                     };
 
                     group.rect = rectBottomXXX;
@@ -586,19 +581,6 @@ var SequenceD = (function (sequenced) {
                 if (this.d3el) {
                     this.d3el.svgTitle.text(this.model.attributes.title);
                     this.d3el.svgTitleBottom.text(this.model.attributes.title);
-                    if (propertyPane && defaultView.model.selectedNode) {
-                        var lifeLineDefinition;
-                        if (defaultView.model.selectedNode.attributes.cssClass === "resource") {
-                            lifeLineDefinition = MainElements.lifelines.ResourceLifeline;
-                        } else if (defaultView.model.selectedNode.attributes.cssClass === "endpoint") {
-                            lifeLineDefinition = MainElements.lifelines.EndPointLifeline;
-                        }
-                    }
-                }
-                if (!propertyPane.getValue().Title) {
-                    propertyPane = ppView.createPropertyPane(lifeLineDefinition.getSchema(),
-                              lifeLineDefinition.getEditableProperties(defaultView.model.selectedNode.get('title')),
-                              defaultView.model.selectedNode);
                 }
             },
 
@@ -637,7 +619,8 @@ var SequenceD = (function (sequenced) {
                                 options: lifeLineOptions
                             });
                              //TODO: for event synchronize
-                            //get text model of processor. Add this (lifeline?) as the parent in it and make hasParent:true
+                            //get text model of processor. Add this (lifeline?) as the parent in it and make
+                            // hasParent:true
 
                             var processorCenterPoint = createPoint(xValue, yValue);
                             processorView.render("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, "processors");
@@ -791,12 +774,12 @@ var SequenceD = (function (sequenced) {
                 this.center = center;
                 this.title = title;
 
-                var textModel = this.model.attributes.utils.utils.textModel;
+                var textModel = this.model.attributes.textModel;
                 if(textModel.dynamicRectWidth() === undefined){
                     textModel.dynamicRectWidth(130);
                 }
 
-                var rect = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height, 0, 0, group,'',textModel)
+                var rect = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height, 0, 0, group, '', textModel)
                     .classed(prefs.rect.class, true).classed("genericR",true);
 
                 var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'), center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2), prefs.middleRect.width, prefs.middleRect.height, 0, 0, group)
@@ -971,65 +954,11 @@ var SequenceD = (function (sequenced) {
                         };
                         
                         defaultView.selectedNode = viewObj.model;
-                        var parameters;
-                        
-                        if (viewObj.model.attributes.cssClass === "resource") {
-                            parameters = [
-                                {
-                                    key: "title",
-                                    value: viewObj.model.get('utils').utils.parameters[0].value
-                                },
-                                {
-                                    key: "path",
-                                    value: viewObj.model.get('utils').utils.parameters[1].value
-                                },
-                                {
-                                    key: "get",
-                                    value: viewObj.model.get('utils').utils.parameters[2].value
-                                },
-                                {
-                                    key: "put",
-                                    value: viewObj.model.get('utils').utils.parameters[3].value
-                                },
-                                {
-                                    key: "post",
-                                    value: viewObj.model.get('utils').utils.parameters[4].value
-                                }
-                            ];
-                            
-                        } else if (viewObj.model.attributes.cssClass === "endpoint") {
-                            parameters = [
-                                {
-                                    key: "title",
-                                    value: viewObj.model.get('utils').utils.parameters[0].value
-                                },
-                                {
-                                    key: "url",
-                                    value: viewObj.model.get('utils').utils.parameters[1].value
-                                }
-                            ];
-                            
-                        } else if (viewObj.model.attributes.cssClass === "source") {
-                            parameters = [
-                                {
-                                    key: "title",
-                                    value: viewObj.title
-                                }
-                            ]
-                        }
 
-                        var propertySchema;
-                        if (viewObj.model.attributes.cssClass === "endpoint") {
-                            propertySchema = MainElements.lifelines.EndPointLifeline.utils.propertyPaneSchema;
-
-                        } else if (viewObj.model.attributes.cssClass === "resource") {
-                            propertySchema = MainElements.lifelines.ResourceLifeline.utils.propertyPaneSchema;
-
-                        } else if (viewObj.model.attributes.cssClass === "source") {
-                            propertySchema = MainElements.lifelines.SourceLifeline.utils.propertyPaneSchema;
-                        }
-
-                        defaultView.drawPropertiesPane(d3Ref, options, parameters, propertySchema);
+                        defaultView.drawPropertiesPane(d3Ref, options,
+                                                       viewObj.model.get("utils").getMyParameters(viewObj.model),
+                                                       viewObj.model.get('utils').getMyPropertyPaneSchema(
+                                                           viewObj.model));
                     }
                 });
 
@@ -1059,9 +988,6 @@ var SequenceD = (function (sequenced) {
                                 break;
                             }
                         }
-                    }
-                    if (propertyPane) {
-                        propertyPane.destroy();
                     }
                 });
 
@@ -1435,10 +1361,6 @@ var SequenceD = (function (sequenced) {
                         }
                     });
 
-                    var getPropertyPaneSchema = function (model) {
-                        return model.get('utils').utils.propertyPaneSchema;
-                    };
-
                     editOption.on("click", function () {
                         if (diagram.propertyWindow) {
                             diagram.propertyWindow = false;
@@ -1453,8 +1375,8 @@ var SequenceD = (function (sequenced) {
                             
                             defaultView.selectedNode = viewObj.model.attributes.parent;
                             defaultView.drawPropertiesPane(d3Ref, options,
-                                                           viewObj.model.get('parent').get('utils').utils.parameters,
-                                                           getPropertyPaneSchema(viewObj.model.attributes.parent));
+                                                           viewObj.model.get('parent').attributes.parameters,
+                                                           viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
                         }
                     });
 
@@ -1467,9 +1389,6 @@ var SequenceD = (function (sequenced) {
                                 defaultView.render();
                                 break;
                             }
-                        }
-                        if (propertyPane) {
-                            propertyPane.destroy();
                         }
                     });
 

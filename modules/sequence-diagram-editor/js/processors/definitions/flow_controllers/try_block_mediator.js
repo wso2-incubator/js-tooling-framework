@@ -42,29 +42,35 @@ var Processors = (function (processors) {
             }
             return cloneCallBack;
         },
+        parameters: [
+            {
+                key: "exception",
+                value: "Exception"
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        propertyPaneSchema: [
+            {
+                key: "exception",
+                text: "Exception"
+            },
+            {
+                key: "description",
+                text: "Description"
+            }
+        ],
         utils: {
-            parameters: [
-                {
-                    key: "exception",
-                    value: "Exception"
-                },
-                {
-                    key: "description",
-                    value: "Description"
-                }
-            ],
-            propertyPaneSchema: [
-                {
-                    key: "exception",
-                    text: "Exception"
-                },
-                {
-                    key: "description",
-                    text: "Description"
-                }
-            ],
+            getMyPropertyPaneSchema : function () {
+                return Processors.flowControllers.TryBlockMediator.propertyPaneSchema;
+            },
+            getMyParameters: function (model) {
+                return model.attributes.parameters;
+            },
             saveMyProperties: function (model, inputs) {
-                model.get("utils").utils.parameters = [
+                model.attributes.parameters = [
                     {
                         key: "exception",
                         value: inputs.exception.value
@@ -83,15 +89,15 @@ var Processors = (function (processors) {
                     var child = tryBlock.get('children').models[itr];
 
                     if (child instanceof SequenceD.Models.MessagePoint && child.get('direction') == 'outbound') {
-                        var endpoint = child.get('message').get('destination').get('parent').get('utils').utils.parameters[0].value;
-                        var uri = child.get('message').get('destination').get('utils').utils.parameters[1].value;
+                        var endpoint = child.get('message').get('destination').get('parent').attributes.parameters[0].value;
+                        var uri = child.get('message').get('destination').attributes.parameters[1].value;
                         // When we define the properties, need to extract the endpoint from the property
                         definedConstants["HTTPEP"] = {name: endpoint, value: uri};
                         var l = new TreeNode("InvokeMediator", "InvokeMediator", ("response = invoke(endpointKey=" +
                         endpoint + ", messageKey=m)"), ";");
                         tryBlockNode.getChildren().push(l);
                     } else {
-                        tryBlockNode.getChildren().push(child.get('utils').utils.getMySubTree(child));
+                        tryBlockNode.getChildren().push(child.get('utils').getMySubTree(child));
                     }
                 }
 
@@ -102,15 +108,15 @@ var Processors = (function (processors) {
                     var child = catchBlock.get('children').models[itr];
 
                     if (child instanceof SequenceD.Models.MessagePoint && child.get('direction') == 'outbound') {
-                        var endpoint = child.get('message').get('destination').get('parent').get('utils').utils.parameters[0].value;
-                        var uri = child.get('message').get('destination').get('parent').get('utils').utils.parameters[1].value;
+                        var endpoint = child.get('message').get('destination').get('parent').attributes.parameters[0].value;
+                        var uri = child.get('message').get('destination').get('parent').attributes.parameters[1].value;
                         // When we define the properties, need to extract the endpoint from the property
                         definedConstants["HTTPEP"] = {name: endpoint, value: uri};
                         var l = new TreeNode("InvokeMediator", "InvokeMediator", ("response = invoke(endpointKey=" +
                         endpoint + ", messageKey=m)"), ";");
                         catchBlockNode.getChildren().push(l);
                     } else {
-                        catchBlockNode.getChildren().push(child.get('utils').utils.getMySubTree(child));
+                        catchBlockNode.getChildren().push(child.get('utils').getMySubTree(child));
                     }
                 }
                 var tryCatchNode = new TreeNode("TryCatchMediator", "TryCatchMediator", "", "");

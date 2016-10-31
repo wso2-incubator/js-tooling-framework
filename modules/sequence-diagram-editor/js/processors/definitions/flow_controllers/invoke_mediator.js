@@ -117,32 +117,44 @@ var Processors = (function (processors) {
             }
 
         },
-        utils: {
-            parameters: [
-                {
-                    key: "message",
-                    value: "Message"
-                },
-                {
-                    key: "description",
-                    value: "Description"
-                }
-            ],
-            getSchema: function () {
-                return {
-                    title: "Invoke",
-                    type: "object",
-                    properties: {
-                        Message: {"type": "string"},
-                        Description: {"type": "string"}
-                    }
-                };
+        parameters: [
+            {
+                key: "message",
+                value: "Message"
             },
-            getEditableProperties: function (parameters) {
-                var editableProperties = {};
-                editableProperties.Message = parameters[0];
-                editableProperties.Description = parameters[1];
-                return editableProperties;
+            {
+                key: "description",
+                value: "Description"
+            }
+        ],
+        propertyPaneSchema: [
+            {
+                key: "message",
+                text: "Message"
+            },
+            {
+                key: "description",
+                text: "Description"
+            }
+        ],
+        utils: {
+            getMyPropertyPaneSchema : function () {
+                return Processors.flowControllers.InvokeMediator.propertyPaneSchema;
+            },
+            getMyParameters: function (model) {
+                return model.attributes.parameters;
+            },
+            saveMyProperties: function (model, inputs) {
+                model.attributes.parameters = [
+                    {
+                        key: "condition",
+                        value: inputs.message.value
+                    },
+                    {
+                        key: "description",
+                        value: inputs.description.value
+                    }
+                ];
             },
             getMySubTree: function (model) {
                 var messageLinks = model.get('children').models;
@@ -150,8 +162,8 @@ var Processors = (function (processors) {
                 var uri = undefined;
                 messageLinks.forEach(function (child) {
                     if (_.isEqual(child.get('direction'), "inbound")) {
-                        endpoint = child.get('message').get('source').get('parent').get('utils').utils.parameters[0].value;
-                        uri = child.get('message').get('source').get('parent').get('utils').utils.parameters[1].value;
+                        endpoint = child.get('message').get('source').get('parent').attributes.parameters[0].value;
+                        uri = child.get('message').get('source').get('parent').attributes.parameters[1].value;
                         // When we define the properties, need to extract the endpoint from the property
                         definedConstants["HTTPEP"] = {name: endpoint, value: uri};
                     } else {
