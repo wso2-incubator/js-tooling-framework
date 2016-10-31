@@ -341,7 +341,12 @@ var Diagrams = (function (diagrams) {
             resourceModel.setDiagramViewForTab(currentView);
             // mark tab as visited
             resourceModel.setSelectedTab();
-            currentView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline);
+            currentView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline,
+                                          //[{
+                                          //    key: "title",
+                                          //    value: MainElements.lifelines.SourceLifeline.title
+                                          //}],
+                                          {utils: MainElements.lifelines.SourceLifeline.utils});
             currentView.model.sourceLifeLineCounter(1);
             currentView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline);
             currentView.model.resourceLifeLineCounter(1);
