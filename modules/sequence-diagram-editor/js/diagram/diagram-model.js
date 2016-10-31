@@ -733,7 +733,6 @@ var Diagrams = (function (diagrams) {
                     });
                 }
 
-
             },
             //keep the current width of the rectangle
             dynamicRectWidth: function (length) {
@@ -745,7 +744,7 @@ var Diagrams = (function (diagrams) {
             },
             //keep the current width of the rectangle
             dynamicRectHeight: function (height) {
-                if (_.isUndefined(length)) {
+                if (_.isUndefined(height)) {
                     return this.get('dynamicRectHeight');
                 } else {
                     this.set('dynamicRectHeight', height);
@@ -753,7 +752,7 @@ var Diagrams = (function (diagrams) {
             },
             //keep the current width of the rectangle
             dynamicRectX: function (xPos) {
-                if (_.isUndefined(length)) {
+                if (_.isUndefined(xPos)) {
                     return this.get('dynamicRectX');
                 } else {
                     this.set('dynamicRectX', xPos);
@@ -761,7 +760,7 @@ var Diagrams = (function (diagrams) {
             },
             //keep the current width of the rectangle
             dynamicRectY: function (yPos) {
-                if (_.isUndefined(length)) {
+                if (_.isUndefined(yPos)) {
                     return this.get('dynamicRectY');
                 } else {
                     this.set('dynamicRectY', yPos);
