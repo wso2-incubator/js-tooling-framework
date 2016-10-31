@@ -712,6 +712,8 @@ var Diagrams = (function (diagrams) {
 
                 var svg = container.draw.svg(this.options.diagram);
 
+                svg.on("click", this.clearDiagram);
+
                 var definitions = svg.append("defs");
                 // add marker definitions
                 definitions.append("marker")
@@ -841,6 +843,18 @@ var Diagrams = (function (diagrams) {
                     view.trigger("viewBoxChange", this.getViewBox(), animationTime);
                 };
                 svg.attr("preserveAspectRatio", "xMinYMin meet");
+            },
+
+            clearDiagram: function () {
+                if (diagram.propertyWindow) {
+                    diagram.propertyWindow = false;
+                    $('#property-pane-svg').empty();
+                    defaultView.enableDragZoomOptions();
+                }
+                if (diagram.selectedOptionsGroup) {
+                    diagram.selectedOptionsGroup.classed("option-menu-hide", true);
+                    diagram.selectedOptionsGroup.classed("option-menu-show", false);
+                }
             },
 
             disableDragZoomOptions: function () {
