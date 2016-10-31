@@ -690,18 +690,21 @@ var Diagrams = (function (diagrams) {
                 id = this.cid;
                 var rects = d3.selectAll("[id=" + id + "]").filter(".genericR");
                 var texts = d3.selectAll("[id=" + id + "]").filter(".genericT");
-
+                // new rectangle width
                 var computedWidth;
                 var finalTextWidth;
 
                 var minimumValue = 130;
                 var dynamic = length;
                 var rectX = rects.attr('x');
-
-
-                // TODO: add methods to store these in TextController for future use
+                var rectY = rects.attr('y');
                 var rectHeight = rects.attr('height');
                 var textYPosition = texts.attr('y');
+
+                this.dynamicRectX(rectX);
+                this.dynamicRectY(rectY);
+                this.dynamicRectHeight(rectHeight);
+                // TODO: add methods to store these in TextController for future use
 
                 // storing rect width and text 'x' position in textmodel
                 if (dynamic < minimumValue) {
@@ -709,19 +712,26 @@ var Diagrams = (function (diagrams) {
                     computedWidth = (minimumValue / 2);
                     finalTextWidth = parseFloat(rectX) + parseFloat(computedWidth);
                     this.dynamicTextPosition(finalTextWidth);
-                    rects.attr('width', function () { return minimumValue});
+                    rects.attr('width', function () {
+                        return minimumValue
+                    });
+                    // setting text element position on change
+                    texts.attr('x', function () {
+                        return finalTextWidth;
+                    });
                 } else {
-                        this.dynamicRectWidth(dynamic);
-                        computedWidth = (dynamic / 2);
-                        finalTextWidth = parseFloat(rectX) + parseFloat(computedWidth);
-                        this.dynamicTextPosition(finalTextWidth);
-                        rects.attr('width', function () {return dynamic;});
-                    }
-
-                // setting text element position on change
-                texts.attr('x', function () {
-                    return finalTextWidth;
-                });
+                    this.dynamicRectWidth(dynamic);
+                    computedWidth = (dynamic / 2);
+                    finalTextWidth = parseFloat(rectX) + parseFloat(computedWidth);
+                    this.dynamicTextPosition(finalTextWidth);
+                    rects.attr('width', function () {
+                        return dynamic;
+                    });
+                    // setting text element position on change
+                    texts.attr('x', function () {
+                        return finalTextWidth;
+                    });
+                }
 
             },
             //keep the current width of the rectangle
@@ -730,6 +740,30 @@ var Diagrams = (function (diagrams) {
                     return this.get('dynamicRectWidth');
                 } else {
                     this.set('dynamicRectWidth', length);
+                }
+            },
+            //keep the current width of the rectangle
+            dynamicRectHeight: function (height) {
+                if (_.isUndefined(height)) {
+                    return this.get('dynamicRectHeight');
+                } else {
+                    this.set('dynamicRectHeight', height);
+                }
+            },
+            //keep the current width of the rectangle
+            dynamicRectX: function (xPos) {
+                if (_.isUndefined(xPos)) {
+                    return this.get('dynamicRectX');
+                } else {
+                    this.set('dynamicRectX', xPos);
+                }
+            },
+            //keep the current width of the rectangle
+            dynamicRectY: function (yPos) {
+                if (_.isUndefined(yPos)) {
+                    return this.get('dynamicRectY');
+                } else {
+                    this.set('dynamicRectY', yPos);
                 }
             },
             //keep the current x position of the text element
@@ -748,7 +782,6 @@ var Diagrams = (function (diagrams) {
                     this.set('parentObject', parent);
                 }
             }
-
 
         });
     models.TextController = TextController;
