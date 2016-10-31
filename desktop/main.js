@@ -21,7 +21,8 @@ const electron = require('electron'),
 		path = require('path'),
 		fs = require('fs'),
 		appDir = app.getAppPath(),
-		Log = require('log');
+		Log = require('log'),
+		Menu = electron.Menu;
 
 var logger = new Log('info'),
  	logsDir = appDir + path.sep + ".." + path.sep + ".." + path.sep + "logs",
@@ -89,6 +90,27 @@ function createWindow () {
     	// when you should delete the corresponding element.
 		mainWindow = null;
 	});
+
+	// Create the Application's main menu
+	var template = [{
+		label: "WSO2 Tooling",
+		submenu: [
+			{ label: "About WSO2 Integration Server Tool", selector: "orderFrontStandardAboutPanel:" },
+			{ type: "separator" },
+			{ label: "Quit", accelerator: "Command+Q", click: function() {
+				serviceProcess.kill();
+				app.quit(); }}
+		]}, {
+		label: "Edit",
+		submenu: [
+			{ label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+			{ label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+			{ label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+			{ label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+		]}
+	];
+
+	Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
 // This method will be called when Electron has finished initialization and is 
