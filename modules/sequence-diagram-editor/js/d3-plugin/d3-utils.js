@@ -408,7 +408,14 @@ var D3Utils = (function (d3_utils) {
             checkbox.attr("checked", true);
         }
 
-        checkbox.on("change", saveProperties);
+        checkbox.on("change", function (e) {
+            e = e || event;
+            saveProperties();
+            e.stopPropagation();
+        }).on("click", function (e) {
+            e = e || event;
+            e.stopPropagation();
+        });
         appendLabel(parent, property.checkbox);
         parent.append("br");
         parent.append("br");

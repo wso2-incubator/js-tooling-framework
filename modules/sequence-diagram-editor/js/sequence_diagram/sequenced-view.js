@@ -245,7 +245,7 @@ var SequenceD = (function (sequenced) {
                             optionsMenuGroup.classed("option-menu-hide", false);
                             optionsMenuGroup.classed("option-menu-show", true);
 
-                            if (diagram.selectedOptionsGroup) {
+                            if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                                 diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                                 diagram.selectedOptionsGroup.classed("option-menu-show", false);
                             }
@@ -263,6 +263,8 @@ var SequenceD = (function (sequenced) {
                             defaultView.enableDragZoomOptions();
                             defaultView.render();
                         }
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
                     });
 
                     // On click of the edit icon will show the properties to to edit
@@ -285,6 +287,8 @@ var SequenceD = (function (sequenced) {
                                                            viewObj.model.get('utils').getMyPropertyPaneSchema(
                                                                viewObj.model));
                         }
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
                     });
 
                     // On click of the delete icon will delete the processor
@@ -522,6 +526,8 @@ var SequenceD = (function (sequenced) {
                             optionsMenuGroup.classed("option-menu-hide", true);
                             optionsMenuGroup.classed("option-menu-show", false);
                         }
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
                     });
 
                     deleteOption.on("click", function () {
@@ -913,8 +919,8 @@ var SequenceD = (function (sequenced) {
                     if (optionsMenuGroup.classed("option-menu-hide")) {
                         optionsMenuGroup.classed("option-menu-hide", false);
                         optionsMenuGroup.classed("option-menu-show", true);
-                        
-                        if (diagram.selectedOptionsGroup) {
+
+                        if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                             diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                             diagram.selectedOptionsGroup.classed("option-menu-show", false);
                         }
@@ -933,6 +939,8 @@ var SequenceD = (function (sequenced) {
                         diagram.selectedOptionsGroup = null;
                         defaultView.render();
                     }
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
                 }));
 
                 editOption.on("click", function () {
@@ -960,6 +968,8 @@ var SequenceD = (function (sequenced) {
                                                        viewObj.model.get('utils').getMyPropertyPaneSchema(
                                                            viewObj.model));
                     }
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
                 });
 
                 deleteOption.on("click", function () {
@@ -1338,7 +1348,7 @@ var SequenceD = (function (sequenced) {
                             optionsMenuGroup.classed("option-menu-hide", false);
                             optionsMenuGroup.classed("option-menu-show", true);
                             
-                            if (diagram.selectedOptionsGroup) {
+                            if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                                 diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                                 diagram.selectedOptionsGroup.classed("option-menu-show", false);
                             }
@@ -1359,6 +1369,8 @@ var SequenceD = (function (sequenced) {
                             }
                             diagram.selectedOptionsGroup = null;
                         }
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
                     });
 
                     editOption.on("click", function () {
@@ -1378,6 +1390,8 @@ var SequenceD = (function (sequenced) {
                                                            viewObj.model.get('parent').attributes.parameters,
                                                            viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
                         }
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
                     });
 
                     deleteOption.on("click", function () {

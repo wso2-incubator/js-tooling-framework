@@ -712,6 +712,8 @@ var Diagrams = (function (diagrams) {
 
                 var svg = container.draw.svg(this.options.diagram);
 
+                svg.on("click", this.clearDiagram);
+
                 var definitions = svg.append("defs");
                 // add marker definitions
                 definitions.append("marker")
@@ -914,6 +916,18 @@ var Diagrams = (function (diagrams) {
                     newViewBox.y - newMousePosition.y(), newViewBox.width, newViewBox.height);
             },
 
+            clearDiagram: function () {
+                if (diagram.propertyWindow) {
+                    diagram.propertyWindow = false;
+                    $('#property-pane-svg').empty();
+                    defaultView.enableDragZoomOptions();
+                }
+                if (diagram.selectedOptionsGroup) {
+                    diagram.selectedOptionsGroup.classed("option-menu-hide", true);
+                    diagram.selectedOptionsGroup.classed("option-menu-show", false);
+                }
+            },
+
             disableDragZoomOptions: function () {
                 this.panAndZoom.events.drag = false;
                 this.panAndZoom.events.mouseWheel = false;
@@ -964,6 +978,10 @@ var Diagrams = (function (diagrams) {
                     y: options.y
                 };
                 propertySVG = svg.draw.propertySVG(svgOptions);
+                propertySVG.on("click", function () {
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
 
                 var rect = propertySVG.append("rect")
                     .attr("id", "property-pane")
