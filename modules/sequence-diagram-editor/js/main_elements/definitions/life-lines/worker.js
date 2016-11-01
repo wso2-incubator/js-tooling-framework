@@ -64,7 +64,7 @@ var MainElements = (function (mainElements) {
                 }
             ],
             canConnectTo: function () {
-                return ['Worker', 'Resource', 'ContainableProcessorElement', 'EndPoint'];
+                return ['Worker', 'Resource', 'ContainableProcessorElement', 'EndPoint', 'CustomProcessor'];
             },
             saveMyProperties: function (model, inputs) {
                 model.attributes.title = inputs.title.value;
