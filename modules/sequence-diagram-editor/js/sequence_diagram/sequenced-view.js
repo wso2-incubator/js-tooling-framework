@@ -778,7 +778,6 @@ var SequenceD = (function (sequenced) {
                 this.title = title;
                 
                 var textModel = this.model.attributes.textModel;
-
                 if(textModel.dynamicRectWidth() === undefined){
                     textModel.dynamicRectWidth(130);
                 }
@@ -1398,6 +1397,7 @@ var SequenceD = (function (sequenced) {
                             defaultView.drawPropertiesPane(d3Ref, options,
                                 viewObj.model.get('parent').attributes.parameters,
                                 viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
+
 
                         }
                         d3.event.preventDefault();

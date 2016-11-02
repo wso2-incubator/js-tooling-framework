@@ -196,6 +196,23 @@ var D3Utils = (function (d3_utils) {
             .attr("x2", x2)
             .attr("y2", y2);
     };
+    var genericLine = function (x1, y1, x2, y2, parent,txtm) {
+        parent = parent || d3Ref;
+        var rr = txtm.dynamicTextPosition();
+        if(txtm.isNew == false){
+            var rws = txtm.dynamicRectWidth();
+            var rx = txtm.dynamicRectX();
+            var nx = parseFloat(rx) + parseFloat(rws/2);
+            x1 = nx;
+            x2 = nx;
+        }
+        return parent.append("line")
+            .attr("x1", x1)
+            .attr("y1", y1)
+            .attr("x2", x2)
+            .attr("y2", y2);
+    };
+
     var genericVerticalLine = function (start, height, parent,txtm) {
         parent = parent || d3Ref;
         return parent.draw.genericLine(start.x(), start.y(), start.x(), start.y() + height, parent,txtm);
