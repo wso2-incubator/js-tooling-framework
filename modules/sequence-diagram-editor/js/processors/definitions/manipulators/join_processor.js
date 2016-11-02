@@ -162,13 +162,13 @@ var Processors = (function (processors) {
                         58,
                         0,
                         0,
-                        optionsMenuGroup, "#f8f8f3").
-                        attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
+                        optionsMenuGroup, "#f9f7f4").
+                        attr("style", "stroke: #908D82; stroke-width: 0.5; opacity:0.5; cursor: pointer").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .1; cursor: pointer");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     var deleteOption = d3Ref.draw.rect(optionMenuStartX + 11,
@@ -178,14 +178,14 @@ var Processors = (function (processors) {
                         0,
                         0,
                         optionsMenuGroup, "url(#delIcon)").
-                        attr("style", "opacity:0.5; cursor: pointer").
+                        attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     //var editOption = d3Ref.draw.rect(optionMenuStartX + 11,

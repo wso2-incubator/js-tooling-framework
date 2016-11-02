@@ -1118,6 +1118,7 @@ var Diagrams = (function (diagrams) {
 
             addContainableProcessorElement: function (processor, center) {
                 var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
+                containableProcessorElem.set('utils', processor.get('utils'));
                 containableProcessorElem.type = 'ContainableProcessorElement';
                 processor.containableProcessorElements().add(containableProcessorElem);
             },
@@ -1169,17 +1170,31 @@ var Diagrams = (function (diagrams) {
                     txt.selectedNode.addChild(processor);
 
                     if (Processors.flowControllers[id].type == "ComplexProcessor") {
-                        (Processors.flowControllers[id].containableElements).forEach(function (elm) {
-                            (elm.children).forEach(function (child) {
+                        var containableElementsArr = Processors.flowControllers[id].containableElements;
+                        for (var y = 0; y < containableElementsArr.length; y++) {
+                            var children = containableElementsArr[y].children;
+
+                            for (var z = 0; z < children.length; z ++) {
                                 var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
                                 containableProcessorElem.type = 'ContainableProcessorElement';
-                                containableProcessorElem.set('title', child.title);
-                                containableProcessorElem.set('utils', processor.get('utils'));
+                                containableProcessorElem.set('title', children[z].title);
+                                containableProcessorElem.set('utils', Processors.flowControllers[id].utils);
                                 containableProcessorElem.parent(processor);
                                 processor.containableProcessorElements().add(containableProcessorElem);
-
-                            });
-                        });
+                            }
+                        }
+                        //(Processors.flowControllers[id].containableElements).forEach(function (elm) {
+                        //    console.log(x);
+                        //    (elm.children).forEach(function (child) {
+                        //        var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
+                        //        containableProcessorElem.type = 'ContainableProcessorElement';
+                        //        containableProcessorElem.set('title', child.title);
+                        //        containableProcessorElem.set('utils', processor.get('utils'));
+                        //        containableProcessorElem.parent(processor);
+                        //        processor.containableProcessorElements().add(containableProcessorElem);
+                        //
+                        //    });
+                        //});
                     }
 
 

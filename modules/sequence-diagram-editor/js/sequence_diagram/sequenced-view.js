@@ -476,13 +476,13 @@ var SequenceD = (function (sequenced) {
                         30,
                         0,
                         0,
-                        optionsMenuGroup, "#f8f8f3").
-                        attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
+                        optionsMenuGroup, "#f9f7f4").
+                        attr("style", "stroke: #908D82; stroke-width: 0.5; opacity:0.5; cursor: pointer").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .1; cursor: pointer");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     var deleteOption = d3ref.draw.rect(Math.round(delXPosition) - 12,
@@ -492,14 +492,14 @@ var SequenceD = (function (sequenced) {
                         0,
                         0,
                         optionsMenuGroup, "url(#delIcon)").
-                        attr("style", "opacity:0.5; cursor: pointer").
+                        attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     var line = d3ref.draw.lineFromPoints(this.model.source().centerPoint(), this.model.destination().centerPoint(), group)
@@ -775,6 +775,7 @@ var SequenceD = (function (sequenced) {
                 var viewObj = this;
                 var group = d3Ref.draw.group()
                     .classed(this.model.viewAttributes.class, true);
+                var lifeLineTopRectGroup = group.append("g");
                 this.group = group;
                 this.prefs = prefs;
                 this.center = center;
@@ -785,32 +786,46 @@ var SequenceD = (function (sequenced) {
                     textModel.dynamicRectWidth(130);
                 }
 
-                var rect = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height, 0, 0, group, '', textModel)
+                lifeLineTopRectGroup.attr('style', 'cursor: pointer');
+
+                var rect = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height,
+                    0, 0, lifeLineTopRectGroup, '#FFFFFF', textModel)
                     .classed(prefs.rect.class, true).classed("genericR",true);
 
-                var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'), center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2), prefs.middleRect.width, prefs.middleRect.height, 0, 0, group)
+                var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'),
+                    center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
+                    prefs.middleRect.width, prefs.middleRect.height, 0, 0, group)
                     .classed(prefs.middleRect.class, true);
+                middleRect.attr('style', 'cursor: pointer');
 
-                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'), center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2), (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group)
+                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'),
+                    center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
+                    (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group)
                     .on("mousedown", function () {
                         d3.event.preventDefault();
                         d3.event.stopPropagation();
                         var m = d3.mouse(this);
                         prefs.diagram.clickedLifeLine = viewObj.model;
-                        prefs.diagram.trigger("messageDrawStart", viewObj.model,  new GeoCore.Models.Point({'x': center.x(), 'y': m[1]}));
+                        prefs.diagram.trigger("messageDrawStart", viewObj.model,
+                            new GeoCore.Models.Point({'x': center.x(), 'y': m[1]}));
 
                     });
 
-                var rectBottom = d3Ref.draw.genericCenteredRect(createPoint(center.get('x'), center.get('y') + prefs.line.height), prefs.rect.width + 30, prefs.rect.height, 0, 0, group,'',textModel)
-                    .classed(prefs.rect.class, true).classed("genericR",true);
-
-                var line = d3Ref.draw.verticalLine(createPoint(center.get('x'), center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group)
+                var line = d3Ref.draw.verticalLine(createPoint(center.get('x'),
+                    center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group)
                     .classed(prefs.line.class, true);
-                var text = d3Ref.draw.genericCenteredText(center, title, group,textModel)
+                var text = d3Ref.draw.genericCenteredText(center, title, lifeLineTopRectGroup,textModel)
                     .classed(prefs.text.class, true).classed("genericT",true);
-                var textBottom = d3Ref.draw.genericCenteredText(createPoint(center.get('x'), center.get('y') + prefs.line.height), title, group,textModel)
+                text.attr('style', 'cursor: pointer');
+                var lifeLineBottomRectGroup = group.append("g");
+                var rectBottom = d3Ref.draw.genericCenteredRect(createPoint(center.get('x'),
+                        center.get('y') + prefs.line.height), prefs.rect.width + 30,
+                    prefs.rect.height, 0, 0, lifeLineBottomRectGroup,'',textModel)
+                    .classed(prefs.rect.class, true).classed("genericR",true);
+                var textBottom = d3Ref.draw.genericCenteredText(createPoint(center.get('x'),
+                    center.get('y') + prefs.line.height), title, lifeLineBottomRectGroup,textModel)
                     .classed(prefs.text.class, true).classed("genericT",true);
-
+                textBottom.attr('style', 'cursor: pointer');
 
                 group.rect = rect;
                 group.rectBottom = rectBottom;
@@ -838,13 +853,13 @@ var SequenceD = (function (sequenced) {
                     58,
                     0,
                     0,
-                    optionsMenuGroup, "#f8f8f3").
-                    attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
+                    optionsMenuGroup, "#f9f7f4").
+                    attr("style", "stroke: #908D82; stroke-width: 0.5; opacity:0.5; cursor: pointer").
                     on("mouseover", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                        d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .1; cursor: pointer");
                     }).
                     on("mouseout", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                        d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                     });
 
                 var deleteOption = d3Ref.draw.rect(optionMenuStartX + 11,
@@ -854,31 +869,31 @@ var SequenceD = (function (sequenced) {
                     0,
                     0,
                     optionsMenuGroup, "url(#delIcon)").
-                    attr("style", "opacity:0.5; cursor: pointer").
+                    attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
                     on("mouseover", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
+                        d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                        optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7");
                     }).
                     on("mouseout", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                        d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                        optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                     });
 
                 var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
-                    optionMenuStartY + 32,
+                    optionMenuStartY + 31,
                     24,
                     24,
                     0,
                     0,
                     optionsMenuGroup, "url(#editIcon)").
-                    attr("style", "opacity:0.5; cursor: pointer").
+                    attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
                     on("mouseover", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                        d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                        optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7; cursor: pointer");
                     }).
                     on("mouseout", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                        d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                        optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                     });
 
                 var viewObj = this;
@@ -914,7 +929,7 @@ var SequenceD = (function (sequenced) {
                 }).on('mouseup', function (data) {
                 });
 
-                rect.on("click", (function () {
+                lifeLineTopRectGroup.on("click", (function () {
                     defaultView.model.selectedNode = viewObj.model;
                     if (optionsMenuGroup.classed("option-menu-hide")) {
                         optionsMenuGroup.classed("option-menu-hide", false);
@@ -974,7 +989,7 @@ var SequenceD = (function (sequenced) {
 
                 deleteOption.on("click", function () {
                     //Get the parent of the model and delete it from the parent
-                    if (~viewObj.model.get("title").indexOf("Resource")) {
+                    if (viewObj.model.type === "Resource") {
                         var resourceElements = defaultView.model.get("diagramResourceElements").models;
                         for (var itr = 0; itr < resourceElements.length; itr ++) {
                             if (resourceElements[itr].cid === viewObj.model.cid) {
@@ -986,7 +1001,7 @@ var SequenceD = (function (sequenced) {
                                 break;
                             }
                         }
-                    } else {
+                    } else if (viewObj.model.type === "EndPoint") {
                         var endpointElements = defaultView.model.get("diagramEndpointElements").models;
                         for (var itr = 0; itr < endpointElements.length; itr ++) {
                             if (endpointElements[itr].cid === viewObj.model.cid) {
@@ -994,6 +1009,30 @@ var SequenceD = (function (sequenced) {
                                 var currentEndpoints = defaultView.model.endpointLifeLineCounter();
                                 defaultView.model.endpointLifeLineCounter(currentEndpoints - 1);
                                 defaultView.model.get("diagramEndpointElements").length -= 1;
+                                defaultView.render();
+                                break;
+                            }
+                        }
+                    } else if (viewObj.model.type === "Worker") {
+                        var workerElements = defaultView.model.get("diagramWorkerElements").models;
+                        for (var itr = 0; itr < workerElements.length; itr ++) {
+                            if (workerElements[itr].cid === viewObj.model.cid) {
+                                workerElements.splice(itr, 1);
+                                var currentWorkers = defaultView.model.workerLifeLineCounter();
+                                defaultView.model.workerLifeLineCounter(currentWorkers - 1);
+                                defaultView.model.get("diagramWorkerElements").length -= 1;
+                                defaultView.render();
+                                break;
+                            }
+                        }
+                    } else if (viewObj.model.type === "Source") {
+                        var sourceElements = defaultView.model.get("diagramSourceElements").models;
+                        for (var itr = 0; itr < sourceElements.length; itr ++) {
+                            if (sourceElements[itr].cid === viewObj.model.cid) {
+                                sourceElements.splice(itr, 1);
+                                var currentSources = defaultView.model.sourceLifeLineCounter();
+                                defaultView.model.sourceLifeLineCounter(currentSources - 1);
+                                defaultView.model.get("diagramSourceElements").length -= 1;
                                 defaultView.render();
                                 break;
                             }
@@ -1199,19 +1238,24 @@ var SequenceD = (function (sequenced) {
                 var height = (200 - prefs.rect.height);
                 var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.x(),
                     center.y()+100), 150, height, 0, 0);
-                middleRect.on("mousedown", function () {
-                    var m = d3.mouse(this);
-                    prefs.diagram.trigger("messageDrawStart", viewObj.model,  new GeoCore.Models.Point({'x': center.x(), 'y': m[1]}));
-                }).on('mouseover', function () {
+                middleRect.on('mouseover', function () {
                     defaultView.model.selectedNode = viewObj.model;
-                    d3.select(this).style("fill", "green").style("fill-opacity", 0.1);
                 }).on('mouseout', function () {
                     defaultView.model.destinationLifeLine = defaultView.model.selectedNode;
                     defaultView.model.selectedNode = null;
-                    d3.select(this).style("fill-opacity", 0.01);
                 }).on('mouseup', function (data) {
                 });
                 console.log(middleRect);
+
+                rectBottomXXX.group.on('mouseover', function () {
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                    defaultView.model.selectedNode = viewObj.model;
+                }).on('mouseout', function () {
+                    defaultView.model.destinationLifeLine = defaultView.model.selectedNode;
+                    defaultView.model.selectedNode = null;
+                }).on('mouseup', function (data) {
+                });
 
                 var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(center.x(),
                     center.y()+100), (prefs.middleRect.width * 0.4), height, 0, 0, d3Ref)
@@ -1297,13 +1341,13 @@ var SequenceD = (function (sequenced) {
                         58,
                         0,
                         0,
-                        optionsMenuGroup, "#f8f8f3").
-                        attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
+                        optionsMenuGroup, "#f9f7f4").
+                        attr("style", "stroke: #908D82; stroke-width: 0.5; opacity:0.5; cursor: pointer").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .1; cursor: pointer");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     var deleteOption = d3Ref.draw.rect(optionMenuStartX + 11,
@@ -1313,41 +1357,41 @@ var SequenceD = (function (sequenced) {
                         0,
                         0,
                         optionsMenuGroup, "url(#delIcon)").
-                        attr("style", "opacity:0.5; cursor: pointer").
+                        attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
-                        optionMenuStartY + 32,
+                        optionMenuStartY + 31,
                         24,
                         24,
                         0,
                         0,
                         optionsMenuGroup, "url(#editIcon)").
-                        attr("style", "opacity:0.5; cursor: pointer").
+                        attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
                         on("mouseover", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7; cursor: pointer");
                         }).
                         on("mouseout", function () {
-                            d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                            optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                            d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                            optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
 
                     // On click of the mediator show/hide the delete icon
-                    rectBottomXXX.containerRect.on("click", function () {
+                    rectBottomXXX.group.on("click", function () {
                         defaultView.model.selectedNode = viewObj.model;
-                        
+
                         if (optionsMenuGroup.classed("option-menu-hide")) {
                             optionsMenuGroup.classed("option-menu-hide", false);
                             optionsMenuGroup.classed("option-menu-show", true);
-                            
+
                             if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
                                 diagram.selectedOptionsGroup.classed("option-menu-hide", true);
                                 diagram.selectedOptionsGroup.classed("option-menu-show", false);
@@ -1358,7 +1402,7 @@ var SequenceD = (function (sequenced) {
                                 $('#property-pane-svg').empty();
                             }
                             diagram.selectedOptionsGroup = optionsMenuGroup;
-                            
+
                         } else {
                             optionsMenuGroup.classed("option-menu-hide", true);
                             optionsMenuGroup.classed("option-menu-show", false);
