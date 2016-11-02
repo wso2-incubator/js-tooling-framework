@@ -105,14 +105,60 @@ var D3Utils = (function (d3_utils) {
             .attr("rx", rx)
             .attr("ry", ry);
     };
-    var genericRect = function (x, y, width, height, rx, ry, parent, colour, textModel) {
+    var genBasicRect = function (x, y, width, height, rx, ry, parent,txtm) {
+        parent = parent || d3Ref;
+        rx = rx || 0;
+        ry = ry || 0;
+        if(txtm.dynamicTextPosition() != undefined){
+            var rws = txtm.dynamicRectWidth();
+            var rx = txtm.dynamicRectX();
+            var nx = parseFloat(rx) + parseFloat(rws/2);
+            x = nx - 20;
+
+        }
+
+        return parent.append("rect")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("width", width)
+            .attr("height", height)
+            .attr("fill-opacity", 0.01)
+            .attr("stroke-width", 2)
+            //.style("filter", "url(#drop-shadow)")
+            .attr("rx", rx)
+            .attr("ry", ry);
+    };
+    var genCenteredBasicRect = function (center, width, height, rx, ry, parent,textm) {
+        parent = parent || d3Ref;
+        rx = rx || 0;
+        ry = ry || 0;
+        return parent.draw.genBasicRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent,textm);
+    };
+
+    var genericRect = function (x, y, width, height, rx, ry, parent, colour,textModel) {
         parent = parent || d3Ref;
         // get TextModel and if dynamicRectWidth is not 130 add that as width
         var modelId = textModel.cid;
         var dynamicWidth = textModel.dynamicRectWidth();
-        if(dynamicWidth != 130){
-            width = dynamicWidth;
+
+        if(textModel.isNew == true){
+
+            textModel.dynamicRectX(x);
+            textModel.dynamicRectY(y);
+            textModel.dynamicRectHeight(height);
+
+            //if a newly added endpoint and resource changed update new x of endpoint
+            var prevRectModel = textModelList.getPrevModelFromId(textModel.cid);
+            if(prevRectModel !=null && prevRectModel.isNew == false){
+                x = textModel.dynamicRectX();
+            }
         }
+       else{
+            x = textModel.dynamicRectX();
+            width = dynamicWidth;
+
+        }
+
         rx = rx || 0;
         ry = ry || 0;
         return parent.append("rect")
@@ -134,6 +180,27 @@ var D3Utils = (function (d3_utils) {
         ry = ry || 0;
         return parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour, textModel);
     };
+    var genericLine = function (x1, y1, x2, y2, parent,txtm) {
+        parent = parent || d3Ref;
+        var rr = txtm.dynamicTextPosition();
+        if(txtm.isNew == false){
+            var rws = txtm.dynamicRectWidth();
+            var rx = txtm.dynamicRectX();
+            var nx = parseFloat(rx) + parseFloat(rws/2);
+            x1 = nx;
+            x2 = nx;
+        }
+        return parent.append("line")
+            .attr("x1", x1)
+            .attr("y1", y1)
+            .attr("x2", x2)
+            .attr("y2", y2);
+    };
+    var genericVerticalLine = function (start, height, parent,txtm) {
+        parent = parent || d3Ref;
+        return parent.draw.genericLine(start.x(), start.y(), start.x(), start.y() + height, parent,txtm);
+    };
+
 //GENERIC TEXT BOX CREATION
     var genericTextRect = function (center,width,height,rx,ry,textContent,x,y,parent,colour, textModel){
         parent = parent || d3Ref;
@@ -209,8 +276,10 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         var modelId = txtModel.cid;
         var dynamicPosition = txtModel.dynamicTextPosition();
-        if(dynamicPosition != undefined){
-            x = dynamicPosition;
+        if(txtModel.isNew == false){
+            var rectW = txtModel.dynamicRectWidth();
+            var computedWidth = parseFloat( rectW / 2);
+           x = parseFloat(txtModel.dynamicRectX()) + parseFloat(computedWidth);
         }
 
         return parent.append("text")
@@ -221,11 +290,11 @@ var D3Utils = (function (d3_utils) {
                 return textContent;
             });
     };
-//TODO:TEST
+
     var genericCenteredText = function (center, textContent, parent,txtModel) {
         parent = parent || d3Ref;
-        return parent.draw.genericTextElement(center.x(), center.y(), textContent, parent,txtModel)
-            .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle');
+        return parent.draw.genericTextElement(center.x(), center.y(), textContent, parent,txtModel);
+        //.attr('text-anchor', 'middle').attr('dominant-baseline', 'middle');
     };
     var textElement = function (x, y, textContent, parent) {
         parent = parent || d3Ref;
@@ -557,6 +626,10 @@ var D3Utils = (function (d3_utils) {
         draw.inputTriangle = inputTriangle;
         draw.outputTriangle = outputTriangle;
         draw.dashedLine = dashedLine;
+        draw.genericVerticalLine = genericVerticalLine;
+        draw.genericLine = genericLine;
+        draw.genCenteredBasicRect = genCenteredBasicRect;
+        draw.genBasicRect = genBasicRect;
 
         var d3Proto = Object.getPrototypeOf(d3ref);
         d3Proto.draw = draw;
