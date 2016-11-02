@@ -81,6 +81,9 @@ var Processors = (function (processors) {
                     }
                 ];
             },
+            canConnectTo: function () {
+                return ['Worker', 'EndPoint'];
+            },
             getMySubTree: function (model) {
                 // Generate Subtree for the try block
                 var tryBlock = model.get('containableProcessorElements').models[0];

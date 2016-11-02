@@ -55,7 +55,9 @@ var D3Utils = (function (d3_utils) {
 
         rx = rx || 0;
         ry = ry || 0;
-        var containerRect = parent.append("rect")
+
+        var group = parent.append("g");
+        var containerRect = group.append("rect")
             .attr("id", "containerRect")
             .attr("x", x)
             .attr("y", y)
@@ -67,7 +69,7 @@ var D3Utils = (function (d3_utils) {
             .attr("rx", rx)
             .attr("fill-opacity",.4)
             .attr("ry", ry);
-        var titleRect = parent.append("rect")
+        var titleRect = group.append("rect")
             .attr("id", "titleRect")
             .attr("x", x)
             .attr("y", y)
@@ -79,11 +81,12 @@ var D3Utils = (function (d3_utils) {
             .attr("fill-opacity", 1)
             .attr("rx", rx)
             .attr("ry", ry);
-        var text = parent.append("text")
+        var text = group.append("text")
             .attr("x", x + 20)
             .attr("y", y + 19)
             .attr("fill", "black")
             .text(title);
+        composite.group = group;
         composite.containerRect = containerRect;
         composite.titleRect = titleRect;
         composite.text = text;
@@ -99,7 +102,7 @@ var D3Utils = (function (d3_utils) {
             .attr("y", y)
             .attr("width", width)
             .attr("height", height)
-            .attr("fill-opacity", 0.01)
+            .attr("fill-opacity", 0)
             .attr("stroke-width", 2)
             //.style("filter", "url(#drop-shadow)")
             .attr("rx", rx)
