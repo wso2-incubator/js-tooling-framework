@@ -295,6 +295,7 @@ var Diagrams = (function (diagrams) {
             // required to clean previous views
             this.undelegateEvents();
             e.preventDefault();
+            textModelList = new Diagrams.Models.TextControllerList([]);
             //create Unique id for each tab
             var id =  Math.random().toString(36).substr(2, 9);
             var hrefId = '#seq_' + id;
@@ -1278,11 +1279,20 @@ var Diagrams = (function (diagrams) {
 
                 //TODO : Adding text model
                 var textModel = new Diagrams.Models.TextController({});
-               // utils.utils.textModel(textModel);
                 utils.utils.textModel = textModel;
+                textModelList.add(textModel);
                 // TODO: For sample usage of events firing: adding lifeLine itself as parent
                   textModel.hasParent = true;
                   textModel.parentObject(lifeline);
+                ////if a newly added endpoint and resource changed update new x of endpoint
+                var prevRectModel = textModelList.getPrevModelFromId(textModel.cid);
+                if(prevRectModel !=null) {
+                    var prevWidth = prevRectModel.dynamicRectWidth();
+                    var prevX = prevRectModel.dynamicRectX();
+                    var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30);
+                    textModel.dynamicRectX(startingXPosition);
+                    textModel.isNew = false;
+                }
                 //
                 lifeline.leftUpperConer({x: centerPoint.attributes.x - 65, y: centerPoint.attributes.y - 15});
                 lifeline.rightLowerConer({
