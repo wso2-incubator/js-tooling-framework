@@ -685,6 +685,49 @@ var Diagrams = (function (diagrams) {
             // Called when text controller changes occurs and if there is a parent element
             notifyParent: function(parentModel, currentTextModel){
                 console.log("parent received it");
+                // for lifeline implementation
+                currentTextModel.isNew = false;
+                var prevRectModel = textModelList.getPrevModelFromId(currentTextModel.cid);
+                if(prevRectModel !=null){
+                    var prevWidth =  prevRectModel.dynamicRectWidth();
+                    var  prevX = prevRectModel.dynamicRectX();
+                    var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30) ;
+                    currentTextModel.dynamicRectX(startingXPosition);
+                    prevRectModel.isNew = false;
+
+                }
+                var nextRectModel = textModelList.getNextModelFromId(currentTextModel.cid);
+                if(nextRectModel != null) {
+                    var prevWidth = currentTextModel.dynamicRectWidth();
+                    var prevX = currentTextModel.dynamicRectX();
+                    var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30);
+                    nextRectModel.dynamicRectX(startingXPosition);
+                    nextRectModel.isNew = false;
+
+                    var index = textModelList.getPositionFromId(nextRectModel.cid);
+                    // There are already added endpoint elements
+                    if (index < textModelList.length) {
+                        var nextIndex = index + 1;
+                        for (var i = nextIndex; i < textModelList.length; i++) {
+                            var currentId = textModelList.models[i].cid;
+                            var currentModel = textModelList.models[i];
+                            var prevRectModel = textModelList.getPrevModelFromId(currentId);
+                            if (prevRectModel != null) {
+                                var prevWidth = prevRectModel.dynamicRectWidth();
+                                var prevX = prevRectModel.dynamicRectX();
+                                var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30);
+                                currentModel.dynamicRectX(startingXPosition);
+                                currentModel.isNew = false;
+
+                            }
+
+                        }
+
+                    }
+                }
+
+
+                defaultView.render();
             }
 
         });
@@ -704,23 +747,28 @@ var Diagrams = (function (diagrams) {
                 //set this to true when adding parent elements
                 this.hasParent = false;
                 this.parentObject();
+                this.toDraw = false;
+                this.isNew = true;
             },
             textChanged: function (length) {
                 id = this.cid;
                 var rects = d3.selectAll("[id=" + id + "]").filter(".genericR");
                 var texts = d3.selectAll("[id=" + id + "]").filter(".genericT");
-
+                // new rectangle width
                 var computedWidth;
                 var finalTextWidth;
 
                 var minimumValue = 130;
                 var dynamic = length;
                 var rectX = rects.attr('x');
-
-
-                // TODO: add methods to store these in TextController for future use
+                var rectY = rects.attr('y');
                 var rectHeight = rects.attr('height');
                 var textYPosition = texts.attr('y');
+
+                this.dynamicRectX(rectX);
+                this.dynamicRectY(rectY);
+                this.dynamicRectHeight(rectHeight);
+                // TODO: add methods to store these in TextController for future use
 
                 // storing rect width and text 'x' position in textmodel
                 if (dynamic < minimumValue) {
@@ -728,20 +776,26 @@ var Diagrams = (function (diagrams) {
                     computedWidth = (minimumValue / 2);
                     finalTextWidth = parseFloat(rectX) + parseFloat(computedWidth);
                     this.dynamicTextPosition(finalTextWidth);
-                    rects.attr('width', function () { return minimumValue});
+                    rects.attr('width', function () {
+                        return minimumValue
+                    });
+                    // setting text element position on change
+                    texts.attr('x', function () {
+                        return finalTextWidth;
+                    });
                 } else {
-                        this.dynamicRectWidth(dynamic);
-                        computedWidth = (dynamic / 2);
-                        finalTextWidth = parseFloat(rectX) + parseFloat(computedWidth);
-                        this.dynamicTextPosition(finalTextWidth);
-                        rects.attr('width', function () {return dynamic;});
-                    }
-
-                // setting text element position on change
-                texts.attr('x', function () {
-                    return finalTextWidth;
-                });
-
+                    this.dynamicRectWidth(dynamic);
+                    computedWidth = (dynamic / 2);
+                    finalTextWidth = parseFloat(rectX) + parseFloat(computedWidth);
+                    this.dynamicTextPosition(finalTextWidth);
+                    rects.attr('width', function () {
+                        return dynamic;
+                    });
+                    // setting text element position on change
+                    texts.attr('x', function () {
+                        return finalTextWidth;
+                    });
+                }
             },
             //keep the current width of the rectangle
             dynamicRectWidth: function (length) {
@@ -749,6 +803,30 @@ var Diagrams = (function (diagrams) {
                     return this.get('dynamicRectWidth');
                 } else {
                     this.set('dynamicRectWidth', length);
+                }
+            },
+            //keep the current width of the rectangle
+            dynamicRectHeight: function (height) {
+                if (_.isUndefined(height)) {
+                    return this.get('dynamicRectHeight');
+                } else {
+                    this.set('dynamicRectHeight', height);
+                }
+            },
+            //keep the current width of the rectangle
+            dynamicRectX: function (xPos) {
+                if (_.isUndefined(xPos)) {
+                    return this.get('dynamicRectX');
+                } else {
+                    this.set('dynamicRectX', xPos);
+                }
+            },
+            //keep the current width of the rectangle
+            dynamicRectY: function (yPos) {
+                if (_.isUndefined(yPos)) {
+                    return this.get('dynamicRectY');
+                } else {
+                    this.set('dynamicRectY', yPos);
                 }
             },
             //keep the current x position of the text element
@@ -768,9 +846,60 @@ var Diagrams = (function (diagrams) {
                 }
             }
 
+        });
+    var TextControllerList = Backbone.Collection.extend(
+        /** @lends DiagramElements.prototype */
+        {
+            /**
+             * @augments Backbone.Collection
+             * @constructs
+             * @class DiagramElements represents the collection for text controllers.
+             */
+            initialize: function (models, options) {
+            },
+
+            modelName: "TextControllerList",
+
+            nameSpace: diagrams,
+
+            model: TextController,
+
+            nextTextModel: undefined,
+
+            getPrevModelFromId : function(currentId){
+                if(textModelList.length >= 1){
+                    for(var i = 0; i < textModelList.length; i ++){
+                        if(textModelList.models[i].cid == currentId){
+
+                            return textModelList.models[i-1];
+
+                        }
+                    }
+                }
+            },
+            getNextModelFromId : function(currentId){
+                if(textModelList.length >= 1){
+                    for(var i = 0; i < textModelList.length; i ++){
+                        if(textModelList.models[i].cid == currentId){
+
+                            return textModelList.models[i+1];
+
+                        }
+                    }
+                }
+            },
+            getPositionFromId : function(currentId){
+                for(var i = 0; i < textModelList.length; i ++){
+                    if(textModelList.models[i].cid == currentId){
+                        return i ;
+                    }
+                }
+            }
 
         });
+
     models.TextController = TextController;
+    models.TextControllerList = TextControllerList;
     models.EventManager = EventManager;
     models.DiagramElement = DiagramElement;
     models.DiagramElements = DiagramElements;

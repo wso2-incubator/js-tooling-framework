@@ -624,9 +624,6 @@ var SequenceD = (function (sequenced) {
                                 model: processor,
                                 options: lifeLineOptions
                             });
-                             //TODO: for event synchronize
-                            //get text model of processor. Add this (lifeline?) as the parent in it and make
-                            // hasParent:true
 
                             var processorCenterPoint = createPoint(xValue, yValue);
                             processorView.render("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, "processors");
@@ -752,7 +749,7 @@ var SequenceD = (function (sequenced) {
                             this.prefs.rect.height,
                             150,
                             200,
-                                0,
+                            0,
                             0,
                             this.group, element.viewAttributes.colour,
                             element.attributes.title
@@ -780,10 +777,20 @@ var SequenceD = (function (sequenced) {
                 this.prefs = prefs;
                 this.center = center;
                 this.title = title;
-
+                
                 var textModel = this.model.attributes.textModel;
                 if(textModel.dynamicRectWidth() === undefined){
                     textModel.dynamicRectWidth(130);
+                }
+
+                //Updating dynamic center point
+                if(textModel.isNew == false){
+                    var rw = textModel.dynamicRectWidth();
+                    var rx = textModel.dynamicRectX();
+                    var centrx = parseFloat(rw/2) + parseFloat(rx);
+
+                    this.center.attributes.x = centrx;
+
                 }
 
                 lifeLineTopRectGroup.attr('style', 'cursor: pointer');
@@ -825,7 +832,7 @@ var SequenceD = (function (sequenced) {
                 var textBottom = d3Ref.draw.genericCenteredText(createPoint(center.get('x'),
                     center.get('y') + prefs.line.height), title, lifeLineBottomRectGroup,textModel)
                     .classed(prefs.text.class, true).classed("genericT",true);
-                textBottom.attr('style', 'cursor: pointer');
+
 
                 group.rect = rect;
                 group.rectBottom = rectBottom;
@@ -899,7 +906,7 @@ var SequenceD = (function (sequenced) {
                 var viewObj = this;
                 middleRect.on('mouseover', function () {
                     //setting current tab view based diagram model
-                     diagram = defaultView.model;
+                    diagram = defaultView.model;
                     diagram.selectedNode = viewObj.model;
                     d3.select(this).style("fill", "green").style("fill-opacity", 0.1);
                     // Update event manager with current active element type for validation
@@ -945,7 +952,7 @@ var SequenceD = (function (sequenced) {
                             $('#property-pane-svg').empty();
                         }
                         diagram.selectedOptionsGroup = optionsMenuGroup;
-                        
+
                     } else {
                         optionsMenuGroup.classed("option-menu-hide", true);
                         optionsMenuGroup.classed("option-menu-show", false);
@@ -964,18 +971,18 @@ var SequenceD = (function (sequenced) {
                         diagram.propertyWindow = false;
                         defaultView.enableDragZoomOptions();
                         defaultView.render();
-                        
+
                     } else {
                         diagram.selectedMainElementText = {
                             top: viewObj.d3el.svgTitle,
                             bottom: viewObj.d3el.svgTitleBottom
                         };
-                        
+
                         var options = {
                             x: parseFloat(this.getAttribute("x")) + 6,
                             y: parseFloat(this.getAttribute("y")) + 21
                         };
-                        
+
                         defaultView.selectedNode = viewObj.model;
 
                         defaultView.drawPropertiesPane(d3Ref, options,
@@ -1258,7 +1265,7 @@ var SequenceD = (function (sequenced) {
                 });
 
                 var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(center.x(),
-                    center.y()+100), (prefs.middleRect.width * 0.4), height, 0, 0, d3Ref)
+                        center.y()+100), (prefs.middleRect.width * 0.4), height, 0, 0, d3Ref)
                     .on("mousedown", function () {
                         d3.event.preventDefault();
                         d3.event.stopPropagation();
@@ -1422,24 +1429,26 @@ var SequenceD = (function (sequenced) {
                             diagram.propertyWindow = false;
                             defaultView.enableDragZoomOptions();
                             defaultView.render();
-                            
+
                         } else {
                             var options = {
                                 x: parseFloat(this.getAttribute("x")) + 6,
                                 y: parseFloat(this.getAttribute("y")) + 21
                             };
-                            
+
                             defaultView.selectedNode = viewObj.model.attributes.parent;
                             defaultView.drawPropertiesPane(d3Ref, options,
-                                                           viewObj.model.get('parent').attributes.parameters,
-                                                           viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
+                                viewObj.model.get('parent').attributes.parameters,
+                                viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
+
+
                         }
                         d3.event.preventDefault();
                         d3.event.stopPropagation();
                     });
 
                     deleteOption.on("click", function () {
-                         //Get the parent of the model and delete it from the parent
+                        //Get the parent of the model and delete it from the parent
                         var parentModelChildren = viewObj.model.get("parent").get("parent").get("children").models;
                         for (var itr = 0; itr < parentModelChildren.length; itr ++) {
                             if (parentModelChildren[itr].cid === viewObj.model.get("parent").cid) {
