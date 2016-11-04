@@ -19,7 +19,6 @@
 
 
 var eventManager = new Diagrams.Models.EventManager({});
-var textModelList = new Diagrams.Models.TextControllerList([]);
 var lifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // Lifeline rectangle options

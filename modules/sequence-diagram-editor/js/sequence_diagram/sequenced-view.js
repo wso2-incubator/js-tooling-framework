@@ -782,16 +782,16 @@ var SequenceD = (function (sequenced) {
                 if(textModel.dynamicRectWidth() === undefined){
                     textModel.dynamicRectWidth(130);
                 }
-
+                 //TODO: check issue with worker/endpoint center logic
                 //Updating dynamic center point
-                if(textModel.isNew == false){
-                    var rw = textModel.dynamicRectWidth();
-                    var rx = textModel.dynamicRectX();
-                    var centrx = parseFloat(rw/2) + parseFloat(rx);
-
-                    this.center.attributes.x = centrx;
-
-                }
+                //if(textModel.isNew == false){
+                //    var rw = textModel.dynamicRectWidth();
+                //    var rx = textModel.dynamicRectX();
+                //    var centrx = parseFloat(rw/2) + parseFloat(rx);
+                //
+                //    this.center.attributes.x = centrx;
+                //
+                //}
 
                 lifeLineTopRectGroup.attr('style', 'cursor: pointer');
 
@@ -799,27 +799,32 @@ var SequenceD = (function (sequenced) {
                     0, 0, lifeLineTopRectGroup, '#FFFFFF', textModel)
                     .classed(prefs.rect.class, true).classed("genericR",true);
 
-                var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'),
+                var middleRect = d3Ref.draw.genCenteredBasicRect(createPoint(center.get('x'),
                     center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
-                    prefs.middleRect.width, prefs.middleRect.height, 0, 0, group)
+                    prefs.middleRect.width, prefs.middleRect.height, 0, 0, group,textModel)
                     .classed(prefs.middleRect.class, true);
                 middleRect.attr('style', 'cursor: pointer');
+                 // For arrow dynamic update
+                    var rw = textModel.dynamicRectWidth();
+                    var rx = textModel.dynamicRectX();
+                    var centerX = parseFloat(rw/2) + parseFloat(rx);
 
-                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(center.get('x'),
+                    this.center.attributes.x = centerX;
+                var drawMessageRect = d3Ref.draw.genCenteredBasicRect(createPoint(center.get('x'),
                     center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
-                    (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group)
+                    (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group,textModel)
                     .on("mousedown", function () {
                         d3.event.preventDefault();
                         d3.event.stopPropagation();
                         var m = d3.mouse(this);
                         prefs.diagram.clickedLifeLine = viewObj.model;
                         prefs.diagram.trigger("messageDrawStart", viewObj.model,
-                            new GeoCore.Models.Point({'x': center.x(), 'y': m[1]}));
+                            new GeoCore.Models.Point({'x': centerX, 'y': m[1]}));
 
                     });
 
-                var line = d3Ref.draw.verticalLine(createPoint(center.get('x'),
-                    center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group)
+                var line = d3Ref.draw.genericVerticalLine(createPoint(center.get('x'),
+                    center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group,textModel)
                     .classed(prefs.line.class, true);
                 var text = d3Ref.draw.genericCenteredText(center, title, lifeLineTopRectGroup,textModel)
                     .classed(prefs.text.class, true).classed("genericT",true);

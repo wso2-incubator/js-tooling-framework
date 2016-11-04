@@ -112,13 +112,12 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        if(txtm.dynamicTextPosition() != undefined){
+
             var rws = txtm.dynamicRectWidth();
             var rx = txtm.dynamicRectX();
             var nx = parseFloat(rx) + parseFloat(rws/2);
             x = nx - 20;
 
-        }
 
         return parent.append("rect")
             .attr("x", x)
@@ -142,25 +141,31 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         // get TextModel and if dynamicRectWidth is not 130 add that as width
         var modelId = textModel.cid;
-        var dynamicWidth = textModel.dynamicRectWidth();
 
-        if(textModel.isNew == true){
+        if(textModel.dynamicRectWidth() == undefined){
+            textModel.dynamicRectWidth(width);
+        }
 
+        width = textModel.dynamicRectWidth();
+
+        if(textModel.dynamicRectX() == undefined){
             textModel.dynamicRectX(x);
+        }
+
+        x = textModel.dynamicRectX();
+
+        if(textModel.dynamicRectY() == undefined){
             textModel.dynamicRectY(y);
+        }
+
+       // y = textModel.dynamicRectY();
+
+        if(textModel.dynamicRectHeight() == undefined){
             textModel.dynamicRectHeight(height);
-
-            //if a newly added endpoint and resource changed update new x of endpoint
-            var prevRectModel = textModelList.getPrevModelFromId(textModel.cid);
-            if(prevRectModel !=null && prevRectModel.isNew == false){
-                x = textModel.dynamicRectX();
-            }
         }
-       else{
-            x = textModel.dynamicRectX();
-            width = dynamicWidth;
 
-        }
+      //  height = textModel.dynamicRectHeight();
+
 
         rx = rx || 0;
         ry = ry || 0;
@@ -201,14 +206,13 @@ var D3Utils = (function (d3_utils) {
     };
     var genericLine = function (x1, y1, x2, y2, parent,txtm) {
         parent = parent || d3Ref;
-        var rr = txtm.dynamicTextPosition();
-        if(txtm.isNew == false){
+
             var rws = txtm.dynamicRectWidth();
             var rx = txtm.dynamicRectX();
             var nx = parseFloat(rx) + parseFloat(rws/2);
             x1 = nx;
             x2 = nx;
-        }
+
         return parent.append("line")
             .attr("x1", x1)
             .attr("y1", y1)
@@ -296,11 +300,10 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         var modelId = txtModel.cid;
         var dynamicPosition = txtModel.dynamicTextPosition();
-        if(txtModel.isNew == false){
             var rectW = txtModel.dynamicRectWidth();
             var computedWidth = parseFloat( rectW / 2);
            x = parseFloat(txtModel.dynamicRectX()) + parseFloat(computedWidth);
-        }
+
 
         return parent.append("text")
             .attr("x", x)
