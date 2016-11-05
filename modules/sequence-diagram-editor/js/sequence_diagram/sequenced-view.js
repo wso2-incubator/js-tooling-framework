@@ -312,6 +312,37 @@ var SequenceD = (function (sequenced) {
                     group.rect = rectBottomXXX;
                     group.title = mediatorText;
                     //this.renderViewForElement(element, opts);
+
+                } if (this.model.model.type === "Action") {
+                    var height = 0;
+                    height = this.model.getHeight() - 30;
+                    var width = this.model.getWidth();
+
+                    var processorTitleRect = d3Ref.draw.rect((center.x() - this.model.getWidth()/2),
+                        (center.y() - height/2),
+                        this.model.getWidth(),
+                        30,
+                        0,
+                        0,
+                        group,
+                        this.modelAttr('viewAttributes').colour
+                    );
+
+                    var mediatorText = d3Ref.draw.textElement(center.x(),
+                        (center.y() + 15 - height/2),
+                        title,
+                        group)
+                        .classed("mediator-title", true);
+
+                    group.rect = rectBottomXXX;
+                    group.title = mediatorText;
+
+                    var inputMessagePoint = this.model.inputConnector();
+                    if(!_.isUndefined(inputMessagePoint)){
+                        inputMessagePoint.x(center.x() - width/2);
+                        inputMessagePoint.y(center.y());
+                    }
+
                 } else if (this.model.model.type === "DynamicContainableProcessor") {
 
                     console.log("Processor added");

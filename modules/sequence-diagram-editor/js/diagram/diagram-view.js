@@ -345,7 +345,7 @@ var Diagrams = (function (diagrams) {
             addInitialElements(nextTabListView);
         },
         //Draw initial arrow between the source and resource element
-        drawInitArrow:function(source,destination,diagramView){
+        addInitArrow:function(source,destination,diagramView){
             centerS = createPoint(200, 50);
             centerR = createPoint(380, 50);
             var sourcePoint = new SequenceD.Models.MessagePoint({
@@ -367,8 +367,7 @@ var Diagrams = (function (diagrams) {
             var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
             var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
             source.addChild(sourcePoint, messageOptionsOutbound);
-            destination.addChild(destinationPoint, messageOptionsInbound);
-            diagramView.render();
+            destination.inputConnector(destinationPoint);
         }
 
     });
