@@ -1287,12 +1287,13 @@ var Diagrams = (function (diagrams) {
                             model: lifeLine,
                             options: lifeLineOptions
                         });
-                        var sourceM = this.model.attributes.diagramSourceElements.models[0].attributes.textModel;
-                        var w = sourceM.dynamicRectWidth();
-                        var x = sourceM.dynamicRectX();
+                        // Get previous  source text model of a resource
+                        var prevModel = this.model.attributes.diagramSourceElements.models[0].attributes.textModel;
+                        var w = prevModel.dynamicRectWidth();
+                        var x = prevModel.dynamicRectX();
                         var n = parseFloat(w) + parseFloat(x)+ 30;
-                       var c = lifeLine.attributes.textModel;
-                        c.dynamicRectX(n);
+                       var currentModel= lifeLine.attributes.textModel;
+                        currentModel.dynamicRectX(n);
                         var rectColour = this.model.attributes.diagramResourceElements.models[id].attributes.colour;
                         lifeLineView.render("#" + this.options.diagram.wrapperId, "processors", rectColour);
                     }
@@ -1308,21 +1309,21 @@ var Diagrams = (function (diagrams) {
                              var epCount = this.model.attributes.diagramEndpointElements.length;
                             var wCount = this.model.attributes.diagramWorkerElements.length;
                             if( id == 0){
-                                var sourceM = this.model.attributes.diagramResourceElements.models[0].attributes.textModel;
-                                var w = sourceM.dynamicRectWidth();
-                                var x = sourceM.dynamicRectX();
+                                // If first worker get resource text model
+                                var prevModel = this.model.attributes.diagramResourceElements.models[0].attributes.textModel;
+                                var w = prevModel.dynamicRectWidth();
+                                var x = prevModel.dynamicRectX();
                                 var n = parseFloat(w) + parseFloat(x)+ 30;
-                                var c = lifeLine.attributes.textModel;
-                                c.dynamicRectX(n);
+                                var currentModel = lifeLine.attributes.textModel;
+                                currentModel.dynamicRectX(n);
                             }
                             else  {
-                              //  var ind = wCount -1;
-                                var sourceM = this.model.attributes.diagramWorkerElements.models[id - 1].attributes.textModel;
-                                var w = sourceM.dynamicRectWidth();
-                                var x = sourceM.dynamicRectX();
+                                var prevModel = this.model.attributes.diagramWorkerElements.models[id - 1].attributes.textModel;
+                                var w = prevModel.dynamicRectWidth();
+                                var x = prevModel.dynamicRectX();
                                 var n = parseFloat(w) + parseFloat(x)+ 30;
-                                var c = lifeLine.attributes.textModel;
-                                c.dynamicRectX(n);
+                                var currentModel = lifeLine.attributes.textModel;
+                                currentModel.dynamicRectX(n);
                             }
 
                             var rectColour = this.model.attributes.diagramWorkerElements.models[id].attributes.colour;
@@ -1342,28 +1343,30 @@ var Diagrams = (function (diagrams) {
                         var wCount = this.model.attributes.diagramWorkerElements.length;
 
                         if(wCount == 0 && id ==0){
-                            var sourceM = this.model.attributes.diagramResourceElements.models[0].attributes.textModel;
-                            var w = sourceM.dynamicRectWidth();
-                            var x = sourceM.dynamicRectX();
+                            // If no workers added and this is the first endpoint get resource text model
+                            var prevModel = this.model.attributes.diagramResourceElements.models[0].attributes.textModel;
+                            var w = prevModel.dynamicRectWidth();
+                            var x = prevModel.dynamicRectX();
                             var n = parseFloat(w) +parseFloat(x)+ 30;
-                            var c = lifeLine.attributes.textModel;
-                            c.dynamicRectX(n);
+                            var currentModel = lifeLine.attributes.textModel;
+                            currentModel.dynamicRectX(n);
                         }
                         else if( id == 0 && wCount > 0){
-                            var sourceM = this.model.attributes.diagramWorkerElements.models[wCount - 1].attributes.textModel;
-                            var w = sourceM.dynamicRectWidth();
-                            var x = sourceM.dynamicRectX();
+                            // If worker/workers are added and this is the first endpoint,get last worker text model
+                            var prevModel = this.model.attributes.diagramWorkerElements.models[wCount - 1].attributes.textModel;
+                            var w = prevModel.dynamicRectWidth();
+                            var x = prevModel.dynamicRectX();
                             var n = parseFloat(w) + parseFloat(x)+ 30;
-                            var c = lifeLine.attributes.textModel;
-                            c.dynamicRectX(n);
+                            var currentModel = lifeLine.attributes.textModel;
+                            currentModel.dynamicRectX(n);
                         }
                         else{
-                            var sourceM = this.model.attributes.diagramEndpointElements.models[id - 1].attributes.textModel;
-                            var w = sourceM.dynamicRectWidth();
-                            var x = sourceM.dynamicRectX();
-                            var n = parseFloat(w) + ParseFloat(x)+ 30;
-                            var c = lifeLine.attributes.textModel;
-                            c.dynamicRectX(n);
+                            var prevModel = this.model.attributes.diagramEndpointElements.models[id - 1].attributes.textModel;
+                            var w = prevModel.dynamicRectWidth();
+                            var x = prevModel.dynamicRectX();
+                            var n = parseFloat(w) + parseFloat(x)+ 30;
+                            var currentModel = lifeLine.attributes.textModel;
+                            currentModel.dynamicRectX(n);
                         }
                         var rectColour = this.model.attributes.diagramEndpointElements.models[id].attributes.colour;
                         lifeLineView.render("#" + this.options.diagram.wrapperId, "processors", rectColour);

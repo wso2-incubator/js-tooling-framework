@@ -706,7 +706,6 @@ var Diagrams = (function (diagrams) {
                 //set this to true when adding parent elements
                 this.hasParent = false;
                 this.parentObject();
-                this.toDraw = false;
                 this.isNew = true;
             },
             textChanged: function (length) {

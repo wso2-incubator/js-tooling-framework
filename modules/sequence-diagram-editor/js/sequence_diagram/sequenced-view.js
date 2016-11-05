@@ -782,16 +782,6 @@ var SequenceD = (function (sequenced) {
                 if(textModel.dynamicRectWidth() === undefined){
                     textModel.dynamicRectWidth(130);
                 }
-                 //TODO: check issue with worker/endpoint center logic
-                //Updating dynamic center point
-                //if(textModel.isNew == false){
-                //    var rw = textModel.dynamicRectWidth();
-                //    var rx = textModel.dynamicRectX();
-                //    var centrx = parseFloat(rw/2) + parseFloat(rx);
-                //
-                //    this.center.attributes.x = centrx;
-                //
-                //}
 
                 lifeLineTopRectGroup.attr('style', 'cursor: pointer');
 
