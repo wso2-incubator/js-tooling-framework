@@ -686,47 +686,6 @@ var Diagrams = (function (diagrams) {
             notifyParent: function(parentModel, currentTextModel){
                 console.log("parent received it");
                 // for lifeline implementation
-                currentTextModel.isNew = false;
-                var prevRectModel = textModelList.getPrevModelFromId(currentTextModel.cid);
-                if(prevRectModel !=null){
-                    var prevWidth =  prevRectModel.dynamicRectWidth();
-                    var  prevX = prevRectModel.dynamicRectX();
-                    var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30) ;
-                    currentTextModel.dynamicRectX(startingXPosition);
-                    prevRectModel.isNew = false;
-
-                }
-                var nextRectModel = textModelList.getNextModelFromId(currentTextModel.cid);
-                if(nextRectModel != null) {
-                    var prevWidth = currentTextModel.dynamicRectWidth();
-                    var prevX = currentTextModel.dynamicRectX();
-                    var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30);
-                    nextRectModel.dynamicRectX(startingXPosition);
-                    nextRectModel.isNew = false;
-
-                    var index = textModelList.getPositionFromId(nextRectModel.cid);
-                    // There are already added endpoint elements
-                    if (index < textModelList.length) {
-                        var nextIndex = index + 1;
-                        for (var i = nextIndex; i < textModelList.length; i++) {
-                            var currentId = textModelList.models[i].cid;
-                            var currentModel = textModelList.models[i];
-                            var prevRectModel = textModelList.getPrevModelFromId(currentId);
-                            if (prevRectModel != null) {
-                                var prevWidth = prevRectModel.dynamicRectWidth();
-                                var prevX = prevRectModel.dynamicRectX();
-                                var startingXPosition = parseFloat(prevWidth) + parseFloat(prevX) + parseFloat(30);
-                                currentModel.dynamicRectX(startingXPosition);
-                                currentModel.isNew = false;
-
-                            }
-
-                        }
-
-                    }
-                }
-
-
                 defaultView.render();
             }
 
@@ -747,7 +706,6 @@ var Diagrams = (function (diagrams) {
                 //set this to true when adding parent elements
                 this.hasParent = false;
                 this.parentObject();
-                this.toDraw = false;
                 this.isNew = true;
             },
             textChanged: function (length) {
@@ -847,59 +805,8 @@ var Diagrams = (function (diagrams) {
             }
 
         });
-    var TextControllerList = Backbone.Collection.extend(
-        /** @lends DiagramElements.prototype */
-        {
-            /**
-             * @augments Backbone.Collection
-             * @constructs
-             * @class DiagramElements represents the collection for text controllers.
-             */
-            initialize: function (models, options) {
-            },
-
-            modelName: "TextControllerList",
-
-            nameSpace: diagrams,
-
-            model: TextController,
-
-            nextTextModel: undefined,
-
-            getPrevModelFromId : function(currentId){
-                if(textModelList.length >= 1){
-                    for(var i = 0; i < textModelList.length; i ++){
-                        if(textModelList.models[i].cid == currentId){
-
-                            return textModelList.models[i-1];
-
-                        }
-                    }
-                }
-            },
-            getNextModelFromId : function(currentId){
-                if(textModelList.length >= 1){
-                    for(var i = 0; i < textModelList.length; i ++){
-                        if(textModelList.models[i].cid == currentId){
-
-                            return textModelList.models[i+1];
-
-                        }
-                    }
-                }
-            },
-            getPositionFromId : function(currentId){
-                for(var i = 0; i < textModelList.length; i ++){
-                    if(textModelList.models[i].cid == currentId){
-                        return i ;
-                    }
-                }
-            }
-
-        });
 
     models.TextController = TextController;
-    models.TextControllerList = TextControllerList;
     models.EventManager = EventManager;
     models.DiagramElement = DiagramElement;
     models.DiagramElements = DiagramElements;
