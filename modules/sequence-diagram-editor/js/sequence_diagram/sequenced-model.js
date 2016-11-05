@@ -100,6 +100,22 @@ var SequenceD = (function (sequenced) {
                 width : 130,
                 height : 60,
                 title: "Processor"
+            },
+
+            inputConnector: function (inputConnector){
+                if(_.isUndefined(inputConnector)){
+                    return this.get('inputConnector');
+                }
+                inputConnector.parent(this);
+                this.set('inputConnector', inputConnector);
+            },
+
+            outputConnector: function (outputConnector) {
+                if(_.isUndefined(outputConnector)){
+                    return this.get('outputConnector');
+                }
+                outputConnector.parent(this);
+                this.set('outputConnector', outputConnector);
             }
         });
 
@@ -148,7 +164,6 @@ var SequenceD = (function (sequenced) {
             model: Child
 
         });
-
 
     var LifeLine = Diagrams.Models.Shape.extend(
         /** @lends LifeLine.prototype */

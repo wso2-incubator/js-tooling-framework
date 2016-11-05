@@ -63,6 +63,17 @@ var SequenceD = (function (sequenced) {
                 parameters: parameters,
                 utils: utils
             });
+        } else if (type === "Action") {
+            processor = new SequenceD.Models.UnitProcessor({
+                title: title,
+                centerPoint: center,
+                type: type,
+                model: model,
+                viewAttributes: viewAttributes,
+                parameters: parameters,
+                utils: utils,
+                textModel : textModel
+            });
         }
 
         processor.type = type;

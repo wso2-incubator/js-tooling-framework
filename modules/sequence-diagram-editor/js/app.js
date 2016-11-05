@@ -260,12 +260,28 @@ function addInitialElements(tabListView){
     model.addElement(lifeline, lifeLineOptions);
     model.sourceLifeLineCounter(1);
 
-    defaultView.render();
+    var position = new GeoCore.Models.Point({x: 0, y: 0});
+
+    var processor = new SequenceD.Models.ProcessorFactory(Processors.actions.startAction.title,
+        position,
+        Processors.actions.startAction.type,
+        {
+            type: Processors.actions.startAction.type,
+            initMethod: Processors.actions.startAction.init
+        },
+        {
+            colour: Processors.actions.startAction.colour
+        },
+        Processors.actions.startAction.parameters,
+        Processors.actions.startAction.utils);
+
+    resourceLifeline.addChild(processor);
 
     //create initial arrow between source and resource
     var currentSource = defaultView.model.diagramSourceElements().models[0];
     var currentResource = defaultView.model.diagramResourceElements().models[0];
-    tabListView.drawInitArrow(currentSource,currentResource,defaultView);
+    tabListView.addInitArrow(currentSource,processor,defaultView);
+    defaultView.render();
 }
 
 $(document).ready(function(){
