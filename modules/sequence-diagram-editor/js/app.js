@@ -20,6 +20,7 @@
 
 var eventManager = new Diagrams.Models.EventManager({});
 var lifeLineOptions = {};
+var resourceLifeLineOptions = {};
 lifeLineOptions.class = "lifeline";
 // Lifeline rectangle options
 lifeLineOptions.rect = {};
@@ -58,16 +59,31 @@ var createPoint = function (x, y) {
 
 var diagramD3el = undefined;
 
-var createLifeLine = function (title, center, cssClass, utils, parameters, textModel, type) {
-    return new SequenceD.Models.LifeLine({
+var createLifeLine = function (title, center, cssClass, utils, parameters, initTextModel, type) {
+    var lifeline =  new SequenceD.Models.LifeLine({
         title: title,
         centerPoint: center,
         cssClass: cssClass,
         utils: utils,
         parameters: parameters,
-        textModel: textModel,
+        textModel: initTextModel,
         type: type
     });
+
+    //TODO : Adding text model
+    var textModel = new Diagrams.Models.TextController({});
+    lifeline.attributes.textModel = textModel;
+    // TODO: For sample usage of events firing: adding lifeLine itself as parent
+    textModel.hasParent = true;
+    textModel.parentObject(lifeline);
+    lifeline.leftUpperConer({x: center.attributes.x - 65, y: center.attributes.y - 15});
+    lifeline.rightLowerConer({
+        x: center.attributes.x + 65,
+        y: center.attributes.y + 15 + lifeLineOptions.middleRect.height + lifeLineOptions.rect.height
+    });
+
+    return lifeline;
+
 };
 // Create main tool group
 var mainToolGroup = new Tools.Models.ToolGroup({
@@ -207,15 +223,49 @@ function initTabs(){
     preview.render();
     tab.preview(preview);
 
-    defaultView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline);
-    defaultView.model.sourceLifeLineCounter(1);
-    defaultView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline);
-    defaultView.model.resourceLifeLineCounter(1);
+    addInitialElements(tabListView);
+
+}
+/**
+ * This function will add Source and Resource lifelines to the Diagram model and invoke the Diagram.render method and
+ * create initial arrow between source and resource.
+ * @param tabListView
+ */
+function addInitialElements(tabListView){
+    var model = defaultView.model;
+
+    var centerPoint = createPoint(200, 50);
+    var type = "Source";
+    var lifeLineDef = MainElements.lifelines.SourceLifeline;
+
+    var resourceCenterPoint = createPoint(380, 50);
+    var resourceType = "Resource";
+    var resourceLifeLineDef = MainElements.lifelines.ResourceLifeline;
+
+    var resourceLifeline = createLifeLine("Resource", resourceCenterPoint, resourceLifeLineDef.class, resourceLifeLineDef.utils,
+        resourceLifeLineDef.parameters, resourceLifeLineDef.textModel, resourceType);
+
+    resourceLifeLineOptions.class = MainElements.lifelines.ResourceLifeline.class;
+    //SETTING TOP SVG ELEMENT IN OPTIONS To Draw messages
+    resourceLifeLineOptions.diagram = defaultView.model;
+    model.addElement(resourceLifeline, resourceLifeLineOptions);
+    model.resourceLifeLineCounter(1);
+
+    var lifeline = createLifeLine("Source", centerPoint, lifeLineDef.class, lifeLineDef.utils,
+        lifeLineDef.parameters, lifeLineDef.textModel, type);
+
+    lifeLineOptions.class = MainElements.lifelines.SourceLifeline.class;
+    //SETTING TOP SVG ELEMENT IN OPTIONS To Draw messages
+    lifeLineOptions.diagram = defaultView.model;
+    model.addElement(lifeline, lifeLineOptions);
+    model.sourceLifeLineCounter(1);
+
+    defaultView.render();
+
     //create initial arrow between source and resource
     var currentSource = defaultView.model.diagramSourceElements().models[0];
     var currentResource = defaultView.model.diagramResourceElements().models[0];
     tabListView.drawInitArrow(currentSource,currentResource,defaultView);
-
 }
 
 $(document).ready(function(){

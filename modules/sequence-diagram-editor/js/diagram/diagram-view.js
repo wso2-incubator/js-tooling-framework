@@ -341,21 +341,8 @@ var Diagrams = (function (diagrams) {
             resourceModel.setDiagramViewForTab(currentView);
             // mark tab as visited
             resourceModel.setSelectedTab();
-            currentView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline,
-                                          //[{
-                                          //    key: "title",
-                                          //    value: MainElements.lifelines.SourceLifeline.title
-                                          //}],
-                                          {utils: MainElements.lifelines.SourceLifeline.utils});
-            currentView.model.sourceLifeLineCounter(1);
-            currentView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline);
-            currentView.model.resourceLifeLineCounter(1);
-          // first arrow creation between source and resource
-            var currentSource = currentView.model.diagramSourceElements().models[0];
-            var currentResource = currentView.model.diagramResourceElements().models[0];
-           this.drawInitArrow(currentSource,currentResource,currentView);
 
-
+            addInitialElements(nextTabListView);
         },
         //Draw initial arrow between the source and resource element
         drawInitArrow:function(source,destination,diagramView){
