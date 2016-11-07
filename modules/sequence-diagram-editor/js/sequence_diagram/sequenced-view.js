@@ -819,19 +819,19 @@ var SequenceD = (function (sequenced) {
                 var rect = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height,
                     0, 0, lifeLineTopRectGroup, '#FFFFFF', textModel)
                     .classed(prefs.rect.class, true).classed("genericR",true);
+                 // get new center.x for dynamic updates
+                var rw = textModel.dynamicRectWidth();
+                var rx = textModel.dynamicRectX();
+                var centerX = parseFloat(rw/2) + parseFloat(rx);
 
-                var middleRect = d3Ref.draw.genCenteredBasicRect(createPoint(center.get('x'),
+                var middleRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
                     center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
                     prefs.middleRect.width, prefs.middleRect.height, 0, 0, group,textModel)
                     .classed(prefs.middleRect.class, true);
                 middleRect.attr('style', 'cursor: pointer');
-                 // For arrow dynamic update
-                    var rw = textModel.dynamicRectWidth();
-                    var rx = textModel.dynamicRectX();
-                    var centerX = parseFloat(rw/2) + parseFloat(rx);
 
                     this.center.attributes.x = centerX;
-                var drawMessageRect = d3Ref.draw.genCenteredBasicRect(createPoint(center.get('x'),
+                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
                     center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
                     (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group,textModel)
                     .on("mousedown", function () {
