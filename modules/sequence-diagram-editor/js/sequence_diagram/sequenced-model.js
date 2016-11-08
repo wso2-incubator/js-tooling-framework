@@ -418,6 +418,18 @@ var SequenceD = (function (sequenced) {
                 } else {
                     return this.get('destinationPoint');
                 }
+            },
+
+            // Priority may be the source or the destination messagePoint. When we have unequal y coordinates in source
+            // and destination message points, we need to set them to a common value as we need a horizontal line always.
+            // Developer needs to decide whether it's source's or the destination's y coordinate which is going to take
+            // the priority when we making the arrow line perfectly horizontal.
+            priority: function (messagePoint) {
+                if (messagePoint) {
+                    this.set('priority', messagePoint);
+                } else {
+                    return this.get('priority');
+                }
             }
 
         });

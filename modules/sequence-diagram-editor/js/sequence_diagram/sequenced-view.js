@@ -94,6 +94,128 @@ var SequenceD = (function (sequenced) {
                 return line;
             },
 
+            addEditableAndDeletable: function(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj){
+                var optionMenuWrapper = d3Ref.draw.rect((center.x() + 10 + width/2),
+                    (center.y() - height/2),
+                    30,
+                    58,
+                    0,
+                    0,
+                    optionsMenuGroup, "#f8f8f3").
+                attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
+                on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                }).
+                on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                });
+
+                var deleteOption = d3Ref.draw.rect((center.x() + 13 + width/2),
+                    (center.y() + 3 - height/2),
+                    24,
+                    24,
+                    0,
+                    0,
+                    optionsMenuGroup, "url(#delIcon)").
+                attr("style", "opacity:0.5; cursor: pointer").
+                on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
+                }).
+                on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                });
+
+                var editOption = d3Ref.draw.rect((center.x() + 13 + width/2),
+                    (center.y() + 31 - height/2),
+                    24,
+                    24,
+                    0,
+                    0,
+                    optionsMenuGroup, "url(#editIcon)").
+                attr("style", "opacity:0.5; cursor: pointer").
+                on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                }).
+                on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                });
+
+                // On click of the mediator show/hide the options menu
+                processorTitleRect.on("click", function () {
+                    if (optionsMenuGroup.classed("option-menu-hide")) {
+                        optionsMenuGroup.classed("option-menu-hide", false);
+                        optionsMenuGroup.classed("option-menu-show", true);
+
+                        if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
+                            diagram.selectedOptionsGroup.classed("option-menu-hide", true);
+                            diagram.selectedOptionsGroup.classed("option-menu-show", false);
+                        }
+                        if (diagram.propertyWindow) {
+                            diagram.propertyWindow = false;
+                            defaultView.enableDragZoomOptions();
+                            $('#property-pane-svg').empty();
+                        }
+                        diagram.selectedOptionsGroup = optionsMenuGroup;
+
+                    } else {
+                        optionsMenuGroup.classed("option-menu-hide", true);
+                        optionsMenuGroup.classed("option-menu-show", false);
+                        diagram.propertyWindow = false;
+                        defaultView.enableDragZoomOptions();
+                        defaultView.render();
+                    }
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
+
+                // On click of the edit icon will show the properties to to edit
+                editOption.on("click", function () {
+                    if (diagram.propertyWindow) {
+                        diagram.propertyWindow = false;
+                        defaultView.enableDragZoomOptions();
+                        defaultView.render();
+
+                    } else {
+                        var options = {
+                            x: parseFloat(this.getAttribute("x")) + 6,
+                            y: parseFloat(this.getAttribute("y")) + 21
+                        };
+
+                        defaultView.selectedNode = viewObj.model;
+                        defaultView.drawPropertiesPane(d3Ref, options,
+                            viewObj.model.get('utils').getMyParameters(
+                                viewObj.model),
+                            viewObj.model.get('utils').getMyPropertyPaneSchema(
+                                viewObj.model));
+                    }
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
+
+                // On click of the delete icon will delete the processor
+                deleteOption.on("click", function () {
+                    // Get the parent of the model and delete it from the parent
+                    var parentModelChildren = viewObj.model.get("parent").get("children").models;
+                    for (var itr = 0; itr < parentModelChildren.length; itr ++) {
+                        if (parentModelChildren[itr].cid === viewObj.model.cid) {
+
+                            parentModelChildren.splice(itr, 1);
+                            defaultView.render();
+                            break;
+                        }
+                    }
+                });
+
+                var getPropertyPaneSchema = function (model) {
+                    return ;
+                };
+
+            },
+
             drawProcessor: function (paperID, center, title, prefs) {
                 var d3Ref = this.getD3Ref();
                 var group = d3Ref.draw.group();
@@ -111,55 +233,6 @@ var SequenceD = (function (sequenced) {
                     var width = this.model.getWidth();
 
                     var orderedElements = [];
-
-                    var optionMenuWrapper = d3Ref.draw.rect((center.x() + 10 + width/2),
-                        (center.y() - height/2),
-                        30,
-                        58,
-                        0,
-                        0,
-                        optionsMenuGroup, "#f8f8f3").
-                    attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
-                    on("mouseover", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
-                    }).
-                    on("mouseout", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                    });
-
-                    var deleteOption = d3Ref.draw.rect((center.x() + 13 + width/2),
-                        (center.y() + 3 - height/2),
-                        24,
-                        24,
-                        0,
-                        0,
-                        optionsMenuGroup, "url(#delIcon)").
-                    attr("style", "opacity:0.5; cursor: pointer").
-                    on("mouseover", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
-                    }).
-                    on("mouseout", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                    });
-
-                    var editOption = d3Ref.draw.rect((center.x() + 13 + width/2),
-                        (center.y() + 31 - height/2),
-                        24,
-                        24,
-                        0,
-                        0,
-                        optionsMenuGroup, "url(#editIcon)").
-                    attr("style", "opacity:0.5; cursor: pointer").
-                    on("mouseover", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
-                    }).
-                    on("mouseout", function () {
-                        d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                        optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
-                    });
 
                     var processorTitleRect = d3Ref.draw.rect((center.x() - this.model.getWidth()/2),
                         (center.y() - height/2),
@@ -179,6 +252,9 @@ var SequenceD = (function (sequenced) {
                         group, //element.viewAttributes.colour
                         this.modelAttr('viewAttributes').colour
                     );
+
+                    this.addEditableAndDeletable(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj);
+
                     var mediatorText = d3Ref.draw.textElement(center.x(),
                         (center.y() + 15 - height/2),
                         title,
@@ -239,81 +315,13 @@ var SequenceD = (function (sequenced) {
                     var newGroup = d3Ref.draw.regroup(orderedElements);
                     group.remove();
 
-                    // On click of the mediator show/hide the options menu
-                    processorTitleRect.on("click", function () {
-                        if (optionsMenuGroup.classed("option-menu-hide")) {
-                            optionsMenuGroup.classed("option-menu-hide", false);
-                            optionsMenuGroup.classed("option-menu-show", true);
-
-                            if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
-                                diagram.selectedOptionsGroup.classed("option-menu-hide", true);
-                                diagram.selectedOptionsGroup.classed("option-menu-show", false);
-                            }
-                            if (diagram.propertyWindow) {
-                                diagram.propertyWindow = false;
-                                defaultView.enableDragZoomOptions();
-                                $('#property-pane-svg').empty();
-                            }
-                            diagram.selectedOptionsGroup = optionsMenuGroup;
-
-                        } else {
-                            optionsMenuGroup.classed("option-menu-hide", true);
-                            optionsMenuGroup.classed("option-menu-show", false);
-                            diagram.propertyWindow = false;
-                            defaultView.enableDragZoomOptions();
-                            defaultView.render();
-                        }
-                        d3.event.preventDefault();
-                        d3.event.stopPropagation();
-                    });
-
-                    // On click of the edit icon will show the properties to to edit
-                    editOption.on("click", function () {
-                        if (diagram.propertyWindow) {
-                            diagram.propertyWindow = false;
-                            defaultView.enableDragZoomOptions();
-                            defaultView.render();
-
-                        } else {
-                            var options = {
-                                x: parseFloat(this.getAttribute("x")) + 6,
-                                y: parseFloat(this.getAttribute("y")) + 21
-                            };
-
-                            defaultView.selectedNode = viewObj.model;
-                            defaultView.drawPropertiesPane(d3Ref, options,
-                                                           viewObj.model.get('utils').getMyParameters(
-                                                               viewObj.model),
-                                                           viewObj.model.get('utils').getMyPropertyPaneSchema(
-                                                               viewObj.model));
-                        }
-                        d3.event.preventDefault();
-                        d3.event.stopPropagation();
-                    });
-
-                    // On click of the delete icon will delete the processor
-                    deleteOption.on("click", function () {
-                        // Get the parent of the model and delete it from the parent
-                        var parentModelChildren = viewObj.model.get("parent").get("children").models;
-                        for (var itr = 0; itr < parentModelChildren.length; itr ++) {
-                            if (parentModelChildren[itr].cid === viewObj.model.cid) {
-
-                                parentModelChildren.splice(itr, 1);
-                                defaultView.render();
-                                break;
-                            }
-                        }
-                    });
-
-                    var getPropertyPaneSchema = function (model) {
-                        return ;
-                    };
-
                     group.rect = rectBottomXXX;
                     group.title = mediatorText;
                     //this.renderViewForElement(element, opts);
 
                 } if (this.model.model.type === "Action") {
+
+                    var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
                     var height = 0;
                     height = this.model.getHeight() - 30;
                     var width = this.model.getWidth();
@@ -333,6 +341,12 @@ var SequenceD = (function (sequenced) {
                         title,
                         group)
                         .classed("mediator-title", true);
+
+                    //We will add edit and delete buttons if we have set editable and deletable to true in the processor definition.
+                    if(!_.isUndefined(this.model.model.editable) && !_.isUndefined(this.model.model.deletable)
+                         && this.model.model.editable && this.model.model.deletable) {
+                        this.addEditableAndDeletable(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj);
+                    }
 
                     group.rect = rectBottomXXX;
                     group.title = mediatorText;
@@ -532,6 +546,13 @@ var SequenceD = (function (sequenced) {
                             d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                             optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
                         });
+
+                    // When we have unequal y coordinates in source and destination message points, we need to set them to a common value
+                    // as we need a horizontal line always. Here we will use priority point and set that y value to both points.
+                    if(!_.isUndefined(this.model.priority())) {
+                        this.model.source().centerPoint().y(this.model.priority().centerPoint().y());
+                        this.model.destination().centerPoint().y(this.model.priority().centerPoint().y());
+                    }
 
                     var line = d3ref.draw.lineFromPoints(this.model.source().centerPoint(), this.model.destination().centerPoint(), group)
                         .classed(this.options.class, true);

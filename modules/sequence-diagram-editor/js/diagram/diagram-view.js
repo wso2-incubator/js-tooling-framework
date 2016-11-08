@@ -362,7 +362,8 @@ var Diagrams = (function (diagrams) {
             });
             var messageLink = new SequenceD.Models.MessageLink({
                 source: sourcePoint,
-                destination: destinationPoint
+                destination: destinationPoint,
+                priority: destinationPoint
             });
             var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
             var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
@@ -1121,6 +1122,7 @@ var Diagrams = (function (diagrams) {
 
                 }
             },
+
             handleDropEvent: function (event, ui) {
                 // Check for invalid drops on endpoints
                 if(eventManager.invalid==false){
@@ -1139,14 +1141,19 @@ var Diagrams = (function (diagrams) {
                         Processors.manipulators[id].id,
                         {
                             type: Processors.manipulators[id].type || "UnitProcessor",
-                            initMethod: Processors.manipulators[id].init
+                            initMethod: Processors.manipulators[id].init,
+                            editable: Processors.manipulators[id].editable,
+                            deletable: Processors.manipulators[id].deletable
                         },
                         {colour: Processors.manipulators[id].colour},
                         Processors.manipulators[id].parameters,
                         Processors.manipulators[id].utils
                     );
-                    txt.selectedNode.addChild(processor);
 
+                    if(typeof Processors.manipulators[id].init !== "undefined") {
+                        Processors.manipulators[id].init(txt, processor);
+                    }
+                    txt.selectedNode.addChild(processor);
                     defaultView.render();
                 } else if (Processors.flowControllers[id] && txt.selectedNode) {
                     var processor = txt.selectedNode.createProcessor(
