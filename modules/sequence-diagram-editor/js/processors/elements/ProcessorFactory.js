@@ -74,6 +74,16 @@ var SequenceD = (function (sequenced) {
                 utils: utils,
                 textModel : textModel
             });
+        } else if (type === 'MultiRegionHolderProcessor') {
+            processor = new SequenceD.Models.MultiRegionHolderProcessor({
+                title: title,
+                centerPoint: center,
+                type: type,
+                model: model,
+                viewAttributes: viewAttributes,
+                parameters: parameters,
+                utils: utils
+            });
         }
 
         processor.type = type;

@@ -179,6 +179,184 @@ var SequenceD = (function (sequenced) {
             }
         });
 
+    var MultiRegionProcessor = SequenceD.Models.Processor.extend(
+        /** @lends DiagramElement.prototype */
+        {
+
+            selectedNode: null,
+            /**
+             * @augments DiagramElement
+             * @constructs
+             * @class Element represents the model for elements in a diagram.
+             */
+            initialize: function (attrs, options) {
+                SequenceD.Models.Processor.prototype.initialize.call(this, attrs, options);
+                var elementsRegionProcessors = new ElementsRegionProcessors([], {diagram: this});
+                this.elementsRegionProcessors(elementsRegionProcessors);
+            },
+
+            modelName: "MultiRegionProcessor",
+
+            nameSpace: sequenced,
+
+            idAttribute: this.cid,
+
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
+                title: "MultiRegionProcessor",
+                width : 0,
+                height : 0
+            },
+
+            setY: function (y) {
+                this.get('centerPoint').set('y', y);
+            },
+
+            getWidth: function () {
+                return this.get('width');
+            },
+
+            getHeight: function (){
+                return this.get('height');
+            },
+
+            setWidth: function (width) {
+                this.set('width', width);
+            },
+
+            setHeight: function (height) {
+                this.set('height', height);
+            },
+
+            elementsRegionProcessors: function (elementsRegionProcessors) {
+                if (_.isUndefined(elementsRegionProcessors)) {
+                    return this.get('elementsRegionProcessors');
+                } else {
+                    this.set('elementsRegionProcessors', elementsRegionProcessors);
+                }
+            }
+
+        });
+
+    var ElementsRegionProcessor = SequenceD.Models.Processor.extend(
+        /** @lends DiagramElement.prototype */
+        {
+
+            selectedNode: null,
+            /**
+             * @augments DiagramElement
+             * @constructs
+             * @class Element represents the model for elements in a diagram.
+             */
+            initialize: function (attrs, options) {
+                SequenceD.Models.Processor.prototype.initialize.call(this, attrs, options);
+                var children = new Children([], {diagram: this});
+                this.children(children);
+            },
+
+            modelName: "ElementsRegionProcessor",
+
+            nameSpace: sequenced,
+
+            idAttribute: this.cid,
+
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
+                title: "ElementsRegionProcessor",
+                width : 0,
+                height : 0
+            },
+
+            setY: function (y) {
+                this.get('centerPoint').set('y', y);
+            },
+
+            getWidth: function () {
+                return this.get('width');
+            },
+
+            getHeight: function (){
+                return this.get('height');
+            },
+
+            setWidth: function (width) {
+                this.set('width', width);
+            },
+
+            setHeight: function (height) {
+                this.set('height', height);
+            },
+
+            children: function (children) {
+                if (_.isUndefined(children)) {
+                    return this.get('children');
+                } else {
+                    this.set('children', children);
+                }
+            },
+
+            createProcessor: function (title, center, type, model, viewAttributes, parameters, utils, textModel) {
+                return new SequenceD.Models.ProcessorFactory(title, center, model.type, model, viewAttributes, parameters, utils, textModel);
+            }
+
+        });
+
+    var MultiRegionHolderProcessor = SequenceD.Models.Processor.extend(
+        /** @lends DiagramElement.prototype */
+        {
+            selectedNode: null,
+            /**
+             * @augments DiagramElement
+             * @constructs
+             * @class Element represents the model for elements in a diagram.
+             */
+            initialize: function (attrs, options) {
+                SequenceD.Models.Processor.prototype.initialize.call(this, attrs, options);
+                var multiRegionProcessors = new MultiRegionProcessors([], {diagram: this});
+                this.multiRegionProcessors(multiRegionProcessors);
+            },
+
+            modelName: "MultiRegionHolderProcessor",
+
+            nameSpace: sequenced,
+
+            idAttribute: this.cid,
+
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
+                title: "MultiRegionHolderProcessor",
+                width : 0,
+                height : 0
+            },
+
+            setY: function (y) {
+                this.get('centerPoint').set('y', y);
+            },
+
+            getWidth: function () {
+                return this.get('width');
+            },
+
+            getHeight: function (){
+                return this.get('height');
+            },
+
+            setWidth: function (width) {
+                this.set('width', width);
+            },
+
+            setHeight: function (height) {
+                this.set('height', height);
+            },
+
+            multiRegionProcessors: function (multiRegionProcessors) {
+                if (_.isUndefined(multiRegionProcessors)) {
+                    return this.get('multiRegionProcessors');
+                } else {
+                    this.set('multiRegionProcessors', multiRegionProcessors);
+                }
+            }
+        });
 
     var Child = Diagrams.Models.DiagramElement.extend(
         /** @lends DiagramElement.prototype */
@@ -204,6 +382,44 @@ var SequenceD = (function (sequenced) {
                 centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
                 title: "Child"
             }
+        });
+
+    var MultiRegionProcessors = Backbone.Collection.extend(
+        /** @lends MultiRegionProcessors.prototype */
+        {
+            /**
+             * @augments Backbone.Collection
+             * @constructs
+             * @class MultiRegionProcessors represents the collection for elements in a diagram.
+             */
+            initialize: function (models, options) {
+            },
+
+            modelName: "MultiRegionProcessors",
+
+            nameSpace: sequenced,
+
+            model: MultiRegionProcessor
+
+        });
+
+    var ElementsRegionProcessors = Backbone.Collection.extend(
+        /** @lends ElementsRegionProcessors.prototype */
+        {
+            /**
+             * @augments Backbone.Collection
+             * @constructs
+             * @class ElementsRegionProcessors represents the collection for elements in a diagram.
+             */
+            initialize: function (models, options) {
+            },
+
+            modelName: "ElementsRegionProcessors",
+
+            nameSpace: sequenced,
+
+            model: ElementsRegionProcessor
+
         });
 
     var Children = Backbone.Collection.extend(
@@ -382,6 +598,9 @@ var SequenceD = (function (sequenced) {
     models.CustomProcessor = CustomProcessor;
     models.ContainableProcessorElement = ContainableProcessorElement;
     models.ContainableProcessorElements = ContainableProcessorElements;
+    models.MultiRegionProcessor = MultiRegionProcessor;
+    models.MultiRegionHolderProcessor = MultiRegionHolderProcessor;
+    models.ElementsRegionProcessor = ElementsRegionProcessor;
 
     sequenced.Models = models;
 
