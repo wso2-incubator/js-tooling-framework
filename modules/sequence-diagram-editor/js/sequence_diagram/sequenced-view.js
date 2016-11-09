@@ -326,15 +326,49 @@ var SequenceD = (function (sequenced) {
                     height = this.model.getHeight() - 30;
                     var width = this.model.getWidth();
 
-                    var processorTitleRect = d3Ref.draw.rect((center.x() - this.model.getWidth()/2),
-                        (center.y() - height/2),
-                        this.model.getWidth(),
-                        30,
+                    var x = (center.x() - this.model.getWidth()/2);
+                    var y = (center.y() - height/2);
+                    var rectHeight = 30;
+                    var rectWidth = this.model.getWidth();
+                    var processorTitleRect = d3Ref.draw.rect(x,
+                        y,
+                        rectWidth,
+                        rectHeight,
                         0,
                         0,
                         group,
                         this.modelAttr('viewAttributes').colour
                     );
+
+                    // We need connection staring point only for the processors which have outbound connections.
+                    if(!_.isUndefined(this.model.model.hasOutputConnection) && this.model.model.hasOutputConnection) {
+                        var circle = d3Ref.draw.circle(x + rectWidth, y + rectHeight / 2, rectHeight / 3, group, "#2c3e50");
+
+                        circle.on("mousedown", function () {
+                            d3.event.preventDefault();
+                            d3.event.stopPropagation();
+                            var m = d3.mouse(this);
+                            prefs.diagram.clickedLifeLine = viewObj.model;
+                            prefs.diagram.trigger("messageDrawStart", viewObj.model,
+                                new GeoCore.Models.Point({'x': x + rectWidth, 'y': m[1]}));
+                        }).on('mouseover', function () {
+                            //setting current tab view based diagram model
+                            diagram = defaultView.model;
+                            diagram.selectedNode = viewObj.model;
+                            d3.select(this).style("fill", "red").style("fill-opacity", 0.6)
+                                .style("cursor", 'url(images/BlackHandwriting.cur), pointer');
+                            // Update event manager with current active element type for validation
+                            eventManager.isActivated(diagram.selectedNode.attributes.title);
+                        }).on('mouseout', function () {
+                            //diagram.destinationLifeLine = diagram.selectedNode;
+                            diagram.selectedNode = null;
+                            d3.select(this).style("fill-opacity", 0.01);
+                            // Update event manager with out of focus on active element
+                            eventManager.isActivated("none");
+                        }).on('mouseup', function (data) {
+
+                        });
+                    }
 
                     var mediatorText = d3Ref.draw.textElement(center.x(),
                         (center.y() + 15 - height/2),
@@ -350,11 +384,18 @@ var SequenceD = (function (sequenced) {
 
                     group.rect = rectBottomXXX;
                     group.title = mediatorText;
+                    group.circle = circle;
 
                     var inputMessagePoint = this.model.inputConnector();
                     if(!_.isUndefined(inputMessagePoint)){
                         inputMessagePoint.x(center.x() - width/2);
                         inputMessagePoint.y(center.y());
+                    }
+
+                    var outputMessagePoint = this.model.outputConnector();
+                    if(!_.isUndefined(outputMessagePoint)){
+                        outputMessagePoint.x(center.x() + width/2);
+                        outputMessagePoint.y(center.y());
                     }
 
                 } else if (this.model.model.type === "DynamicContainableProcessor") {
@@ -558,16 +599,22 @@ var SequenceD = (function (sequenced) {
                         this.model.destination().centerPoint().y(this.model.priority().centerPoint().y());
                     }
 
-                    var line = d3ref.draw.lineFromPoints(this.model.source().centerPoint(), this.model.destination().centerPoint(), group)
-                        .classed(this.options.class, true);
-
                     // TODO : If we are drawing an arrow from pipeline to an endpoint, we need a reverse arrow as well.
                     // But this needs to be fixed as we need to support OUT_ONLY messages.
                     if (this.model.destination().get('parent').get('cssClass') === "endpoint") {
-                        var lineDestinationCenterPoint = createPoint(this.model.destination().centerPoint().x(), Math.round(this.model.destination().centerPoint().y()) + 20);
-                        var lineSourceCenterPoint = createPoint(this.model.source().centerPoint().x(), Math.round(this.model.source().centerPoint().y()) + 20);
 
-                        var line2 = d3ref.draw.lineFromPoints(lineDestinationCenterPoint, lineSourceCenterPoint, group)
+                        var lineDestinationCenterPoint = createPoint(this.model.destination().centerPoint().x(), Math.round(this.model.destination().centerPoint().y()) -5);
+                        var lineSourceCenterPoint = createPoint(this.model.source().centerPoint().x(), Math.round(this.model.source().centerPoint().y()) - 5);
+                        var line = d3ref.draw.lineFromPoints(lineSourceCenterPoint, lineDestinationCenterPoint, group)
+                            .classed(this.options.class, true);
+
+                        var line2DestinationCenterPoint = createPoint(this.model.destination().centerPoint().x(), Math.round(this.model.destination().centerPoint().y()) + 10);
+                        var line2SourceCenterPoint = createPoint(this.model.source().centerPoint().x(), Math.round(this.model.source().centerPoint().y()) + 10);
+
+                        var line2 = d3ref.draw.lineFromPoints(line2DestinationCenterPoint, line2SourceCenterPoint, group)
+                            .classed(this.options.class, true);
+                    }else{
+                        var line = d3ref.draw.lineFromPoints(this.model.source().centerPoint(), this.model.destination().centerPoint(), group)
                             .classed(this.options.class, true);
                     }
 
@@ -752,7 +799,7 @@ var SequenceD = (function (sequenced) {
                 lifeLine.rectBottom.attr("y", parseInt(lifeLine.rectBottom.attr("y")) + difference);
                 lifeLine.line.attr("y2", parseInt(lifeLine.line.attr("y2")) + difference);
                 lifeLine.textBottom.attr("y", parseInt(lifeLine.textBottom.attr("y")) + difference);
-                lifeLine.drawMessageRect.attr("height", parseInt(lifeLine.drawMessageRect.attr("height")) + difference);
+                //lifeLine.drawMessageRect.attr("height", parseInt(lifeLine.drawMessageRect.attr("height")) + difference);
                 lifeLine.middleRect.attr("height", parseInt(lifeLine.middleRect.attr("height")) + difference);
 
             },
@@ -858,7 +905,7 @@ var SequenceD = (function (sequenced) {
                 middleRect.attr('style', 'cursor: pointer');
 
                     this.center.attributes.x = centerX;
-                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
+/*                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
                     center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
                     (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group,textModel)
                     .on("mousedown", function () {
@@ -869,7 +916,7 @@ var SequenceD = (function (sequenced) {
                         prefs.diagram.trigger("messageDrawStart", viewObj.model,
                             new GeoCore.Models.Point({'x': centerX, 'y': m[1]}));
 
-                    });
+                    });*/
 
                 var line = d3Ref.draw.genericVerticalLine(createPoint(center.get('x'),
                     center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group,textModel)
@@ -891,7 +938,7 @@ var SequenceD = (function (sequenced) {
                 group.rectBottom = rectBottom;
                 group.line = line;
                 group.middleRect = middleRect;
-                group.drawMessageRect = drawMessageRect;
+                //group.drawMessageRect = drawMessageRect;
                 group.textBottom = textBottom;
                 group.svgTitle = text;
                 group.svgTitleBottom = textBottom;
@@ -974,7 +1021,7 @@ var SequenceD = (function (sequenced) {
 
                 });
 
-                drawMessageRect.on('mouseover', function () {
+/*                drawMessageRect.on('mouseover', function () {
                     //setting current tab view based diagram model
                     diagram = defaultView.model;
                     diagram.selectedNode = viewObj.model;
@@ -987,7 +1034,7 @@ var SequenceD = (function (sequenced) {
                     // Update event manager with out of focus on active element
                     eventManager.isActivated("none");
                 }).on('mouseup', function (data) {
-                });
+                });*/
 
                 lifeLineTopRectGroup.on("click", (function () {
                     defaultView.model.selectedNode = viewObj.model;
@@ -1316,7 +1363,7 @@ var SequenceD = (function (sequenced) {
                     defaultView.model.selectedNode = null;
                 }).on('mouseup', function (data) {
                 });
-
+/*
                 var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(center.x(),
                         center.y()+100), (prefs.middleRect.width * 0.4), height, 0, 0, d3Ref)
                     .on("mousedown", function () {
@@ -1333,10 +1380,10 @@ var SequenceD = (function (sequenced) {
                             .style("cursor", 'url(images/BlackHandwriting.cur), pointer');
                     }).on('mouseout', function () {
                         d3.select(this).style("fill-opacity", 0.0);
-                    });
+                    });*/
 
                 group.middleRect = middleRect;
-                group.drawMessageRect = drawMessageRect;
+                //group.drawMessageRect = drawMessageRect;
                 group.rect = rectBottomXXX.containerRect;
                 group.titleRect = rectBottomXXX.titleRect;
                 group.text = rectBottomXXX.text;
@@ -1388,7 +1435,7 @@ var SequenceD = (function (sequenced) {
                 middleRect.attr("height", totalHeight-30);
                 middleRect.attr("width", totalWidth);
                 middleRect.attr("x", parseInt(middleRect.attr("x")) - deviation);
-                drawMessageRect.attr("height", totalHeight-30);
+                //drawMessageRect.attr("height", totalHeight-30);
 
                 if (viewObj.model.get("title") === "Try" || viewObj.model.get("title") === "If") {
                     var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");

@@ -43,16 +43,10 @@ var Processors = (function (processors) {
             }
             return cloneCallBack;
         },
-
-
-        //
         init : function(model, processor){
             var destination = model.diagramSourceElements().models[0];
             this.addInitArrow_(processor,destination);
         },
-
-
-
 
         addInitArrow_:function(source,destination){
             centerR = createPoint(200, 50);
@@ -79,7 +73,6 @@ var Processors = (function (processors) {
             destination.addChild(destinationPoint, messageOptionsInbound);
             source.inputConnector(sourcePoint);
         },
-        //
 
         propertyPaneSchema: [
             {

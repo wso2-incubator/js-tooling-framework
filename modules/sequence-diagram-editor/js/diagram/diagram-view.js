@@ -1139,11 +1139,13 @@ var Diagrams = (function (diagrams) {
                         Processors.manipulators[id].title,
                         position,
                         Processors.manipulators[id].id,
+
                         {
                             type: Processors.manipulators[id].type || "UnitProcessor",
                             initMethod: Processors.manipulators[id].init,
                             editable: Processors.manipulators[id].editable,
-                            deletable: Processors.manipulators[id].deletable
+                            deletable: Processors.manipulators[id].deletable,
+                            hasOutputConnection : Processors.manipulators[id].hasOutputConnection
                         },
                         {colour: Processors.manipulators[id].colour},
                         Processors.manipulators[id].parameters,
@@ -1586,7 +1588,7 @@ var Diagrams = (function (diagrams) {
                     if (sourceModel.canConnect(destinationModel)) {
                         var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
                         var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
-                        sourceModel.addChild(sourcePoint, messageOptionsOutbound);
+                        sourceModel.outputConnector(sourcePoint);
                         destinationModel.addChild(destinationPoint, messageOptionsInbound);
                     }
                 }
