@@ -1153,7 +1153,15 @@ var Diagrams = (function (diagrams) {
                     if(typeof Processors.manipulators[id].init !== "undefined") {
                         Processors.manipulators[id].init(txt, processor);
                     }
-                    txt.selectedNode.addChild(processor);
+                    if (txt.selectedNode instanceof  SequenceD.Models.ElementsRegionProcessor) {
+                        if (!_.isUndefined(txt.selectedNode.get('addChildrenTo'))) {
+                            processor.set('skipOnLifelineDraw', true);
+                            txt.selectedNode.get('addChildrenTo').addChild(processor);
+                            txt.selectedNode.children().add(processor);
+                        }
+                    } else {
+                        txt.selectedNode.addChild(processor);
+                    }
                     defaultView.render();
                 } else if (Processors.flowControllers[id] && txt.selectedNode) {
                     var processor = txt.selectedNode.createProcessor(
@@ -1165,7 +1173,14 @@ var Diagrams = (function (diagrams) {
                         Processors.flowControllers[id].parameters,
                         Processors.flowControllers[id].utils
                     );
-                    txt.selectedNode.addChild(processor);
+
+                    if (txt.selectedNode instanceof  SequenceD.Models.ElementsRegionProcessor) {
+                        if (!_.isUndefined(txt.selectedNode.get('addChildrenTo'))) {
+                            txt.selectedNode.get('addChildrenTo').addChild(processor);
+                        }
+                    } else {
+                        txt.selectedNode.addChild(processor);
+                    }
 
                     if (Processors.flowControllers[id].type == "ComplexProcessor") {
                         var containableElementsArr = Processors.flowControllers[id].containableElements;
@@ -1181,20 +1196,44 @@ var Diagrams = (function (diagrams) {
                                 processor.containableProcessorElements().add(containableProcessorElem);
                             }
                         }
-                        //(Processors.flowControllers[id].containableElements).forEach(function (elm) {
-                        //    console.log(x);
-                        //    (elm.children).forEach(function (child) {
-                        //        var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
-                        //        containableProcessorElem.type = 'ContainableProcessorElement';
-                        //        containableProcessorElem.set('title', child.title);
-                        //        containableProcessorElem.set('utils', processor.get('utils'));
-                        //        containableProcessorElem.parent(processor);
-                        //        processor.containableProcessorElements().add(containableProcessorElem);
-                        //
-                        //    });
-                        //});
-                    }
+                    } else if (Processors.flowControllers[id].type == "MultiRegionHolderProcessor") {
+                        txt.selectedNode.addChild(processor);
+                        processor.parent(txt.selectedNode);
+                        var containers = Processors.flowControllers[id].containers;
+                        var processorHeight = 0;
+                        for (var i = 0; i < containers.length; i ++) {
+                            processorHeight += containers[i].height;
+                            //TODO: If needed pass the required options
+                            var multiRegion = new SequenceD.Models.MultiRegionProcessor(lifeLineOptions);
+                            multiRegion.parent(processor);
+                            multiRegion.setWidth(containers[i].width);
+                            multiRegion.setHeight(containers[i].height);
+                            multiRegion.set('Container', containers[i].container);
+                            var regions = containers[i].regions;
+                            for (var j = 0; j < regions.length; j ++) {
+                                var region = new SequenceD.Models.ElementsRegionProcessor(lifeLineOptions);
+                                region.parent(multiRegion);
+                                if (regions[j].parent === 'mainLifeline') {
+                                    region.set('addChildrenTo', txt.selectedNode);
+                                } else {
+                                    region.set('addChildrenTo', undefined);
 
+                                }
+                                region.set('name', regions[j].title);
+                                region.setWidth(regions[j].width);
+                                region.setHeight(regions[j].height);
+                                if (!_.isUndefined(regions[j].getDefaultChildren)) {
+                                    var defaultChildren = (regions[j]).getDefaultChildren();
+                                    for (var i = 0; i < defaultChildren.length; i ++) {
+                                        region.children().add(defaultChildren[i]);
+                                    }
+                                }
+                                multiRegion.elementsRegionProcessors().add(region);
+                            }
+                            processor.multiRegionProcessors().add(multiRegion);
+                        }
+                        processor.setHeight(processorHeight);
+                    }
 
                     defaultView.render();
                 } else if (id == "EndPoint") {

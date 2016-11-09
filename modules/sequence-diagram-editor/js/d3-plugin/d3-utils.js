@@ -45,13 +45,13 @@ var D3Utils = (function (d3_utils) {
         return parent.draw.circle(point.x(), point.y(), r);
     };
 
-    var rectWithTitle = function (center, width, height, containerWidth, containerHeight, rx, ry, parent, colour, title) {
+    var rectWithTitle = function (center, titleWidth, titleHeight, containerWidth, containerHeight, rx, ry, parent, colour, title) {
         parent = parent || d3Ref;
 
         var composite = {};
 
         x = center.x() - containerWidth / 2;
-        y = center.y() - height / 2;
+        y = center.y() - titleHeight / 2;
 
         rx = rx || 0;
         ry = ry || 0;
@@ -73,8 +73,8 @@ var D3Utils = (function (d3_utils) {
             .attr("id", "titleRect")
             .attr("x", x)
             .attr("y", y)
-            .attr("width", width)
-            .attr("height", height)
+            .attr("width", titleWidth)
+            .attr("height", titleHeight)
             .attr("fill", "#ffffff")
             .attr("stroke", "black")
             .attr("stroke-width", 2)
