@@ -240,7 +240,7 @@ var D3Utils = (function (d3_utils) {
 
         rx = rx || 0;
         ry = ry || 0;
-        return parent.append("rect")
+        var rect = parent.append("rect")
             .attr("x", x)
             .attr("y", y)
             .attr("width", width)
@@ -250,6 +250,19 @@ var D3Utils = (function (d3_utils) {
             .attr("stroke-width", 2)
             .attr("rx", rx)
             .attr("ry", ry);
+        return rect;
+    };
+
+    var circle = function (x, y, radius, parent, colour) {
+        parent = parent || d3Ref;
+
+        var circle = parent.append("circle")
+            .attr("cx", x )
+            .attr("cy", y )
+            .attr("r", radius)
+            .attr("fill-opacity", 0)
+            .attr("fill", colour);
+        return circle;
     };
 
     var centeredRect = function (center, width, height, rx, ry, parent, colour) {

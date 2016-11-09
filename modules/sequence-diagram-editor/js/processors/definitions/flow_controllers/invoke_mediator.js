@@ -18,15 +18,16 @@
 
 var Processors = (function (processors) {
 
-    var flowControllers = processors.flowControllers || {};
+    var manipulators = processors.manipulators || {};
 
     //Define manipulator mediators
     var invokeMediator = {
         id: "InvokeMediator",
         title: "Invoke",
         icon: "images/tool-icons/invoke.svg",
-        colour : "#2c3e50",
-        type : "Custom",
+        colour : "#ffffff",
+        type : "Action",
+        hasOutputConnection : true,
         dragCursorOffset : { left: 50, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
@@ -139,7 +140,7 @@ var Processors = (function (processors) {
         ],
         utils: {
             getMyPropertyPaneSchema : function () {
-                return Processors.flowControllers.InvokeMediator.propertyPaneSchema;
+                return Processors.manipulators.InvokeMediator.propertyPaneSchema;
             },
             getMyParameters: function (model) {
                 return model.attributes.parameters;
@@ -171,15 +172,19 @@ var Processors = (function (processors) {
                     }
                 });
                 return new TreeNode("InvokeMediator", "InvokeMediator", ("response = invoke(endpointKey=" + endpoint + ", messageKey=m)"), ";");
-            }
+            },
+
+            canConnectTo: function () {
+                return ['EndPoint'];
+            },
         }
     };
 
     // Add defined mediators to manipulators
     // Mediator id should be exactly match to name defining here.(Eg : "LogMediator")
-    flowControllers.InvokeMediator = invokeMediator;
+    manipulators.InvokeMediator = invokeMediator;
 
-    processors.flowControllers = flowControllers;
+    processors.manipulators = manipulators;
 
     return processors;
 
