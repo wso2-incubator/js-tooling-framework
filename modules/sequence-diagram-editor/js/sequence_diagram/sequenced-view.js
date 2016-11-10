@@ -319,85 +319,13 @@ var SequenceD = (function (sequenced) {
                     group.title = mediatorText;
                     //this.renderViewForElement(element, opts);
 
-                } if (this.model.model.type === "Action") {
-
-                    var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
-                    var height = 0;
-                    height = this.model.getHeight() - 30;
-                    var width = this.model.getWidth();
-
-                    var x = (center.x() - this.model.getWidth()/2);
-                    var y = (center.y() - height/2);
-                    var rectHeight = 30;
-                    var rectWidth = this.model.getWidth();
-                    var processorTitleRect = d3Ref.draw.rect(x,
-                        y,
-                        rectWidth,
-                        rectHeight,
-                        0,
-                        0,
-                        group,
-                        this.modelAttr('viewAttributes').colour
-                    );
-
-                    // We need connection staring point only for the processors which have outbound connections.
-                    if(!_.isUndefined(this.model.model.hasOutputConnection) && this.model.model.hasOutputConnection) {
-                        var circle = d3Ref.draw.circle(x + rectWidth, y + rectHeight / 2, rectHeight / 3, group, "#2c3e50");
-
-                        circle.on("mousedown", function () {
-                            d3.event.preventDefault();
-                            d3.event.stopPropagation();
-                            var m = d3.mouse(this);
-                            prefs.diagram.clickedLifeLine = viewObj.model;
-                            prefs.diagram.trigger("messageDrawStart", viewObj.model,
-                                new GeoCore.Models.Point({'x': x + rectWidth, 'y': m[1]}));
-                        }).on('mouseover', function () {
-                            //setting current tab view based diagram model
-                            diagram = defaultView.model;
-                            diagram.selectedNode = viewObj.model;
-                            d3.select(this).style("fill", "red").style("fill-opacity", 0.6)
-                                .style("cursor", 'url(images/BlackHandwriting.cur), pointer');
-                            // Update event manager with current active element type for validation
-                            eventManager.isActivated(diagram.selectedNode.attributes.title);
-                        }).on('mouseout', function () {
-                            //diagram.destinationLifeLine = diagram.selectedNode;
-                            diagram.selectedNode = null;
-                            d3.select(this).style("fill-opacity", 0.01);
-                            // Update event manager with out of focus on active element
-                            eventManager.isActivated("none");
-                        }).on('mouseup', function (data) {
-
-                        });
-                    }
-
-                    var mediatorText = d3Ref.draw.textElement(center.x(),
-                        (center.y() + 15 - height/2),
-                        title,
-                        group)
-                        .classed("mediator-title", true);
-
-                    //We will add edit and delete buttons if we have set editable and deletable to true in the processor definition.
-                    if(!_.isUndefined(this.model.model.editable) && !_.isUndefined(this.model.model.deletable)
-                         && this.model.model.editable && this.model.model.deletable) {
-                        this.addEditableAndDeletable(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj);
-                    }
-
-                    group.rect = rectBottomXXX;
-                    group.title = mediatorText;
-                    group.circle = circle;
-
-                    var inputMessagePoint = this.model.inputConnector();
-                    if(!_.isUndefined(inputMessagePoint)){
-                        inputMessagePoint.x(center.x() - width/2);
-                        inputMessagePoint.y(center.y());
-                    }
-
-                    var outputMessagePoint = this.model.outputConnector();
-                    if(!_.isUndefined(outputMessagePoint)){
-                        outputMessagePoint.x(center.x() + width/2);
-                        outputMessagePoint.y(center.y());
-                    }
-
+                } else if (this.model.model.type === "Action") {
+                    // TODO: here, the processor model is Processor. But since we pass
+                    // the model when we draw the lifeline's children,
+                    // We can get various other types such as ActionProcessor, etc. We need to refactor this and it's a must
+                    var processorView = new SequenceD.Views.ActionProcessorView({model: this.model,
+                        options: lifeLineOptions});
+                    processorView.render("#" + defaultView.options.diagram.wrapperId, center, viewObj.model, prefs);
                 } else if (this.model.model.type === "DynamicContainableProcessor") {
 
                     console.log("Processor added");
@@ -834,7 +762,8 @@ var SequenceD = (function (sequenced) {
             },
 
             adjustHeight: function (lifeLine, difference) {
-                lifeLine.rectBottom.attr("y", parseInt(lifeLine.rectBottom.attr("y")) + difference);
+                var t = 'translate(0,' + difference + ')';
+                lifeLine.bottomShape.attr('transform', t);
                 lifeLine.line.attr("y2", parseInt(lifeLine.line.attr("y2")) + difference);
                 lifeLine.textBottom.attr("y", parseInt(lifeLine.textBottom.attr("y")) + difference);
                 //lifeLine.drawMessageRect.attr("height", parseInt(lifeLine.drawMessageRect.attr("height")) + difference);
@@ -916,6 +845,8 @@ var SequenceD = (function (sequenced) {
                 var group = d3Ref.draw.group()
                     .classed(this.model.viewAttributes.class, true);
                 var lifeLineTopRectGroup = group.append("g");
+                var topShape;
+                var bottomShape;
                 this.group = group;
                 this.prefs = prefs;
                 this.center = center;
@@ -928,9 +859,19 @@ var SequenceD = (function (sequenced) {
 
                 lifeLineTopRectGroup.attr('style', 'cursor: pointer');
 
-                var rect = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height,
-                    0, 0, lifeLineTopRectGroup, '#FFFFFF', textModel)
-                    .classed(prefs.rect.class, true).classed("genericR",true);
+                if (viewObj.model.definition.shape == 'rect') {
+                    topShape = d3Ref.draw.genericCenteredRect(center, prefs.rect.width + 30, prefs.rect.height,
+                        0, 0, lifeLineTopRectGroup, '#FFFFFF', textModel)
+                        .classed(prefs.rect.class, true).classed("genericR",true);
+                } else if (viewObj.model.definition.shape == 'polygon') {
+                    var points = "" + center.x() + "," + (center.y() + 30) +
+                        " " + (center.x() + 35) + "," + center.y() +
+                        " " + center.x() + "," + (center.y() - 30) +
+                        " " + (center.x() - 35) + "," + center.y();
+                    topShape = d3Ref.draw.polygon(points, lifeLineTopRectGroup, textModel, center);
+                    topShape.classed(viewObj.model.definition.class, true);
+                }
+
                  // get new center.x for dynamic updates
                 var rw = textModel.dynamicRectWidth();
                 var rx = textModel.dynamicRectX();
@@ -963,25 +904,37 @@ var SequenceD = (function (sequenced) {
                     .classed(prefs.text.class, true).classed("genericT",true);
                 text.attr('style', 'cursor: pointer');
                 var lifeLineBottomRectGroup = group.append("g");
-                var rectBottom = d3Ref.draw.genericCenteredRect(createPoint(center.get('x'),
-                        center.get('y') + prefs.line.height), prefs.rect.width + 30,
-                    prefs.rect.height, 0, 0, lifeLineBottomRectGroup,'',textModel)
-                    .classed(prefs.rect.class, true).classed("genericR",true);
+
+                if (viewObj.model.definition.shape == 'rect') {
+                    bottomShape = d3Ref.draw.genericCenteredRect(createPoint(center.get('x'),
+                            center.get('y') + prefs.line.height), prefs.rect.width + 30,
+                        prefs.rect.height, 0, 0, lifeLineBottomRectGroup,'',textModel)
+                        .classed(prefs.rect.class, true).classed("genericR",true);
+                } else if (viewObj.model.definition.shape == 'polygon') {
+                    var points = "" + center.x() + "," + (center.get('y') + prefs.line.height + 30) +
+                        " " + (center.x() + 35) + "," + (center.get('y') + prefs.line.height) +
+                        " " + center.x() + "," + (center.get('y') + prefs.line.height - 30) +
+                        " " + (center.x() - 35) + "," + (center.get('y') + prefs.line.height);
+                    bottomShape = d3Ref.draw.polygon(points, lifeLineTopRectGroup, textModel, center);
+                }
+
                 var textBottom = d3Ref.draw.genericCenteredText(createPoint(center.get('x'),
                     center.get('y') + prefs.line.height), title, lifeLineBottomRectGroup,textModel)
                     .classed(prefs.text.class, true).classed("genericT",true);
 
+                if (this.model.type == "EndPoint") {
+                    topShape.classed("outer-dashed", true);
+                    bottomShape.classed("outer-dashed", true);
+                }
 
-                group.rect = rect;
-                group.rectBottom = rectBottom;
+                group.topShape = topShape;
+                group.bottomShape = bottomShape;
                 group.line = line;
                 group.middleRect = middleRect;
                 //group.drawMessageRect = drawMessageRect;
                 group.textBottom = textBottom;
                 group.svgTitle = text;
                 group.svgTitleBottom = textBottom;
-                //Object.getPrototypeOf(group).title = text;
-                //Object.getPrototypeOf(group).titleBottom = textBottom;
                 group.translate = function (dx, dy) {
                     this.attr("transform", function () {
                         return "translate(" + [dx, dy] + ")"
@@ -1812,6 +1765,98 @@ var SequenceD = (function (sequenced) {
             }
         });
 
+    var ActionProcessorView = Diagrams.Views.ShapeView.extend(
+        /** @lends ActionProcessorView.prototype */
+        {
+            /**
+             * @augments ActionProcessorView
+             * @constructs
+             * @class ActionProcessorView Represents Actions such as "Start, etc"
+             * @param {Object} options Rendering options for the view
+             */
+            initialize: function (options) {
+                Diagrams.Views.ShapeView.prototype.initialize.call(this, options);
+            },
+
+            render: function (paperID, center, parentModel, prefs) {
+                var viewObj = this.model;
+                var height = this.model.getHeight();
+                var width = this.model.getWidth();
+                var d3Ref = this.getD3Ref();
+                var group = d3Ref.draw.group();
+                var title = this.model.get('title');
+
+                var processorTitleRect = d3Ref.draw.rect((center.x() - width/2),
+                    (center.y() - height/2),
+                    width,
+                    height,
+                    0,
+                    0,
+                    group,
+                    this.modelAttr('viewAttributes').colour);
+
+                // We need connection staring point only for the processors which have outbound connections.
+                if(!_.isUndefined(this.model.model.hasOutputConnection) && this.model.model.hasOutputConnection) {
+                    var circle = d3Ref.draw.circle(center.x() + width/2, center.y(), height / 3, group, "#2c3e50");
+
+                    circle.on("mousedown", function () {
+                        d3.event.preventDefault();
+                        d3.event.stopPropagation();
+                        var m = d3.mouse(this);
+                        prefs.diagram.clickedLifeLine = parentModel;
+                        prefs.diagram.trigger("messageDrawStart", parentModel,
+                            new GeoCore.Models.Point({'x': center.x() + width/2, 'y': m[1]}));
+                    }).on('mouseover', function () {
+                        //setting current tab view based diagram model
+                        diagram = defaultView.model;
+                        diagram.selectedNode = parentModel;
+                        d3.select(this).style("fill", "red").style("fill-opacity", 0.6)
+                            .style("cursor", 'url(images/BlackHandwriting.cur), pointer');
+                        // Update event manager with current active element type for validation
+                        eventManager.isActivated(diagram.selectedNode.attributes.title);
+                    }).on('mouseout', function () {
+                        //diagram.destinationLifeLine = diagram.selectedNode;
+                        diagram.selectedNode = null;
+                        d3.select(this).style("fill-opacity", 0.01);
+                        // Update event manager with out of focus on active element
+                        eventManager.isActivated("none");
+                    }).on('mouseup', function (data) {
+
+                    });
+                }
+
+                var mediatorText = d3Ref.draw.textElement(center.x(),
+                    center.y() + 5,
+                    title,
+                    group)
+                    .attr('text-anchor','middle')
+                    .classed("genericT",true);
+
+                //We will add edit and delete buttons if we have set editable and deletable to true in the processor definition.
+                // if(!_.isUndefined(this.model.model.editable) && !_.isUndefined(this.model.model.deletable)
+                //     && this.model.model.editable && this.model.model.deletable) {
+                //     this.addEditableAndDeletable(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj);
+                // }
+
+                group.rect = processorTitleRect;
+                group.title = mediatorText;
+                group.circle = circle;
+
+                var inputMessagePoint = this.model.inputConnector();
+                if(!_.isUndefined(inputMessagePoint)){
+                    inputMessagePoint.x(center.x() - width/2);
+                    inputMessagePoint.y(center.y());
+                }
+
+                var outputMessagePoint = this.model.outputConnector();
+                if(!_.isUndefined(outputMessagePoint)){
+                    outputMessagePoint.x(center.x() + width/2);
+                    outputMessagePoint.y(center.y());
+                }
+            }
+
+        });
+
     views.MessageView = MessageView;
     views.ActivationView = ActivationView;
     views.LifeLineView = LifeLineView;
@@ -1821,6 +1866,7 @@ var SequenceD = (function (sequenced) {
     views.MultiRegionProcessorView = MultiRegionProcessorView;
     views.MultiRegionHolderProcessorView = MultiRegionHolderProcessorView;
     views.ElementsRegionProcessorView = ElementsRegionProcessorView;
+    views.ActionProcessorView = ActionProcessorView;
 
     return sequenced;
 
