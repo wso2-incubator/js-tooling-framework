@@ -396,6 +396,7 @@ var SequenceD = (function (sequenced) {
                 this.set('destinationPoint', attrs.destination);
                 this.source().message(this);
                 this.destination().message(this);
+                this.type(attrs.type);
             },
 
             modelName: "MessageLink",
@@ -417,6 +418,14 @@ var SequenceD = (function (sequenced) {
                     this.set('destinationPoint', messagePoint);
                 } else {
                     return this.get('destinationPoint');
+                }
+            },
+
+            type: function (type) {
+                if (type) {
+                    this.set('type', type);
+                } else {
+                    return this.get('type');
                 }
             },
 
