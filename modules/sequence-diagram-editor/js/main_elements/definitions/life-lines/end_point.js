@@ -26,6 +26,7 @@ var MainElements = (function (mainElements) {
         icon: "images/tool-icons/lifeline.svg",
         colour : "purple",
         class : "endpoint",
+        shape: 'rect',
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {

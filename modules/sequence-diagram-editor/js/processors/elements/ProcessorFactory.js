@@ -19,7 +19,7 @@
 var SequenceD = (function (sequenced) {
     var models = sequenced.Models || {};
 
-    var ProcessorFactory = function (title, center, type, model, viewAttributes, parameters, utils, textModel) {
+    var ProcessorFactory = function (title, center, type, model, viewAttributes, parameters, utils, textModel, width, height) {
         var processor;
 
         if (type === "UnitProcessor") {
@@ -64,7 +64,7 @@ var SequenceD = (function (sequenced) {
                 utils: utils
             });
         } else if (type === "Action") {
-            processor = new SequenceD.Models.UnitProcessor({
+            processor = new SequenceD.Models.ActionProcessor({
                 title: title,
                 centerPoint: center,
                 type: type,
@@ -72,7 +72,9 @@ var SequenceD = (function (sequenced) {
                 viewAttributes: viewAttributes,
                 parameters: parameters,
                 utils: utils,
-                textModel : textModel
+                textModel : textModel,
+                width: width,
+                height: height
             });
         } else if (type === 'MultiRegionHolderProcessor') {
             processor = new SequenceD.Models.MultiRegionHolderProcessor({

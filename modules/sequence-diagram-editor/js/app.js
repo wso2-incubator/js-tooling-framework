@@ -59,7 +59,7 @@ var createPoint = function (x, y) {
 
 var diagramD3el = undefined;
 
-var createLifeLine = function (title, center, cssClass, utils, parameters, initTextModel, type) {
+var createLifeLine = function (title, center, cssClass, utils, parameters, initTextModel, type, definition) {
     var lifeline =  new SequenceD.Models.LifeLine({
         title: title,
         centerPoint: center,
@@ -67,7 +67,8 @@ var createLifeLine = function (title, center, cssClass, utils, parameters, initT
         utils: utils,
         parameters: parameters,
         textModel: initTextModel,
-        type: type
+        type: type,
+        definition: definition
     });
 
     //TODO : Adding text model
@@ -234,7 +235,7 @@ function initTabs(){
 function addInitialElements(tabListView){
     var model = defaultView.model;
 
-    var centerPoint = createPoint(200, 50);
+    var centerPoint = createPoint(100, 50);
     var type = "Source";
     var lifeLineDef = MainElements.lifelines.SourceLifeline;
 
@@ -243,7 +244,7 @@ function addInitialElements(tabListView){
     var resourceLifeLineDef = MainElements.lifelines.ResourceLifeline;
 
     var resourceLifeline = createLifeLine("Resource", resourceCenterPoint, resourceLifeLineDef.class, resourceLifeLineDef.utils,
-        resourceLifeLineDef.parameters, resourceLifeLineDef.textModel, resourceType);
+        resourceLifeLineDef.parameters, resourceLifeLineDef.textModel, resourceType, resourceLifeLineDef);
 
     resourceLifeLineOptions.class = MainElements.lifelines.ResourceLifeline.class;
     //SETTING TOP SVG ELEMENT IN OPTIONS To Draw messages
@@ -252,7 +253,7 @@ function addInitialElements(tabListView){
     model.resourceLifeLineCounter(1);
 
     var lifeline = createLifeLine("Source", centerPoint, lifeLineDef.class, lifeLineDef.utils,
-        lifeLineDef.parameters, lifeLineDef.textModel, type);
+        lifeLineDef.parameters, lifeLineDef.textModel, type, lifeLineDef);
 
     lifeLineOptions.class = MainElements.lifelines.SourceLifeline.class;
     //SETTING TOP SVG ELEMENT IN OPTIONS To Draw messages
@@ -273,7 +274,10 @@ function addInitialElements(tabListView){
             colour: Processors.actions.startAction.colour
         },
         Processors.actions.startAction.parameters,
-        Processors.actions.startAction.utils);
+        Processors.actions.startAction.utils,
+        Processors.actions.startAction.textModel,
+        Processors.actions.startAction.width,
+        Processors.actions.startAction.height);
 
     resourceLifeline.addChild(processor);
 
