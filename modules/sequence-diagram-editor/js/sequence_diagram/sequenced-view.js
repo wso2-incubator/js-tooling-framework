@@ -625,6 +625,12 @@ var SequenceD = (function (sequenced) {
             render: function (paperID, status, colour) {
                 if (status == "processors") {
                     Diagrams.Views.ShapeView.prototype.render.call(this, paperID);
+                    // Minimum length for a Lifeline
+                    var minimumLength = 250;
+                    // Distance from lifeline's center point to first processor.
+                    var initDistance = 90;
+                    // Space between two processors
+                    var distanceBetweenProcessors = 20;
                     thisModel = this.model;
                     var centerPoint = this.modelAttr('centerPoint');
                     var lifeLine = this.drawLifeLine(centerPoint, this.modelAttr('title'), this.options, colour);
@@ -643,7 +649,7 @@ var SequenceD = (function (sequenced) {
                     var yValue = centerPoint.y();
 
                     lifeLine.call(drag);
-                    yValue += 60;
+                    yValue += initDistance;
 
                     var initialHeight = parseInt(lifeLine.line.attr("y2")) - parseInt(lifeLine.line.attr("y1")) ;
                     var totalIncrementedHeight = 0;
@@ -661,8 +667,7 @@ var SequenceD = (function (sequenced) {
                                 var processorCenterPoint = createPoint(xValue, yValue);
                                 processorView.render("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, "processors");
                                 processor.setY(yValue);
-                                yValue += processor.getHeight() + 30;
-                                totalIncrementedHeight = totalIncrementedHeight + processor.getHeight() + 30;
+                                yValue += processor.getHeight() + distanceBetweenProcessors;
                             }
                         } else {
                             var messagePoint = this.modelAttr("children").models[id];
@@ -692,14 +697,20 @@ var SequenceD = (function (sequenced) {
                         }
                     }
 
-                    var totalHeight = totalIncrementedHeight + initialHeight;
-                    if (!_.isUndefined(diagram.highestLifeline) && diagram.highestLifeline !== null && diagram.highestLifeline.getHeight() > totalHeight) {
-                        totalHeight = diagram.highestLifeline.getHeight();
+                    var totalHeight = parseInt(yValue) - parseInt(lifeLine.line.attr("y1"));
+                    if (totalHeight < minimumLength) {
+                        totalHeight = minimumLength;
+                    }
+                    if (!_.isUndefined(diagram.highestLifeline) && diagram.highestLifeline !== null) {
+                        if (diagram.highestLifeline.getHeight() > totalHeight) {
+                            totalHeight = diagram.highestLifeline.getHeight();
+                        }
+                        var maxHeight = diagram.highestLifeline.getHeight();
                     }
                     this.model.setHeight(totalHeight);
                     this.adjustHeight(lifeLine, totalHeight - initialHeight);
 
-                    if (diagram.highestLifeline == undefined || diagram.highestLifeline.getHeight() < this.model.getHeight()) {
+                    if (diagram.highestLifeline == undefined || maxHeight < this.model.getHeight()) {
                         diagram.highestLifeline = this.model;
                         defaultView.render();
                         return false;
