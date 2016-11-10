@@ -1459,8 +1459,6 @@ var Diagrams = (function (diagrams) {
                     }
                 }
 
-
-
                 this.trigger("renderCompleted", this.d3svg.node());
                 return mainGroup;
             },
@@ -1531,7 +1529,7 @@ var Diagrams = (function (diagrams) {
                     title += counter;
                 }
                 var lifeline = createLifeLine(title, centerPoint, lifeLineDef.class, lifeLineDef.utils,
-                                              lifeLineDef.parameters, lifeLineDef.textModel, type);
+                                              lifeLineDef.parameters, lifeLineDef.textModel, type, lifeLineDef);
                 ////TODO : Adding text model
                 //var textModel = new Diagrams.Models.TextController({});
                 //lifeline.attributes.textModel = textModel;

@@ -25,8 +25,8 @@ var MainElements = (function (mainElements) {
         title: "Worker",
         icon: "images/tool-icons/lifeline.svg",
         colour : "#FFFFFF",
-        // Need to change this to a generic value
         class : "worker",
+        shape: 'rect',
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {

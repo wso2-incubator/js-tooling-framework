@@ -179,6 +179,7 @@ var SequenceD = (function (sequenced) {
                 var children = new Children([], {diagram: this});
                 this.children(children);
                 this.type = attrs.type;
+                this.definition = attrs.definition;
 
                 this.viewAttributes = {
                     class: attrs.cssClass,
@@ -197,7 +198,8 @@ var SequenceD = (function (sequenced) {
                 title: "Lifeline",
                 width : 0,
                 height : 300,
-                viewAttributes: {colour: "#ffffff"}
+                viewAttributes: {colour: "#ffffff"},
+                definition: undefined
             },
 
             // Processors can override this method on order to define the behavior of drawing the messages from
@@ -252,8 +254,9 @@ var SequenceD = (function (sequenced) {
                 return new GeoCore.Models.Point({'x': x, 'y': y});
             },
 
-            createLifeLine: function (title, center, colour, type) {
-                return new SequenceD.Models.LifeLine({title: title, centerPoint: center, colour: colour, type: type});
+            createLifeLine: function (title, center, colour, type, definition) {
+                return new SequenceD.Models.LifeLine({title: title, centerPoint: center,
+                    colour: colour, type: type, definition: definition});
             },
 
             createFixedSizedMediator: function (title, center) {

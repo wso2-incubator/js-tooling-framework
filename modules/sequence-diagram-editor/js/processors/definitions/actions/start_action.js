@@ -25,11 +25,14 @@ var Processors = (function (processors) {
         id: "StartAction",
         title: "Start",
         colour : "#ffffff",
-        type : "Action"
+        type : "Action",
+        height: 30,
+        width: 100
     };
 
     actions.startAction = startAction;
     processors.actions = actions;
+    textModel : "undefined";
     return processors;
 
 }(Processors || {}));
