@@ -1275,6 +1275,7 @@ var Diagrams = (function (diagrams) {
                     defaultView.renderMainElement(id, countOfWorkers, MainElements.lifelines.WorkerLifeline,
                         {utils: MainElements.lifelines.WorkerLifeline.utils});
                     txt.workerLifeLineCounter(countOfWorkers);
+                    defaultView.render();
                 }
             } //for invalid check
             },

@@ -53,6 +53,14 @@ var SequenceD = (function (sequenced) {
                 this.get('centerPoint').set('y', y);
             },
 
+            setX: function (x) {
+                this.get('centerPoint').set('x', x);
+            },
+
+            getX: function () {
+                this.get('centerPoint').get('x');
+            },
+
             getWidth: function () {
                 return this.get('width');
             },
