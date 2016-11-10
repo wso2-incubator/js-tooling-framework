@@ -30,7 +30,13 @@ var Diagrams = (function (diagrams) {
         return new model.nameSpace.Views[model.modelName + "View"]({model: model, options: options});
     };
 
+    var messageLinkType = {
+        OutOnly : 1,
+        InOut : 2
+    };
+
     utils.createViewForModel = createViewForModel;
+    utils.messageLinkType = messageLinkType;
     diagrams.Utils = utils;
     return diagrams;
 

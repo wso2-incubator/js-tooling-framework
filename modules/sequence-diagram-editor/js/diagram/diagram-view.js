@@ -363,7 +363,8 @@ var Diagrams = (function (diagrams) {
             var messageLink = new SequenceD.Models.MessageLink({
                 source: sourcePoint,
                 destination: destinationPoint,
-                priority: destinationPoint
+                priority: destinationPoint,
+                type : Diagrams.Utils.messageLinkType.OutOnly
             });
             var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
             var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
@@ -1145,7 +1146,8 @@ var Diagrams = (function (diagrams) {
                             initMethod: Processors.manipulators[id].init,
                             editable: Processors.manipulators[id].editable,
                             deletable: Processors.manipulators[id].deletable,
-                            hasOutputConnection : Processors.manipulators[id].hasOutputConnection
+                            hasOutputConnection : Processors.manipulators[id].hasOutputConnection,
+                            messageLinkType : Processors.manipulators[id].messageLinkType
                         },
                         {colour: Processors.manipulators[id].colour},
                         Processors.manipulators[id].parameters,
@@ -1640,7 +1642,8 @@ var Diagrams = (function (diagrams) {
                     });
                     var messageLink = new SequenceD.Models.MessageLink({
                         source: sourcePoint,
-                        destination: destinationPoint
+                        destination: destinationPoint,
+                        type : sourceModel.model.messageLinkType
                     });
                     diagView.model.trigger("messageDrawEnd", sourceModel, sourcePoint, destinationPoint);
 

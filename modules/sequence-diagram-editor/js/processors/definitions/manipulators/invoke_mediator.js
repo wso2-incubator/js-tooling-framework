@@ -27,6 +27,7 @@ var Processors = (function (processors) {
         icon: "images/tool-icons/invoke.svg",
         colour : "#ffffff",
         type : "Action",
+        messageLinkType : Diagrams.Utils.messageLinkType.InOut,
         hasOutputConnection : true,
         dragCursorOffset : { left: 50, top: -5 },
         createCloneCallback : function(view){
