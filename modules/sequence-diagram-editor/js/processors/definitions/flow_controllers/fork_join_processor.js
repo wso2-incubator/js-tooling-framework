@@ -49,9 +49,9 @@ var Processors = (function (processors) {
                             var cp = createPoint(250, 50);
                             var lifeLineDef = MainElements.lifelines.WorkerLifeline;
                             var lifeline1 = createLifeLine("Fork1", cp, lifeLineDef.class, lifeLineDef.utils,
-                                lifeLineDef.parameters, lifeLineDef.textModel, "Worker");
+                                lifeLineDef.parameters, lifeLineDef.textModel, "Worker", lifeLineDef);
                             var lifeline2 = createLifeLine("Fork2", cp, lifeLineDef.class, lifeLineDef.utils,
-                                lifeLineDef.parameters, lifeLineDef.textModel, "Worker");
+                                lifeLineDef.parameters, lifeLineDef.textModel, "Worker", lifeLineDef);
                             defaultChildren.push(lifeline1);
                             defaultChildren.push(lifeline2);
                             return defaultChildren;

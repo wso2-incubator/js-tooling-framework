@@ -65,7 +65,7 @@ var D3Utils = (function (d3_utils) {
             .attr("height", containerHeight)
             .attr("fill", "#ffffff")
             .attr("stroke", "black")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             .attr("rx", rx)
             .attr("fill-opacity",.4)
             .attr("ry", ry);
@@ -77,7 +77,7 @@ var D3Utils = (function (d3_utils) {
             .attr("height", titleHeight)
             .attr("fill", "#ffffff")
             .attr("stroke", "black")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             .attr("fill-opacity", 1)
             .attr("rx", rx)
             .attr("ry", ry);
@@ -103,7 +103,7 @@ var D3Utils = (function (d3_utils) {
             .attr("width", width)
             .attr("height", height)
             .attr("fill-opacity", 0)
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             //.style("filter", "url(#drop-shadow)")
             .attr("rx", rx)
             .attr("ry", ry);
@@ -125,7 +125,7 @@ var D3Utils = (function (d3_utils) {
             .attr("width", width)
             .attr("height", height)
             .attr("fill-opacity", 0.01)
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             //.style("filter", "url(#drop-shadow)")
             .attr("rx", rx)
             .attr("ry", ry);
@@ -176,7 +176,7 @@ var D3Utils = (function (d3_utils) {
             .attr("height", height)
             .attr("fill", colour || "steelblue")
             .attr("stroke", "black")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             .attr("rx", rx)
             .attr("ry", ry)
             .attr("id",modelId);
@@ -202,7 +202,8 @@ var D3Utils = (function (d3_utils) {
             .attr("x1", x1)
             .attr("y1", y1)
             .attr("x2", x2)
-            .attr("y2", y2);
+            .attr("y2", y2)
+            .attr("stroke-width", 1);
     };
     var genericLine = function (x1, y1, x2, y2, parent,txtm) {
         parent = parent || d3Ref;
@@ -217,7 +218,47 @@ var D3Utils = (function (d3_utils) {
             .attr("x1", x1)
             .attr("y1", y1)
             .attr("x2", x2)
-            .attr("y2", y2);
+            .attr("y2", y2)
+            .attr("stroke-width", 1);
+    };
+
+    var polygon = function (points, parent, textModel, center) {
+
+        // get TextModel and if dynamicRectWidth is not 130 add that as width
+        var modelId = textModel.cid;
+        var x = center.x() - 15;
+        var y = center.y();
+        var height = 30;
+        var width = 30;
+
+        if(textModel.dynamicRectWidth() == undefined){
+            textModel.dynamicRectWidth(width);
+        }
+
+        width = textModel.dynamicRectWidth();
+
+        if(textModel.dynamicRectX() == undefined){
+            textModel.dynamicRectX(x);
+        }
+
+        x = textModel.dynamicRectX();
+
+        if(textModel.dynamicRectY() == undefined){
+            textModel.dynamicRectY(y);
+        }
+
+        // y = textModel.dynamicRectY();
+
+        if(textModel.dynamicRectHeight() == undefined){
+            textModel.dynamicRectHeight(height);
+        }
+
+        return parent.append('polygon')
+            .attr('points', points)
+            .attr('stroke-width', 1)
+            .attr('fill', "#ffffff")
+            .attr('stroke', "#000000")
+            .attr('stroke-linejoin', 'round');
     };
 
     var genericVerticalLine = function (start, height, parent,txtm) {
@@ -247,7 +288,7 @@ var D3Utils = (function (d3_utils) {
             .attr("height", height)
             .attr("fill", colour || "#000000")
             .attr("stroke", "black")
-            .attr("stroke-width", 2)
+            .attr("stroke-width", 1)
             .attr("rx", rx)
             .attr("ry", ry);
         return rect;
@@ -286,7 +327,8 @@ var D3Utils = (function (d3_utils) {
             .attr("x1", x1)
             .attr("y1", y1)
             .attr("x2", x2)
-            .attr("y2", y2);
+            .attr("y2", y2)
+            .attr("stroke-width", 1);
     };
 
     /**
@@ -666,6 +708,7 @@ var D3Utils = (function (d3_utils) {
         draw.genericLine = genericLine;
         draw.genCenteredBasicRect = genCenteredBasicRect;
         draw.genBasicRect = genBasicRect;
+        draw.polygon = polygon;
 
         var d3Proto = Object.getPrototypeOf(d3ref);
         d3Proto.draw = draw;

@@ -363,7 +363,8 @@ var Diagrams = (function (diagrams) {
             var messageLink = new SequenceD.Models.MessageLink({
                 source: sourcePoint,
                 destination: destinationPoint,
-                priority: destinationPoint
+                priority: destinationPoint,
+                type : Diagrams.Utils.messageLinkType.OutOnly
             });
             var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
             var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
@@ -1145,7 +1146,8 @@ var Diagrams = (function (diagrams) {
                             initMethod: Processors.manipulators[id].init,
                             editable: Processors.manipulators[id].editable,
                             deletable: Processors.manipulators[id].deletable,
-                            hasOutputConnection : Processors.manipulators[id].hasOutputConnection
+                            hasOutputConnection : Processors.manipulators[id].hasOutputConnection,
+                            messageLinkType : Processors.manipulators[id].messageLinkType
                         },
                         {colour: Processors.manipulators[id].colour},
                         Processors.manipulators[id].parameters,
@@ -1273,6 +1275,7 @@ var Diagrams = (function (diagrams) {
                     defaultView.renderMainElement(id, countOfWorkers, MainElements.lifelines.WorkerLifeline,
                         {utils: MainElements.lifelines.WorkerLifeline.utils});
                     txt.workerLifeLineCounter(countOfWorkers);
+                    defaultView.render();
                 }
             } //for invalid check
             },
@@ -1457,8 +1460,6 @@ var Diagrams = (function (diagrams) {
                     }
                 }
 
-
-
                 this.trigger("renderCompleted", this.d3svg.node());
                 return mainGroup;
             },
@@ -1529,7 +1530,7 @@ var Diagrams = (function (diagrams) {
                     title += counter;
                 }
                 var lifeline = createLifeLine(title, centerPoint, lifeLineDef.class, lifeLineDef.utils,
-                                              lifeLineDef.parameters, lifeLineDef.textModel, type);
+                                              lifeLineDef.parameters, lifeLineDef.textModel, type, lifeLineDef);
                 ////TODO : Adding text model
                 //var textModel = new Diagrams.Models.TextController({});
                 //lifeline.attributes.textModel = textModel;
@@ -1640,7 +1641,8 @@ var Diagrams = (function (diagrams) {
                     });
                     var messageLink = new SequenceD.Models.MessageLink({
                         source: sourcePoint,
-                        destination: destinationPoint
+                        destination: destinationPoint,
+                        type : sourceModel.model.messageLinkType
                     });
                     diagView.model.trigger("messageDrawEnd", sourceModel, sourcePoint, destinationPoint);
 

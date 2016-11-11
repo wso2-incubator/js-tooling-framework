@@ -31,6 +31,10 @@ var SequenceD = (function (sequenced) {
              */
             initialize: function (attrs, options) {
                 SequenceD.Models.Processor.prototype.initialize.call(this, attrs, options);
+                if (!_.isUndefined(attrs.width) && !_.isUndefined(attrs.height)) {
+                    this.width = attrs.width;
+                    this.height = attrs.height;
+                }
             },
 
             modelName: "UnitProcessor",
@@ -591,8 +595,41 @@ var SequenceD = (function (sequenced) {
 
         });
 
+    var ActionProcessor = SequenceD.Models.Processor.extend(
+        /** @lends DiagramElement.prototype */
+        {
+
+            selectedNode: null,
+            /**
+             * @augments DiagramElement
+             * @constructs
+             * @class Element represents the actions such as "Start, Response, etc"
+             */
+            initialize: function (attrs, options) {
+                SequenceD.Models.Processor.prototype.initialize.call(this, attrs, options);
+                if (!_.isUndefined(attrs.width) && !_.isUndefined(attrs.height)) {
+                    this.width = attrs.width;
+                    this.height = attrs.height;
+                }
+            },
+
+            modelName: "ActionProcessor",
+
+            nameSpace: sequenced,
+
+            idAttribute: this.cid,
+
+            defaults: {
+                centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
+                width: 100,
+                height: 30,
+                title: "ActionProcessor"
+            }
+        });
+
     // set models
     models.UnitProcessor = UnitProcessor;
+    models.ActionProcessor = ActionProcessor;
     models.ComplexProcessor = ComplexProcessor;
     models.DynamicContainableProcessor = DynamicContainableProcessor;
     models.CustomProcessor = CustomProcessor;

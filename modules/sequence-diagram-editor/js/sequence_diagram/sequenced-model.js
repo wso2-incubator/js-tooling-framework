@@ -53,6 +53,14 @@ var SequenceD = (function (sequenced) {
                 this.get('centerPoint').set('y', y);
             },
 
+            setX: function (x) {
+                this.get('centerPoint').set('x', x);
+            },
+
+            getX: function () {
+                this.get('centerPoint').get('x');
+            },
+
             getWidth: function () {
                 return this.get('width');
             },
@@ -179,6 +187,7 @@ var SequenceD = (function (sequenced) {
                 var children = new Children([], {diagram: this});
                 this.children(children);
                 this.type = attrs.type;
+                this.definition = attrs.definition;
 
                 this.viewAttributes = {
                     class: attrs.cssClass,
@@ -197,7 +206,8 @@ var SequenceD = (function (sequenced) {
                 title: "Lifeline",
                 width : 0,
                 height : 300,
-                viewAttributes: {colour: "#ffffff"}
+                viewAttributes: {colour: "#ffffff"},
+                definition: undefined
             },
 
             // Processors can override this method on order to define the behavior of drawing the messages from
@@ -252,8 +262,9 @@ var SequenceD = (function (sequenced) {
                 return new GeoCore.Models.Point({'x': x, 'y': y});
             },
 
-            createLifeLine: function (title, center, colour, type) {
-                return new SequenceD.Models.LifeLine({title: title, centerPoint: center, colour: colour, type: type});
+            createLifeLine: function (title, center, colour, type, definition) {
+                return new SequenceD.Models.LifeLine({title: title, centerPoint: center,
+                    colour: colour, type: type, definition: definition});
             },
 
             createFixedSizedMediator: function (title, center) {
@@ -396,6 +407,7 @@ var SequenceD = (function (sequenced) {
                 this.set('destinationPoint', attrs.destination);
                 this.source().message(this);
                 this.destination().message(this);
+                this.type(attrs.type);
             },
 
             modelName: "MessageLink",
@@ -417,6 +429,14 @@ var SequenceD = (function (sequenced) {
                     this.set('destinationPoint', messagePoint);
                 } else {
                     return this.get('destinationPoint');
+                }
+            },
+
+            type: function (type) {
+                if (type) {
+                    this.set('type', type);
+                } else {
+                    return this.get('type');
                 }
             },
 

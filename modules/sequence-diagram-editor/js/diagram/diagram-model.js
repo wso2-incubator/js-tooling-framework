@@ -503,8 +503,9 @@ var Diagrams = (function (diagrams) {
                 return new GeoCore.Models.Point({'x': x, 'y': y});
             },
 
-            createLifeLine: function (title, center, colour, type) {
-                return new SequenceD.Models.LifeLine({title: title, centerPoint: center, colour: colour, type: type});
+            createLifeLine: function (title, center, colour, type, definition) {
+                return new SequenceD.Models.LifeLine({title: title, centerPoint: center,
+                    colour: colour, type: type, definition: definition});
             },
 
             getNearestLifeLine: function (xPosition) {
