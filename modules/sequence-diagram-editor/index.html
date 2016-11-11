@@ -228,6 +228,7 @@
                 <ul class="" id="serviceAndSourceButtons">
                     <li><a href="#" onclick="loadServiceProperties();">Service</a></li>
                     <li><a href="#" id="sourceId" onclick="toggleSource();">Source</a></li>
+                    <li><a href="#" onclick="generateDesignFromSource();">Generate Design</a></li>
                 </ul>
             </div>
             <!-- End: breadcrumb row -->
@@ -432,6 +433,7 @@
 <script src="js/processors/elements/ProcessorFactory.js"></script>
 <script src="js/tree.js"></script>
 <script src="js/app.js"></script>
+<script src="js/nel-parser/generate-design.js"></script>
 
 <script>
     var formatter;
@@ -701,6 +703,65 @@
         serviceTags = $("#tags").val();
         serviceDescription = $("#description").val();
         $('#servicePropertiesModal').modal('hide');
+    }
+
+    function generateDesignFromSource() {
+        var editorMain = document.getElementById("sourceViewTab");
+        var rightContainer = document.getElementById("right-container");
+        editorMain.style.display = "none";
+        rightContainer.style.display = "block";
+        $('#sourceId').html('SOURCE');
+        var source = $('.ace_content').text();//source from the editor
+        //TODO get tree object from the source
+        var treeObj = {
+            "children": [{
+                "children": [],
+                "value": "Endpoint",
+                "type": "Endpoint",
+                "configStart": "constant endpoint stockEP = new EndPoint(http://localhost:8080/stockquote/all)",
+                "configEnd": ";\n",
+                "parameters": [{"key": "title", "value": "stockEP"},
+                    {"key": "url", "value": "http://localhost:8080/stockquote/all"}]
+            }, {
+                "children": [{
+                    "children": [],
+                    "value": "InvokeMediator",
+                    "type": "InvokeMediator",
+                    "configStart": "response = invoke(messageRef = m, endpointRef = stockEP",
+                    "configEnd": ");\n",
+                    "parameters": [{"key": "endpointRef", "value": "stockEP"}, {"key": "messageRef", "value": "m"}]
+                }, {
+                    "children": [],
+                    "value": "ResponseMsg",
+                    "type": "ResponseMsg",
+                    "configStart": "reply response",
+                    "configEnd": ";\n"
+                }],
+                "value": "Resource",
+                "type": "Resource",
+                "configStart": "@GET\n@PUT\n@POST\n@Path(\"/getStocks\")\nresource passthrough(message m) {\nmessage response;\n",
+                "configEnd": "}",
+                "parameters": [{"key": "get", "value": true}, {"key": "put", "value": true},
+                    {"key": "post", "value": true}, {"key": "path", "value": "/getStocks"},
+                    {"key": "inputParameter", "value": "m"}, {"key": "title", "value": "passthrough"},
+                    {"key": "property", "value": {"key": "response", "name": "message"}}]
+            }],
+            "value": "Service",
+            "type": "Service",
+            "configStart": "@Path(\"/stocks\")\n@Source(interface=\"default\")\n@Service(tags={\"stock_info\",\"stock_update\"},description=\"Rest api for get stocks details\",produces=MediaType.APPLICATION_JSON)\npackagecom.sample;\n",
+            "configEnd": "\n",
+            "parameters": [{"key": "path", "value": "/stocks"},
+                {"key": "sourceValues", "value": {"interface": "default"}}, {
+                    "key": "serviceValues",
+                    "value": {
+                        "tags": ["stock_info", "stock_update"],
+                        "description": "Rest api for get stocks details",
+                        "producer": {"mediaType": "MediaType.APPLICATION_JSON"}
+                    }
+                }, {"key": "packageDefinition", "value": "com.sample"}]
+        };
+
+        sourceToDesign(treeObj);
     }
 </script>
 
