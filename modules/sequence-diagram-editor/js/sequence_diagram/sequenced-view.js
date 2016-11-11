@@ -389,6 +389,9 @@ var SequenceD = (function (sequenced) {
                     var totalHeight=0;
                     var maximumWidth = 150;
 
+                    var deltaDistance = 0;
+                    var destinationX = 0;
+
                     for (var id in this.modelAttr("containableProcessorElements").models) {
 
                         var containableProcessorElement = this.modelAttr("containableProcessorElements").models[id];
@@ -404,11 +407,34 @@ var SequenceD = (function (sequenced) {
                         // lifeLineOptions}); var processorCenterPoint = createPoint(xValue, yValue);
                         // processorView.render("#diagramWrapper", processorCenterPoint); processor.setY(yValue);
 
+                        var childElementsInContainableProcessorElement = containableProcessorElement.get("children").models;
+                        var sourceX = 0;
+                        if(childElementsInContainableProcessorElement.length != 0) {
+                            for (var child in childElementsInContainableProcessorElement) {
+                                if (childElementsInContainableProcessorElement[child].get("outputConnector") != null) {
+                                    if(childElementsInContainableProcessorElement[child].get("outputConnector").get("message") != null) {
+                                        if(childElementsInContainableProcessorElement[child].get("outputConnector").get("message").get("destination") != null) {
+                                            var destinationXVal = childElementsInContainableProcessorElement[child].get("outputConnector").get("message").get("destination").get("centerPoint").get("x");
+                                            sourceX = childElementsInContainableProcessorElement[child].get("outputConnector").get("message").get("source").get("centerPoint").get("x");
+                                            if (destinationX < destinationXVal) {
+                                                destinationX = destinationXVal;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (destinationX != 0 && sourceX != 0) {
+                            deltaDistance = (destinationX - sourceX);
+                        }
+
                         if(maximumWidth < containableProcessorElement.getWidth()){
                             maximumWidth = containableProcessorElement.getWidth();
                         }
                     }
 
+                    var newWidth = maximumWidth + deltaDistance;
 
                     var arrayLength = containableProcessorElementViewArray.length;
                     for (var i = 0; i < arrayLength; i++) {
@@ -419,8 +445,8 @@ var SequenceD = (function (sequenced) {
                         var text = containableProcessorElementViewArray[i].text;
 
                         var initWidth = middleRect.attr("width");
-                        middleRect.attr("width", maximumWidth);
-                        rect.attr("width", maximumWidth);
+                        middleRect.attr("width", newWidth);
+                        rect.attr("width", newWidth);
 
                         var deviation = (maximumWidth - initWidth)/2;
 
