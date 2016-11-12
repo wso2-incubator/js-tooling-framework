@@ -51,7 +51,7 @@ var D3Utils = (function (d3_utils) {
         var composite = {};
 
         x = center.x() - containerWidth / 2;
-        y = center.y() - titleHeight / 2;
+        y = center.y() ;
 
         rx = rx || 0;
         ry = ry || 0;
@@ -134,7 +134,7 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.genBasicRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent,textm);
+        return parent.draw.genBasicRect(center.x() - width / 2, center.y(), width, height, rx, ry, parent,textm);
     };
 
     var genericRect = function (x, y, width, height, rx, ry, parent, colour,textModel) {
@@ -186,7 +186,7 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour, textModel);
+        return parent.draw.genericRect(center.x() - width / 2, center.y(), width, height, rx, ry, parent, colour, textModel);
     };
     var genericLine = function (x1, y1, x2, y2, parent,txtm) {
         parent = parent || d3Ref;
@@ -270,7 +270,7 @@ var D3Utils = (function (d3_utils) {
     var genericTextRect = function (center,width,height,rx,ry,textContent,x,y,parent,colour, textModel){
         parent = parent || d3Ref;
 
-        var rect =parent.draw.genericRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour, textModel);
+        var rect =parent.draw.genericRect(center.x() - width / 2, center.y(), width, height, rx, ry, parent, colour, textModel);
         var text = rect.draw.genericTextElement(center.x(), center.y(), textContent, rect,txtModel)
             .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle');
         return parent;
@@ -310,7 +310,7 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.rect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour);
+        return parent.draw.rect(center.x() - width / 2, center.y(), width, height, rx, ry, parent, colour);
     };
 
 
@@ -318,7 +318,7 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.basicRect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent);
+        return parent.draw.basicRect(center.x() - width / 2, center.y(), width, height, rx, ry, parent);
     };
 
     var line = function (x1, y1, x2, y2, parent) {
@@ -670,7 +670,7 @@ var D3Utils = (function (d3_utils) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
-        return parent.draw.rect(center.x() - width / 2, center.y() - height / 2, width, height, rx, ry, parent, colour);
+        return parent.draw.rect(center.x() - width / 2, center.y(), width, height, rx, ry, parent, colour);
     };
 
     var decorate = function (d3ref) {
