@@ -58,15 +58,8 @@ var SequenceD = (function (sequenced) {
             render: function (paperID, status, colour) {
                 if (status == "processors") {
                     Diagrams.Views.ShapeView.prototype.render.call(this, paperID);
-                    // Minimum length for a Lifeline
-                    var minimumLength = 250;
-                    // Distance from lifeline's center point to first processor.
-                    var initDistance = 60;
-                    // Space between two processors
-                    var distanceBetweenProcessors = 30;
-                    thisModel = this.model;
-                    var centerPoint = this.modelAttr('centerPoint');
-                    var lifeLine = this.drawLifeLine(paperID, centerPoint, this.modelAttr('title'), this.options, colour);
+
+                    var lifeLine = this.drawLifeLine(paperID, this, colour);
                     var viewObj = this;
                     var drag = d3.drag()
                         .on("start", function () {
@@ -78,66 +71,39 @@ var SequenceD = (function (sequenced) {
                         .on("end", function () {
                             viewObj.dragStop();
                         });
-                    var xValue = centerPoint.x();
-                    var yValue = centerPoint.y();
-
                     lifeLine.call(drag);
-                    yValue += initDistance;
 
                     var initialHeight = parseInt(lifeLine.line.attr("y2")) - parseInt(lifeLine.line.attr("y1")) ;
-                    var totalIncrementedHeight = 0;
-                    var previousHeight = 0;
+                    // Space between two processors
+                    var distanceBetweenProcessors = 30;
+                    // Distance from lifeline's center point to first processor.
+                    var initDistance = 60;
+                    var centerPoint = this.modelAttr('centerPoint');
+                    var x = centerPoint.x();
+                    var y = centerPoint.y();
+                    y += initDistance;
 
-                    for (var id in this.modelAttr("children").models) {
-
-                        if (this.modelAttr("children").models[id] instanceof SequenceD.Models.Processor) {
-                            if (_.isUndefined(this.modelAttr("children").models[id].get('skipOnLifelineDraw'))) {
-                                var processor = this.modelAttr("children").models[id];
-
-                                var processorCenterPoint = createPoint(xValue, yValue);
-                                var processorView = new SequenceD.Views.ProcessorViewFactory(processor.get("title"),processorCenterPoint,
-                                    processor.get("type"),processor);
-
-
-                                //var processorView = new SequenceD.Views.Processor({
-                                //    model: processor,
-                                //    options: lifeLineOptions
-                                //});
-
+                    var children = this.modelAttr("children").models;
+                    for (var id in children) {
+                        if (children[id] instanceof SequenceD.Models.Processor) {
+                            if (_.isUndefined(children[id].get('skipOnLifelineDraw'))) {
+                                var processor = children[id];
+                                var processorCenterPoint = createPoint(x, y);
+                                var processorView = new SequenceD.Views.ProcessorViewFactory(processorCenterPoint, processor);
                                 processorView.render("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, processor, this.options);
-                                processor.setY(yValue);
-                                yValue += processor.getHeight() + distanceBetweenProcessors;
-                                previousHeight = processor.getHeight();
+                                processor.setY(y);
+                                y += processor.getHeight() + distanceBetweenProcessors;
                             }
                         } else {
-                            var messagePoint = this.modelAttr("children").models[id];
-                            var linkCenterPoint = createPoint(xValue, yValue);
-                            //link.source.setY()
-                            if (messagePoint.direction() == "outbound") {
-                                if(!_.isUndefined(messagePoint.forceY) && _.isEqual(messagePoint.forceY, true)){
-                                    yValue = messagePoint.y();
-                                }
-                                messagePoint.y(yValue);
-                                messagePoint.x(xValue);
-                            } else {
-                                if(!_.isUndefined(messagePoint.forceY) && _.isEqual(messagePoint.forceY, true)){
-                                    yValue = messagePoint.y();
-                                }
-                                var sourceY = messagePoint.message().source().y();
-                                if (yValue < sourceY) {
-                                    messagePoint.y(sourceY);
-                                } else {
-                                    messagePoint.y(yValue);
-                                    messagePoint.message().source().y(yValue);
-                                }
-                                messagePoint.x(xValue);
-                            }
-                            yValue += 60;
-                            totalIncrementedHeight = totalIncrementedHeight + 40;
+                            var messagePoint = children[id];
+                            messagePoint.x(x);
+                            messagePoint.y(messagePoint.message().source().y());
                         }
                     }
 
-                    var totalHeight = parseInt(yValue) - parseInt(lifeLine.line.attr("y1"));
+                    // Minimum length for a Lifeline
+                    var minimumLength = 250;
+                    var totalHeight = parseInt(y) - parseInt(lifeLine.line.attr("y1"));
                     if (totalHeight < minimumLength) {
                         totalHeight = minimumLength;
                     }
@@ -155,8 +121,6 @@ var SequenceD = (function (sequenced) {
                         defaultView.render();
                         return false;
                     }
-
-                    //this.model.on("addChildProcessor", this.onAddChildProcessor, this);
 
                     this.d3el = lifeLine;
                     this.el = lifeLine.node();
@@ -180,79 +144,16 @@ var SequenceD = (function (sequenced) {
                 lifeLine.bottomShape.attr('transform', t);
                 lifeLine.line.attr("y2", parseInt(lifeLine.line.attr("y2")) + difference);
                 lifeLine.textBottom.attr("y", parseInt(lifeLine.textBottom.attr("y")) + difference);
-                //lifeLine.drawMessageRect.attr("height", parseInt(lifeLine.drawMessageRect.attr("height")) + difference);
                 lifeLine.middleRect.attr("height", parseInt(lifeLine.middleRect.attr("height")) + difference);
 
             },
 
-            onAddChildProcessor: function (element, opts) {
+            drawLifeLine: function (paperID, view, colour) {
 
-                if (element instanceof SequenceD.Models.Processor) {
+                var center = view.modelAttr('centerPoint');
+                var title = view.modelAttr('title');
+                var prefs = this.options;
 
-                    if (element.model.type === "UnitProcessor") {
-
-                        var d3Ref = this.getD3Ref();
-                        console.log("Processor added");
-                        var rectBottomXXX = d3Ref.draw.centeredRect(
-                            createPoint(defaultView.model.selectedNode.get('centerPoint').get('x'),
-                                element.get('centerPoint').get('y')),
-                            this.prefs.rect.width,
-                            this.prefs.rect.height,
-                            0,
-                            0,
-                            this.group, element.viewAttributes.colour
-                        );
-                        var mediatorText = d3Ref.draw.centeredText(
-                            createPoint(defaultView.model.selectedNode.get('centerPoint').get('x'),
-                                element.get('centerPoint').get('y')),
-                            element.get('title'),
-                            this.group)
-                            .classed(this.prefs.text.class, true);
-                        //this.renderViewForElement(element, opts);
-                    } else if (element.model.type === "DynamicContainableProcessor") {
-                        var d3Ref = this.getD3Ref();
-                        console.log("Processor added");
-                        var rectBottomXXX = d3Ref.draw.rectWithTitle(
-                            createPoint(defaultView.model.selectedNode.get('centerPoint').get('x'),
-                                element.get('centerPoint').get('y')),
-                            60,
-                            this.prefs.rect.height,
-                            150,
-                            200,
-                            0,
-                            0,
-                            this.group, element.viewAttributes.colour,
-                            element.attributes.title
-                        );
-
-                    } else if (element.model.type === "ComplexProcessor") {
-                        var d3Ref = this.getD3Ref();
-                        console.log("Processor added");
-                        var rectBottomXXX = d3Ref.draw.rectWithTitle(
-                            createPoint(defaultView.model.selectedNode.get('centerPoint').get('x'),
-                                element.get('centerPoint').get('y')),
-                            60,
-                            this.prefs.rect.height,
-                            150,
-                            200,
-                            0,
-                            0,
-                            this.group, element.viewAttributes.colour,
-                            element.attributes.title
-                        );
-
-                    }
-
-                } else if (element instanceof SequenceD.Models.Message) {
-                    console.log("Message Link added !!!")
-                    if (opts.direction == 'inbound') {
-                        defaultView.model.addElement(element, opts);
-                    }
-                }
-
-            },
-
-            drawLifeLine: function (paperID, center, title, prefs, colour) {
                 var d3Ref = this.getD3Ref(paperID);
                 this.diagram = prefs.diagram;
                 var viewObj = this;
@@ -318,19 +219,6 @@ var SequenceD = (function (sequenced) {
 
                 middleRect.attr('style', 'cursor: pointer');
                 this.center.attributes.x = centerX;
-                /*                var drawMessageRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
-                 center.get('y') + prefs.rect.height / 2 + prefs.line.height / 2),
-                 (prefs.middleRect.width * 0.4), prefs.middleRect.height, 0, 0, group,textModel)
-                 .on("mousedown", function () {
-                 d3.event.preventDefault();
-                 d3.event.stopPropagation();
-                 var m = d3.mouse(this);
-                 prefs.diagram.clickedLifeLine = viewObj.model;
-                 prefs.diagram.trigger("messageDrawStart", viewObj.model,
-                 new GeoCore.Models.Point({'x': centerX, 'y': m[1]}));
-
-                 });*/
-
 
                 var text = d3Ref.draw.genericCenteredText(center, title, lifeLineTopRectGroup,textModel)
                     .classed(prefs.text.class, true).classed("genericT",true);
@@ -363,7 +251,6 @@ var SequenceD = (function (sequenced) {
                 group.bottomShape = bottomShape;
                 group.line = line;
                 group.middleRect = middleRect;
-                //group.drawMessageRect = drawMessageRect;
                 group.textBottom = textBottom;
                 group.svgTitle = text;
                 group.svgTitleBottom = textBottom;
@@ -443,21 +330,6 @@ var SequenceD = (function (sequenced) {
                 }).on('mouseup', function (data) {
 
                 });
-
-                /*                drawMessageRect.on('mouseover', function () {
-                 //setting current tab view based diagram model
-                 diagram = defaultView.model;
-                 diagram.selectedNode = viewObj.model;
-                 d3.select(this).style("fill", "black").style("fill-opacity", 0.2)
-                 .style("cursor", 'url(images/BlackHandwriting.cur), pointer');
-                 // Update event manager with current active element type for validation
-                 eventManager.isActivated(diagram.selectedNode.attributes.title);
-                 }).on('mouseout', function () {
-                 d3.select(this).style("fill-opacity", 0.0);
-                 // Update event manager with out of focus on active element
-                 eventManager.isActivated("none");
-                 }).on('mouseup', function (data) {
-                 });*/
 
                 lifeLineTopRectGroup.on("click", (function () {
                     defaultView.model.selectedNode = viewObj.model;
