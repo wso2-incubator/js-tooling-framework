@@ -19,8 +19,11 @@
 var SequenceD = (function (sequenced) {
     var views = sequenced.Views || {};
 
-    var ProcessorViewFactory = function (title, center, type, model) {
+    var ProcessorViewFactory = function (center, model) {
         var processor;
+
+        var title = model.get("title");
+        var type = model.get("type");
 
         if (type === "UnitProcessor") {
             processor = new SequenceD.Views.UnitProcessorView(
