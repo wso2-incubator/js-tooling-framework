@@ -42,84 +42,28 @@ var SequenceD = (function (sequenced) {
             },
 
             render: function (paperID, centerPoint) {
-                var thisModel = this.model;
-                var model = this.model;
                 Diagrams.Views.ShapeView.prototype.render.call(this, paperID);
 
-                var unitProcessorElement = this.drawUnitProcessor(centerPoint, this.modelAttr('title'), this.options, model);
-                var viewObj = this;
-
+                var unitProcessorElement = this.drawUnitProcessor(centerPoint, this);
                 this.d3el = unitProcessorElement;
                 this.el = unitProcessorElement.node();
                 return unitProcessorElement;
             },
 
-
-            drawProcessor: function (paperID, center, model, prefs) {
-
-                var title = model.get("title");
-                var d3Ref = this.getD3Ref(paperID);
-                var group = d3Ref.draw.group();
-                var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
-                var viewObj = this;
-
-                if (model.model.type === "UnitProcessor") {
-                    var processorView = new SequenceD.Views.UnitProcessorView({model: model,
-                        options: lifeLineOptions}, title);
-                    processorView.render("#" + defaultView.options.diagram.wrapperId, center, model, prefs);
-
-                } else if (model.model.type === "Action") {
-                    // TODO: here, the processor model is Processor. But since we pass
-                    // the model when we draw the lifeline's children,
-                    // We can get various other types such as ActionProcessor, etc. We need to refactor this and it's a must
-                    var processorView = new SequenceD.Views.ActionProcessorView({model: model,
-                        options: lifeLineOptions});
-                    processorView.render("#" + defaultView.options.diagram.wrapperId, center, model, prefs);
-                } else if (model.model.type === "DynamicContainableProcessor") {
-
-                    var processorView = new SequenceD.Views.DynamicContainableProcessorView({model: model,
-                        options: lifeLineOptions}, title);
-                    processorView.render("#" + defaultView.options.diagram.wrapperId, center, model, prefs);
-
-                } else if (model.model.type === "ComplexProcessor") {
-                    var processorView = new SequenceD.Views.ComplexProcessorView({model: model,
-                        options: lifeLineOptions}, title);
-                    processorView.render("#" + defaultView.options.diagram.wrapperId, center, model, prefs);
-                } else if(model.model.type === "CustomProcessor") {
-                    if(!_.isUndefined(model.get('utils').init)){
-                        this.viewRoot = group;
-                        model.set('centerPoint', center);
-                        model.get('utils').init(this, d3Ref);
-                    }
-                } else if (model.model.type === "MultiRegionHolderProcessor") {
-                    var processor = model;
-                    var processorView = new SequenceD.Views.MultiRegionHolderProcessorView({model: processor, options: lifeLineOptions});
-                    processorView.render("#" + defaultView.options.diagram.wrapperId, center, "processors");
-                }
-
-                Object.getPrototypeOf(group).translate = function (dx, dy) {
-                    this.attr("transform", function () {
-                        return "translate(" + [dx, dy] + ")"
-                    })
-                };
-
-                return group;
-            },
-
-            drawUnitProcessor: function (center, title, prefs, model) {
-
+            drawUnitProcessor: function (center, view) {
+                var title = view.modelAttr('title');
+                var prefs = view.options;
+                var model = view.model;
                 var d3Ref = this.getD3Ref();
                 var group = d3Ref.draw.group()
                     .classed(prefs.class, true);
                 var viewObj = this;
-                //var deleteIconGroup = undefined;
                 var path = undefined;
                 var height = prefs.rect.height;
                 var width = prefs.rect.width;
                 var modelHeight = model.getHeight();
 
-
-                var rectBottomXXX = d3Ref.draw.rectWithTitle(
+                var rect = d3Ref.draw.rectWithTitle(
                     center,
                     60,
                     prefs.rect.height,
@@ -144,7 +88,7 @@ var SequenceD = (function (sequenced) {
                 });
                 console.log(middleRect);
 
-                rectBottomXXX.group.on('mouseover', function () {
+                rect.group.on('mouseover', function () {
                     d3.event.preventDefault();
                     d3.event.stopPropagation();
                     defaultView.model.selectedNode = viewObj.model;
@@ -155,37 +99,30 @@ var SequenceD = (function (sequenced) {
                 });
 
                 group.middleRect = middleRect;
-                //group.drawMessageRect = drawMessageRect;
-                group.rect = rectBottomXXX.containerRect;
-                group.titleRect = rectBottomXXX.titleRect;
-                group.text = rectBottomXXX.text;
+                group.rect = rect.containerRect;
+                group.titleRect = rect.titleRect;
+                group.text = rect.text;
 
                 var centerPoint = center;
                 var xValue = centerPoint.x();
                 var yValue = centerPoint.y();
-                //lifeLine.call(drag);
 
                 var totalHeight = 60;
                 var totalWidth = 150;
                 this.model.setHeight(30);
 
-                var initWidth =rectBottomXXX.containerRect.attr("width");
+                var initWidth =rect.containerRect.attr("width");
 
                 yValue += 60;
                 for (var id in this.modelAttr("children").models) {
                     var processor = this.modelAttr("children").models[id];
-                    var processorView = new SequenceD.Views.Processor({model: processor, options: lifeLineOptions});
                     //TODO : Please remove this if else with a proper implementation
                     if(processor.type == "messagePoint"){
                         yValue = yValue-20;
                     }
                     var processorCenterPoint = createPoint(xValue, yValue);
-
-
-                    this.drawProcessor("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, processor, prefs);
-
-
-                    //processorView.render("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, "processors");
+                    var processorView = new SequenceD.Views.ProcessorViewFactory(processorCenterPoint, processor);
+                    processorView.render("#" + defaultView.options.diagram.wrapperId, processorCenterPoint, processor, this.options);
                     processor.setY(yValue);
                     totalHeight = totalHeight + this.model.getHeight() + processor.getHeight();
                     yValue += processor.getHeight()+ 30;
@@ -200,14 +137,13 @@ var SequenceD = (function (sequenced) {
                 }
 
                 var deviation = (totalWidth - initWidth)/2;
+                var newX = parseInt(rect.containerRect.attr("x")) - deviation;
 
-                var newX = parseInt(rectBottomXXX.containerRect.attr("x")) - deviation;
-
-                rectBottomXXX.containerRect.attr("height", totalHeight);
-                rectBottomXXX.containerRect.attr("width", totalWidth);
-                rectBottomXXX.containerRect.attr("x", newX);
-                rectBottomXXX.titleRect.attr("x", parseInt(rectBottomXXX.titleRect.attr("x")) - deviation);
-                rectBottomXXX.text.attr("x", parseInt(rectBottomXXX.text.attr("x")) - deviation);
+                rect.containerRect.attr("height", totalHeight);
+                rect.containerRect.attr("width", totalWidth);
+                rect.containerRect.attr("x", newX);
+                rect.titleRect.attr("x", parseInt(rect.titleRect.attr("x")) - deviation);
+                rect.text.attr("x", parseInt(rect.text.attr("x")) - deviation);
                 this.model.setHeight(totalHeight);
                 this.model.get("parent").setHeight(this.model.get("parent").getHeight() + totalHeight - modelHeight);
                 this.model.setWidth(totalWidth);
@@ -215,7 +151,6 @@ var SequenceD = (function (sequenced) {
                 middleRect.attr("height", totalHeight-30);
                 middleRect.attr("width", totalWidth);
                 middleRect.attr("x", parseInt(middleRect.attr("x")) - deviation);
-                //drawMessageRect.attr("height", totalHeight-30);
 
                 if (viewObj.model.get("title") === "Try" || viewObj.model.get("title") === "If") {
                     var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
@@ -272,7 +207,7 @@ var SequenceD = (function (sequenced) {
                     });
 
                     // On click of the mediator show/hide the delete icon
-                    rectBottomXXX.group.on("click", function () {
+                    rect.group.on("click", function () {
                         defaultView.model.selectedNode = viewObj.model;
 
                         if (optionsMenuGroup.classed("option-menu-hide")) {
@@ -338,10 +273,6 @@ var SequenceD = (function (sequenced) {
                             }
                         }
                     });
-
-                    //group.remove();
-                    //
-                    //return newGroup;
                 }
 
                 return group;
