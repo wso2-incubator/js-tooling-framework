@@ -1,35 +1,63 @@
+var tabListView;
+var currentResourceModel;
 var sourceToDesign = function (treeObject) {
     console.log("sourceDesign" + treeObject);
     var view = addNewEmptyTab(treeObject);
+    defaultView = view;
     traverseTree(treeObject, view.model, view);
     view.render();
 };
 
 var traverseTree = function (node, model, view) {
-    console.log("traverse" + node);
-    if (node.type === "Resource") {
+    if (node.type === "Service") {
+        //TODO add parameters
+        console.log("service");
+
+        MainElements.lifelines.SourceLifeline.utils.createMyModel(model);
+        //TODO remove this render and fix source rectangle issue
+        view.render();
+        node.children.forEach(function (child) {
+            traverseTree(child, model, view);
+        });
+
+    } else if (node.type === "Resource") {
+        //TODO add parameters
         console.log("resource");
-        var parameters = node.parameters;
-        model.get('diagramResourceElements').models[0].attributes.parameters = node.parameters;
+        var resourceLifeline = MainElements.lifelines.ResourceLifeline.utils.createMyModel(model);
+        var processor = MainElements.lifelines.ResourceLifeline.utils.createMyStartProcessorModel(resourceLifeline);
+        //create initial arrow between start processor and resource
+        var currentSource = view.model.diagramSourceElements().models[0];
+        tabListView.addInitArrow(currentSource, processor, view);
 
         node.children.forEach(function (child) {
             traverseTree(child, model.get('diagramResourceElements').models[0], view);
         });
 
+    } else if (node.type === "Endpoint") {
+        //TODO add parameters
+        var centerPoint = createPoint(0, 50);
+
+        var title = "StockEp";
+        var parameters = [
+            {
+                key: "title",
+                value: title
+            },
+            {
+                key: "url",
+                value: "http://localhost:8080/stockquote/all"
+            }
+        ];
+        MainElements.lifelines.EndPointLifeline.utils.createMyModel(model, title, centerPoint, parameters);
+
     } else if (node.type == "InvokeMediator") {
         console.log("invoke");
+        //TODO add parameter
+        var invokeModel = Processors.manipulators.InvokeMediator.utils.createMyModel(model);
 
-        var line = view.d3svg.append("line")
-            .attr("x1", 0)//model.attributes.centerPoint.x())
-            .attr("y1", 0)//model.attributes.centerPoint.y() + 100)
-            .attr("x2", 0)//model.attributes.centerPoint.x())
-            .attr("y2", 0)//model.attributes.centerPoint.y() + 100)
-            .attr("marker-end", "url(#markerArrow)")
-            .attr("class", "message");
+        var startPoint = new GeoCore.Models.Point({x: 0, y: 0}),
+            endpoint = new GeoCore.Models.Point({x: 0, y: 0});
 
-        var startPoint = new GeoCore.Models.Point({x: line.attr("x1"), y: line.attr("y1")}),
-            endpoint = new GeoCore.Models.Point({x: line.attr("x2"), y: line.attr("y2")});
-        line.remove();
 
         var sourcePoint = new SequenceD.Models.MessagePoint({
             model: {type: "messagePoint"},
@@ -45,84 +73,26 @@ var traverseTree = function (node, model, view) {
         });
         var messageLink = new SequenceD.Models.MessageLink({
             source: sourcePoint,
-            destination: destinationPoint
+            destination: destinationPoint,
+            type: 2
         });
 
-        if (!getEndpoint(node.parameters[0].value, view)) {
 
-            var countOfEndpoints = view.model.endpointLifeLineCounter();
-            //only one endpoint is allowed in this version TODO:
-            if (countOfEndpoints === 0) {
-                ++countOfEndpoints;
-                view.renderMainElement("EndPoint", countOfEndpoints, MainElements.lifelines.EndPointLifeline);
-                view.model.endpointLifeLineCounter(countOfEndpoints);
-                view.model.attributes.diagramEndpointElements.models[0].attributes.parameters = [
-                    {
-                        key: "title",
-                        value: node.parameters[0].value
-                    },
-                    {
-                        key: "url",
-                        value: "http://localhost:8080/stockquote/all"
-                    }
-                ];
-                view.model.attributes.diagramEndpointElements.models[0].attributes.title = node.parameters[0].value;
-            }//validation check for number of endpoints in a tab
-            else {
-                $('#endpointModal').modal('show');
-            }
+        //TODO get endpointRef and get the endpoint
+        var destinationModel = getEndpoint("", view.model);
+        if (destinationModel) {
+
+            var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
+            var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
+            invokeModel.outputConnector(sourcePoint);
+            destinationModel.addChild(destinationPoint, messageOptionsInbound);
+
         }
-        var destinationModel = view.model.attributes.diagramEndpointElements.models[0];
 
-
-        var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
-        var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
-        console.log("invoke model children length"+model.children().models.length);
-        addChild(model, sourcePoint, messageOptionsOutbound, model.children().models.length);
-        //model.addChild(sourcePoint, messageOptionsOutbound, model.children().models.length);
-        destinationModel.addChild(destinationPoint, messageOptionsInbound);
-        view.render();
     } else if (node.type === "ResponseMsg") {
         console.log("response");
-        var line = view.d3svg.append("line")
-            .attr("x1", model.attributes.centerPoint.x())
-            .attr("y1", model.attributes.centerPoint.y() + 100)
-            .attr("x2", model.attributes.centerPoint.x())
-            .attr("y2", model.attributes.centerPoint.y() + 100)
-            .attr("marker-end", "url(#markerArrow)")
-            .attr("class", "message");
+        var responseProcessor = Processors.manipulators.replyProcessor.utils.createMyModel(model, view);
 
-        var startPoint = new GeoCore.Models.Point({x: line.attr("x1"), y: line.attr("y1")});
-        var endpoint = new GeoCore.Models.Point({x: line.attr("x2"), y: line.attr("y2")});
-        line.remove();
-
-        var sourcePoint = new SequenceD.Models.MessagePoint({
-            model: {type: "messagePoint"},
-            x: startPoint.x(),
-            y: startPoint.y(),
-            direction: "inbound"
-        });
-        var destinationPoint = new SequenceD.Models.MessagePoint({
-            model: {type: "messagePoint"},
-            x: endpoint.x(),
-            y: endpoint.y(),
-            direction: "outbound"
-        });
-        var messageLink = new SequenceD.Models.MessageLink({
-            source: sourcePoint,
-            destination: destinationPoint
-        });
-
-        var destinationModel = view.model.attributes.diagramSourceElements.models[0];
-
-
-        var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
-        var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
-        console.log(" resonse model children length"+model.children().models.length);
-        addChild(model, sourcePoint, messageOptionsOutbound, model.children().models.length);
-        //model.addChild(sourcePoint, messageOptionsOutbound, model.children().models.length);
-        destinationModel.addChild(destinationPoint, messageOptionsInbound);
-        view.render();
     } else if (node.type === "LogMediator") {
         console.log("log");
         var position = new GeoCore.Models.Point({
@@ -146,11 +116,10 @@ var traverseTree = function (node, model, view) {
     }
 };
 
-var getEndpoint = function (endpointRef, view) {
+var getEndpoint = function (endpointRef, viewModel) {
     console.log("getEndpoint");
     //TODO check for the availability if the endpoint
-    var endpoints = view.model.attributes.diagramEndpointElements.models;
-    return null;
+       return viewModel.attributes.diagramEndpointElements.models[0];
 };
 
 var addNewEmptyTab = function (root) {
@@ -176,6 +145,7 @@ var addNewEmptyTab = function (root) {
     }
 
     var nextTabListView = new Diagrams.Views.TabListView({model: resourceModel});
+    tabListView = nextTabListView;
     nextTabListView.render(resourceModel);
     //create new diagram object for the tab
     var diagramObj = new Diagrams.Models.Diagram({});
@@ -200,21 +170,11 @@ var addNewEmptyTab = function (root) {
     resourceModel.setDiagramViewForTab(currentView);
     // mark tab as visited
     resourceModel.setSelectedTab();
-    currentView.renderMainElement("Source", 1, MainElements.lifelines.SourceLifeline);
-    currentView.model.sourceLifeLineCounter(1);
-    if (root.type == "Resource") {
-        currentView.renderMainElement("Resource", 1, MainElements.lifelines.ResourceLifeline);
-        currentView.model.resourceLifeLineCounter(1);
-        // first arrow creation between source and resource
-        var currentSource = currentView.model.diagramSourceElements().models[0];
-        var currentResource = currentView.model.diagramResourceElements().models[0];
-        drawInitArrow(currentSource, currentResource, currentView);
-    }
     return currentView;
 };
 
 
-var addChild =  function (model, element, opts, index) {
+var addChild = function (model, element, opts, index) {
     //this.children().add(element, opts);
 
     element.parent(model);
@@ -233,30 +193,4 @@ var addChild =  function (model, element, opts, index) {
 
     //this.trigger("addChild", element, opts);
     //this.trigger("addChildProcessor", element, opts);
-};
-
-
-var drawInitArrow = function (source, destination, diagramView) {
-    centerS = createPoint(200, 50);
-    centerR = createPoint(380, 50);
-    var sourcePoint = new SequenceD.Models.MessagePoint({
-        model: {type: "messagePoint"},
-        x: centerS.x(),
-        y: centerS.y(),
-        direction: "outbound"
-    });
-    var destinationPoint = new SequenceD.Models.MessagePoint({
-        model: {type: "messagePoint"},
-        x: centerR.x(),
-        y: centerR.y(),
-        direction: "inbound"
-    });
-    var messageLink = new SequenceD.Models.MessageLink({
-        source: sourcePoint,
-        destination: destinationPoint
-    });
-    var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
-    var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
-    source.addChild(sourcePoint, messageOptionsOutbound);
-    destination.addChild(destinationPoint, messageOptionsInbound);
 };
