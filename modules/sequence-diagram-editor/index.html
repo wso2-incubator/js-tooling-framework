@@ -23,7 +23,7 @@
     <![endif]-->
 
     <link rel="stylesheet" type="text/css" href="css/sequence_diagram/sequenced-styles.css"/>
-    <link rel="stylesheet" type="text/css" href="css/diagram/diagram-tool-bar.css"/>
+    <link rel="stylesheet" type="text/css" href="css/tool-palette.css"/>
     <link rel="stylesheet" type="text/css" href="css/diagram/preview-pane.css"/>
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
     <title>Integration Server Tooling</title>
@@ -413,7 +413,14 @@
                 },
                 tool_palette: {
                     // relative selector within container for tab controller
-                    container: "#tool-palette-container"
+                    container: "#tool-palette-container",
+                    search_bar: {
+                        cssClass:{
+                            search_box: 'search-bar',
+                            search_icon: 'fw fw-search searchIcon',
+                            search_input: 'search-input',
+                        }
+                    }
                 }
             },
             file_browser: {
