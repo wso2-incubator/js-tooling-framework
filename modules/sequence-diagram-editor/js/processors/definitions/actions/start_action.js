@@ -27,7 +27,7 @@ var Processors = (function (processors) {
         colour : "#ffffff",
         type : "Action",
         height: 30,
-        width: 100
+        width: 130
     };
 
     actions.startAction = startAction;

@@ -111,7 +111,8 @@
     cursor: pointer;
 }
 
-.lifeline{
+.lifeline-line{
+    stroke-dasharray: 4,3;
 }
 
 .lifeline:hover{

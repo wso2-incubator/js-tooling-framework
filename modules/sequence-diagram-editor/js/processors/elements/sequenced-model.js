@@ -46,7 +46,7 @@ var SequenceD = (function (sequenced) {
             defaults: {
                 centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
                 width: 130,
-                height: 65,
+                height: 40,
                 title: "UnitProcessor"
             }
         });
@@ -75,7 +75,9 @@ var SequenceD = (function (sequenced) {
 
             defaults: {
                 centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
-                title: "ComplexProcessor"
+                title: "ComplexProcessor",
+                width: 150,
+                height: 120
             },
 
             containableProcessorElements: function (containableProcessorElements) {
@@ -474,7 +476,7 @@ var SequenceD = (function (sequenced) {
                 centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
                 title: "ContainableProcessorElement",
                 width: 130,
-                height: 30,
+                height: 60,
                 viewAttributes: {colour: "#998844"}
             },
 
@@ -621,7 +623,7 @@ var SequenceD = (function (sequenced) {
 
             defaults: {
                 centerPoint: new GeoCore.Models.Point({x: 0, y: 0}),
-                width: 100,
+                width: 130,
                 height: 30,
                 title: "ActionProcessor"
             }
