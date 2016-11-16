@@ -220,14 +220,6 @@
                 <ol class="breadcrumb" id="breadcrumbList">
                 </ol>
                 <ul class="" id="saveAndNewButtons">
-                    <li><a href="#" onclick="onNewClick();" >New</a></li>
-                    <li><a href="#" onclick="saveConfiguration();">Save</a></li>
-                </ul>
-            </div>
-            <div class="row" id="serviceAndSourceButtonsRow" >
-                <ul class="" id="serviceAndSourceButtons">
-                    <li><a href="#" onclick="loadServiceProperties();">Service</a></li>
-                    <li><a href="#" id="sourceId" onclick="toggleSource();">Source</a></li>
                 </ul>
             </div>
             <!-- End: breadcrumb row -->
@@ -284,17 +276,21 @@
                             <!-- Start: resource tabs -->
                             <div id="tab-container" class="">
                                 <ul class="nav nav-tabs tabList" id="tabList" role="tablist">
-                                    <li class=".add-resource-btn"><a href="#" class="add-resource">+</a></li>
                                 </ul>
                             </div>
                             <!-- End: resource tabs -->
                         </div>
                         <div class="row">
                             <!-- Start: tool-palette -->
-                            <div id="tool-palette" class="col-sm-2"></div>
+                            <div id="tool-palette" class="col-sm-2">
+                                <div class="search-bar">
+                                    <input type="text" class="search-input" placeholder="Search">
+                                    <i class="fw fw-search searchIcon"></i>
+                                </div>
+                            </div>
                             <!-- End: tool-palette -->
                             <!-- Start: Editor Container -->
-                            <div id="editor-container"  class="col-sm-8">
+                            <div id="editor-container"  class="col-sm-10">
                                 <!-- warning validation for number of endpoints on canvas"-->
                                 <div id="endpointModal" class="modal fade" role="dialog">
                                     <div class="modal-dialog">
@@ -323,13 +319,6 @@
                             </div>
                             <!-- End: Editor Container -->
                             <!-- Start: Property and Preview Container -->
-                            <div class="property-container col-sm-2" id="property-container1">
-                                <div class="preview-container">
-                                </div>
-                                <div id="propertyPaneContainer">
-                                    <div id="propertyPane"></div>
-                                </div>
-                            </div>
                         </div>
                         <!-- End: Property and Preview Container -->
                     </div>

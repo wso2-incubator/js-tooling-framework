@@ -285,9 +285,10 @@ var Diagrams = (function (diagrams) {
         render: function (model) {
             var tabView = new TabView({model: model});
             tabView.render();
-            var t = $(this.el)[0].childNodes[1].childNodes[0];
-            $(t).closest("li").before(tabView.el);
-           // $(this.el).append(tabView.el);
+            // TODO: code for (+) button for tabs: check and remove
+           // var t = $(this.el)[0].childNodes[1].childNodes[0];
+           // $(t).closest("li").before(tabView.el);
+            $(this.el).append(tabView.el);
 
         },
         //function to fire when a new resource tab button is clicked
