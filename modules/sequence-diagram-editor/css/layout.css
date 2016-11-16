@@ -39,6 +39,8 @@ html{
 
 #editor-container{
     height: 100%;
+    /*width:90%;*/
+    width: 1363px;
 }
 
 #navbar-wrapper{
@@ -217,8 +219,9 @@ div[class*="col-sm-"] {
 }
 
 #tab-container{
-    height: 42px;
+    height: 25px;
     border-bottom-width: 1px;
+    background-color: #e4e4e4;
 }
 
 .series{

@@ -13,7 +13,7 @@ body{
 }
 
 .header {
-    background-color: #272c30;
+    background-color:  #1e1e1e;
 }
 
 #editor-container{
@@ -71,11 +71,11 @@ svg text::selection { background: none; }
 }
 
 .nav-tabs > li, .nav-tabs > li > a {
-    height:42px;
+    height:25px;
 }
 
 .nav-tabs > li > a{
-    border-right: 1px solid #1e1e1e;
+    /*border-right: 1px solid #1e1e1e;*/
     border-bottom: 1px solid #8d8d8d;
 }
 
@@ -91,13 +91,14 @@ svg text::selection { background: none; }
 .nav-tabs > li > a {
     padding-right: 32px;
     margin: 0;
-    font-size: 1.2em;
+    font-size: 0.8em;
     border-radius: 0;
+    padding-top: 3px;
 }
 
 .nav-tabs > li  {
-    color: #7e7e7e;
-    background-color: #323335;
+    /*color: #7e7e7e;*/
+    background-color: #f8f8f8;
 }
 
 .nav-tabs{
@@ -119,14 +120,12 @@ svg text::selection { background: none; }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-    border: 1px solid #8d8d8d;
-    background-color: #373737;
-    color: white;
+    background-color: #f8f8f8;
 }
 
 .remove-resource {
     position: absolute;
-    top: 14px;
+    top: 5px;
     right: 9px;
 }
 
@@ -187,11 +186,17 @@ span.tree-action{
 .breadcrumb{
     text-transform: none;
     font-size: 14px;
-    padding: 16px;
-    background-color: #232323;
+    padding-top: 3px;
+    height: 30px;
+    background-color:#f1f1f1;
+    float: left;
+    color: black;
+    padding-left: 5px;
 }
 #breadcrumbRow{
-    border-bottom: 2px solid #1e1e1e;
+    border-bottom: 2px solid #f1f1f1;
+    background-color:#f1f1f1;
+    height: 30px;
 }
 /** Breadcrumbs related styles | -> End**/
 /*//////////////////////////////////////////////////*/
