@@ -23,6 +23,11 @@ body {
 .editor-scroller {
     cursor: move;
 }
+.source-icon{
+    margin-top: 5px;
+    width: 30px;
+    height: 15px;
+}
 
 .circle-hide {
     display: none;
@@ -217,9 +222,6 @@ span.tree-action {
     padding-top: 5px;
 }
 
-.source-icon {
-    padding-top: 5px;
-}
 
 .file-browser-container {
     padding: 15px;

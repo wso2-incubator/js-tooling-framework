@@ -27,6 +27,7 @@ var MainElements = (function (mainElements) {
         colour : "purple",
         class : "endpoint",
         shape: 'rect',
+        dragdrop : true,
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {

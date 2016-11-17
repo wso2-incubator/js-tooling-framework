@@ -84,8 +84,11 @@ var mainToolGroup = new Tools.Models.ToolGroup({
 });
 
 for (var lifeline in MainElements.lifelines) {
-    var tool = new Tools.Models.Tool(MainElements.lifelines[lifeline]);
-    mainToolGroup.toolCollection.add(tool);
+    var lifelineDef = MainElements.lifelines[lifeline];
+    if(!_.isUndefined(lifelineDef.dragdrop) && lifelineDef.dragdrop === true) {
+        var tool = new Tools.Models.Tool(lifelineDef);
+        mainToolGroup.toolCollection.add(tool);
+    }
 }
 
 // Create mediators tool group

@@ -79,7 +79,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="newConfigModalLabel">Ballerina Service Save Wizard</h4>
+                <h4 class="modal-title" id="newConfigModalLabel" style="margin-bottom: 15px">Ballerina Service Save Wizard</h4>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -315,9 +315,11 @@
                             <div id="tab-container" class="col-sm-2">
                                 <div  id="serviceAndSourceButtonsRow" >
                                     <ul class="" id="serviceAndSourceButtons">
+                                        <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="toggle source view" id="sourceId" onclick="toggleSource();">
+                                            <img src="images/source-view.svg" class="source-icon"/></a></li>
+
                                         <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="configure service properties" onclick="loadServiceProperties();">
                                             <i class="fw fw-settings settings-icon"></i></a></li>
-                                        <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="toggle source view" id="sourceId" onclick="toggleSource();"><i class="fw fw-view source-icon"></i></a></li>
                                     </ul>
                                 </div>
                                 <ul class="nav nav-tabs tabList" id="tabList" role="tablist">
@@ -463,7 +465,7 @@
 <script src="js/processors/definitions/flow_controllers.js"></script>
 <script src="js/processors/definitions/flow_controllers/if_else_mediator.js"></script>
 <script src="js/processors/definitions/flow_controllers/try_block_mediator.js"></script>
-<script src="js/processors/definitions/flow_controllers/fork_join_processor.js"></script>
+<!--script src="js/processors/definitions/flow_controllers/fork_join_processor.js"></script-->
 <!--<script src="js/processors/definitions/flow_controllers/switch_mediator.js"></script>-->
 <script src="js/processors/definitions/manipulators/invoke_mediator.js"></script>
 
@@ -511,7 +513,7 @@
                 mainEditor = editor;
                 //Avoiding ace warning
                 mainEditor.$blockScrolling = Infinity;
-                mainEditor.setTheme("ace/theme/twilight");
+                mainEditor.setTheme("ace/theme/chrome");
                 mainEditor.session.setMode("ace/mode/nel");
                 var langTools = ace.require("ace/ext/language_tools");
                 mainEditor.setOptions({
