@@ -226,11 +226,11 @@ function initTabs(){
 function addInitialElements(tabListView){
     var model = defaultView.model;
 
-    var centerPoint = createPoint(100, 50);
+    var centerPoint = createPoint(20, 50);
     var type = "Source";
     var lifeLineDef = MainElements.lifelines.SourceLifeline;
 
-    var resourceCenterPoint = createPoint(380, 50);
+    var resourceCenterPoint = createPoint(300, 50);
     var resourceType = "Resource";
     var resourceLifeLineDef = MainElements.lifelines.ResourceLifeline;
 
