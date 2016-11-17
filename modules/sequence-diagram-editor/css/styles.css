@@ -148,7 +148,7 @@ a.disabled {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-    background-color: #f8f8f8;
+    background-color: #c4c4c4;
 }
 
 .remove-resource {
