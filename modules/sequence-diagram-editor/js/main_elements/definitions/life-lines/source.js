@@ -76,12 +76,12 @@ var MainElements = (function (mainElements) {
             canConnectTo: function () {
                 return ['Resource'];
             },
-            createMyModel: function (model) {
+            createMyModel: function (model, parameters) {
                 var centerPoint = createPoint(100, 50);
                 var type = "Source";
                 var lifeLineDef = MainElements.lifelines.SourceLifeline;
                 var lifeline = createLifeLine(type, centerPoint, lifeLineDef.class, lifeLineDef.utils,
-                                              lifeLineDef.parameters, lifeLineDef.textModel, type, lifeLineDef);
+                                              parameters, lifeLineDef.textModel, type, lifeLineDef);
 
                 lifeLineOptions.class = MainElements.lifelines.SourceLifeline.class;
                 lifeLineOptions.diagram = model;

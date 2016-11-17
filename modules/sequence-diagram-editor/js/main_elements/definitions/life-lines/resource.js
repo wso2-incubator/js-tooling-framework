@@ -121,7 +121,7 @@ var MainElements = (function (mainElements) {
             canConnectTo: function () {
                 return ['Worker', 'Source', 'ContainableProcessorElement', 'EndPoint'];
             },
-            createMyModel: function (model) {
+            createMyModel: function (model, parameters) {
                 //add the resource model
                 var resourceCenterPoint = createPoint(380, 50);
                 var resourceType = "Resource";
@@ -129,8 +129,10 @@ var MainElements = (function (mainElements) {
 
                 var resourceLifeline = createLifeLine(resourceType, resourceCenterPoint, resourceLifeLineDef.class,
                                                       resourceLifeLineDef.utils,
-                                                      resourceLifeLineDef.parameters, resourceLifeLineDef.textModel,
+                                                      parameters, resourceLifeLineDef.textModel,
                                                       resourceType, resourceLifeLineDef);
+                //TODO set endpoint title
+               // resourceLifeline._set("title", parameters[0].value);
                 var resourceLifeLineOptions = {
                     class: MainElements.lifelines.ResourceLifeline.class,
                     diagram: model

@@ -39,6 +39,30 @@
     <script type="text/javascript">
         var workspaceServiceURL = "http://localhost:8289/service/workspace";
     </script>
+    <script>
+
+        function receiveMessage(event) {
+            console.log("BB: "+ event.data);
+            var treeObj = JSON.parse(event.data);
+            console.log(treeObj);
+            //tree = treeObj;
+            generate(treeObj);
+        }
+        window.addEventListener("message", receiveMessage, false);
+    </script>
+    <script type="text/javascript">
+        function sendMessage(source) {
+            var win = document.getElementById("iframe").contentWindow;
+
+                win.postMessage(
+                        source,
+                        "http://localhost:63342/wso2-tooling"
+                );
+            console.log("sent message");
+            console.log("text: "+win.document.getElementById("test").innerHTML);
+        }
+
+    </script>
 
     <title>Integration Server Tooling</title>
 </head>
@@ -228,7 +252,6 @@
                 <ul class="" id="serviceAndSourceButtons">
                     <li><a href="#" onclick="loadServiceProperties();">Service</a></li>
                     <li><a href="#" id="sourceId" onclick="toggleSource();">Source</a></li>
-                    <li><a href="#" onclick="generateDesignFromSource();">Generate Design</a></li>
                 </ul>
             </div>
             <!-- End: breadcrumb row -->
@@ -381,8 +404,9 @@
 <script src="lib/backbone_v1.3.3/backbone.js"></script>
 <script src="lib/backbone_storage_adapter_v1.1.0/backbone.localStorage.js"></script>
 <script src="lib/d3_v4.1.1/d3.js"></script>
+<!--<script type="text/javascript" src="lib/custom-require_js/custom_require.js"></script>-->
 <script src="lib/requirejs-2.1.11/require.js"></script>
-<!--script src="lib/require_js/require.js"></script-->
+<!--<script src="lib/custom-require_js/custom_require.js"></script>-->
 <script src="lib/svg-panNZoom/jquery.svg.pan.zoom.js"></script>
 
 <script src="js/logger/logger.js"></script>
@@ -692,6 +716,9 @@
             // leftContainer.style.display = "block";
             rightContainer.style.display = "block";
             $('#sourceId').html('SOURCE');
+            var source = $('.ace_content').text();
+            sendMessage(source);
+
         }
     }
 
@@ -718,65 +745,89 @@
     }
 
     function generateDesignFromSource() {
-        var editorMain = document.getElementById("sourceViewTab");
-        var rightContainer = document.getElementById("right-container");
-        editorMain.style.display = "none";
-        rightContainer.style.display = "block";
-        $('#sourceId').html('SOURCE');
+        console.log("sent");
+//        var editorMain = document.getElementById("sourceViewTab");
+//        var rightContainer = document.getElementById("right-container");
+//        editorMain.style.display = "none";
+//        rightContainer.style.display = "block";
+//        $('#sourceId').html('DESIGN');
         var source = $('.ace_content').text();//source from the editor
-        //TODO get tree object from the source
-        var treeObj = {
-            "children": [{
-                "children": [],
-                "value": "Endpoint",
-                "type": "Endpoint",
-                "configStart": "constant endpoint stockEP = new EndPoint(http://localhost:8080/stockquote/all)",
-                "configEnd": ";\n",
-                "parameters": [{"key": "title", "value": "stockEP"},
-                    {"key": "url", "value": "http://localhost:8080/stockquote/all"}]
-            }, {
-                "children": [{
-                    "children": [],
-                    "value": "InvokeMediator",
-                    "type": "InvokeMediator",
-                    "configStart": "response = invoke(messageRef = m, endpointRef = stockEP",
-                    "configEnd": ");\n",
-                    "parameters": [{"key": "endpointRef", "value": "stockEP"}, {"key": "messageRef", "value": "m"}]
-                }, {
-                    "children": [],
-                    "value": "ResponseMsg",
-                    "type": "ResponseMsg",
-                    "configStart": "reply response",
-                    "configEnd": ";\n"
-                }],
-                "value": "Resource",
-                "type": "Resource",
-                "configStart": "@GET\n@PUT\n@POST\n@Path(\"/getStocks\")\nresource passthrough(message m) {\nmessage response;\n",
-                "configEnd": "}",
-                "parameters": [{"key": "get", "value": true}, {"key": "put", "value": true},
-                    {"key": "post", "value": true}, {"key": "path", "value": "/getStocks"},
-                    {"key": "inputParameter", "value": "m"}, {"key": "title", "value": "passthrough"},
-                    {"key": "property", "value": {"key": "response", "name": "message"}}]
-            }],
-            "value": "Service",
-            "type": "Service",
-            "configStart": "@Path(\"/stocks\")\n@Source(interface=\"default\")\n@Service(tags={\"stock_info\",\"stock_update\"},description=\"Rest api for get stocks details\",produces=MediaType.APPLICATION_JSON)\npackagecom.sample;\n",
-            "configEnd": "\n",
-            "parameters": [{"key": "path", "value": "/stocks"},
-                {"key": "sourceValues", "value": {"interface": "default"}}, {
-                    "key": "serviceValues",
-                    "value": {
-                        "tags": ["stock_info", "stock_update"],
-                        "description": "Rest api for get stocks details",
-                        "producer": {"mediaType": "MediaType.APPLICATION_JSON"}
-                    }
-                }, {"key": "packageDefinition", "value": "com.sample"}]
-        };
+        console.log("source: "+source);
+        sendMessage(source);
 
-        sourceToDesign(treeObj);
+//        var treeObj = {
+//            "children": [{
+//                "children": [],
+//                "value": "Endpoint",
+//                "type": "Endpoint",
+//                "configStart": "constant endpoint stockEP = new EndPoint(http://localhost:8080/stockquote/all)",
+//                "configEnd": ";\n",
+//                "parameters": [{"key": "title", "value": "stockEP"},
+//                    {"key": "url", "value": "http://localhost:8080/stockquote/all"}]
+//            }, {
+//                "children": [{
+//                    "children": [],
+//                    "value": "InvokeMediator",
+//                    "type": "InvokeMediator",
+//                    "configStart": "response = invoke(messageRef = m, endpointRef = stockEP",
+//                    "configEnd": ");\n",
+//                    "parameters": [{"key": "endpointRef", "value": "stockEP"}, {"key": "messageRef", "value": "m"}]
+//                }, {
+//                    "children": [],
+//                    "value": "ResponseMsg",
+//                    "type": "ResponseMsg",
+//                    "configStart": "reply response",
+//                    "configEnd": ";\n"
+//                }],
+//                "value": "Resource",
+//                "type": "Resource",
+//                "configStart": "@GET\n@PUT\n@POST\n@Path(\"/stocks\")\nresource passthrough(message m) {\nmessage response;\n",
+//                "configEnd": "}",
+//                "parameters": [{"key": "get", "value": true}, {"key": "put", "value": true},
+//                    {"key": "post", "value": true}, {"key": "path", "value": "/stocks"},
+//                    {"key": "inputParameter", "value": "m"}, {"key": "title", "value": "passthrough"},
+//                    {"key": "property", "value": {"key": "response", "name": "message"}}]
+//            }],
+//            "value": "Service",
+//            "type": "Service",
+//            "configStart": "@Path(\"/stockquote\")\n@Source(interface=\"default\")\n@Service(tags={\"stock_info\",\"stock_update\"},description=\"Rest api for get stocks details\",produces=MediaType.APPLICATION_JSON)\npackagecom.sample;\n",
+//            "configEnd": "\n",
+//            "parameters": [{"key": "path", "value": "/stockquote"},
+//                {"key": "sourceValues", "value": {"interface": "default"}}, {
+//                    "key": "serviceValues",
+//                    "value": {
+//                        "tags": ["stock_info", "stock_update"],
+//                        "description": "Rest api for get stocks details",
+//                        "producer": {"mediaType": "MediaType.APPLICATION_JSON"}
+//                    }
+//                }, {"key": "packageDefinition", "value": "com.sample"}]
+//        };
+//        console.log("**1: "+treeObj);
+//        console.log(treeObj);
+//        console.log("sent123");
+//        if(tree) {
+//            sourceToDesign(JSON.stringify(tree));
+//        }else {
+//            console.log("not render");
+//        }
+    }
+
+    function generate(treeObj) {
+        console.log("sent");
+//        var editorMain = window.document.getElementById("sourceViewTab")[0];
+//        var rightContainer = window.document.getElementById("right-container")[0];
+//        editorMain.style.display = "none";
+//        rightContainer.style.display = "block";
+//        $('#sourceId').html('SOURCE');
+//        console.log("**2: "+treeObj);
+        console.log(treeObj);
+        var view = sourceToDesign(treeObj);
+//        defaultView.model = view.model;
+//        defaultView.render();
     }
 </script>
 
 </body>
-
+<iframe src="http://localhost:63342/wso2-tooling/modules/sequence-diagram-editor/js/nel-parser/index.html" id="iframe"
+        style="height:60px"></iframe>
 </html>

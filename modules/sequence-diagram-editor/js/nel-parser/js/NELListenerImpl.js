@@ -96,6 +96,7 @@ NELListenerImpl.prototype.exitSourceFile = function (ctx) {
     console.log("exitSourceFile" + count++);
     console.log(JSON.stringify(rootNode));
     console.log(rootNode);
+    generatedTree = JSON.stringify(rootNode);
     return rootNode;
 };
 

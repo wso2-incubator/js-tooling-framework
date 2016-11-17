@@ -128,6 +128,37 @@ var Processors = (function (processors) {
 
                 return tryCatchNode;
 
+            },
+            createMyModel: function (model, parameters) {
+                var position = new GeoCore.Models.Point({
+                    x: 0,
+                    y: 0
+                });
+                var processor = model.createProcessor(
+                    Processors.flowControllers.TryBlockMediator.title,
+                    position,
+                    Processors.flowControllers.TryBlockMediator.id,
+                    {type: Processors.flowControllers.TryBlockMediator.type, initMethod: Processors.flowControllers.TryBlockMediator.init},
+                    {colour: Processors.flowControllers.TryBlockMediator.colour},
+                    parameters,
+                    Processors.flowControllers.TryBlockMediator.utils
+                );
+                model.addChild(processor);
+            },
+            createMyContainableProcessorElement: function (model, processor) {
+                var containableElementsArr = Processors.flowControllers.TryBlockMediator.containableElements;
+                for (var y = 0; y < containableElementsArr.length; y++) {
+                    var children = containableElementsArr[y].children;
+
+                    for (var z = 0; z < children.length; z ++) {
+                        var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
+                        containableProcessorElem.type = 'ContainableProcessorElement';
+                        containableProcessorElem.set('title', children[z].title);
+                        containableProcessorElem.set('utils', Processors.flowControllers.TryBlockMediator.utils);
+                        containableProcessorElem.parent(processor);
+                        processor.containableProcessorElements().add(containableProcessorElem);
+                    }
+                }
             }
         }
     };

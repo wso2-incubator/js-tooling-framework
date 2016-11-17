@@ -130,7 +130,7 @@ Create a Monarch tokenizer [here](https://microsoft.github.io/monaco-editor/mona
 > A: Language services create web workers to compute heavy stuff outside the UI thread. They cost hardly anything in terms of resource overhead and you shouldn't worry too much about them, as long as you get them to work (see above the cross-domain case).
 
 
-> Q: What is this `loader.js`? Can I use `require.js`?<br/>
+> Q: What is this `loader.js`? Can I use `custom_require.js`?<br/>
 > A: It is an AMD loader that we use in VS Code. Yes.
 
 
