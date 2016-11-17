@@ -80,7 +80,7 @@
                 <h4 class="modal-title">Select root folder</h4>
             </div>
             <div class="modal-body">
-                <div class="container-fluid" style="padding: 15px; max-height: 450px; overflow-x: hidden; overflow-y: scroll">
+                <div class="container-fluid .file-browser-container">
                     <div id="fileTree"></div>
                     <div id="file-browser-error" class="alert alert-danger" style="display: none;">
                     </div>
@@ -96,14 +96,14 @@
 <!-- End: Modal for file-browser -->
 
 <!-- Start: Modal for file dialog for saving the configuration-->
-<div class="modal fade" id="newConfigModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="saveConfigModal" tabindex="-1" role="dialog" aria-tydden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="newConfigModalLabel">New Ballerina Configuration Wizard</h4>
+                <h4 class="modal-title" id="newConfigModalLabel">Ballerina Service Save Wizard</h4>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -126,7 +126,7 @@
                         <div class="form-group">
                             <div class="col-sm-offset-2     col-sm-10">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal">cancel</button>
-                                <button type="button" class="btn btn-primary" onclick="newConfiguration();">create
+                                <button type="button" class="btn btn-primary" onclick="newConfiguration();">save
                                 </button>
                             </div>
                         </div>
@@ -211,8 +211,44 @@
             </a>
         </div>
 
+
     </div>
     <!-- End: header - logo & title -->
+
+    <div class="menu-bar">
+        <div class="dropdown file-menu">
+            <a class="dropdown-toggle" data-toggle="dropdown">File</a>
+            <ul class="dropdown-menu">
+                <li><a onclick="tabListView.addResourceTab()" href="#">new service</a></li>
+                <li><a onclick="onNewClick()" href="#">save to file</a></li>
+                <li><a class="disabled" href="#">open file</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Edit</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Run</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Window</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+        <div class="dropdown  help-menu">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Help</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+    </div>
 
     <!--TODO: remove once the file explorer is implemented-->
     <!-- Start: Temporary file save and new menus -->
@@ -243,25 +279,19 @@
             <div class="row" id="breadcrumbRow" ><!-- TODO make this visible -->
                 <ol class="breadcrumb" id="breadcrumbList">
                 </ol>
-                <ul class="" id="saveAndNewButtons">
-                    <li><a href="#" onclick="onNewClick();" >New</a></li>
-                    <li><a href="#" onclick="saveConfiguration();">Save</a></li>
-                </ul>
-            </div>
-            <div class="row" id="serviceAndSourceButtonsRow" >
-                <ul class="" id="serviceAndSourceButtons">
-                    <li><a href="#" onclick="loadServiceProperties();">Service</a></li>
-                    <li><a href="#" id="sourceId" onclick="toggleSource();">Source</a></li>
-                </ul>
+                <!--ul class="" id="saveAndNewButtons">
+                </ul-->
+                <!--<div class="row" id="serviceAndSourceButtonsRow" >-->
+                <!--<ul class="" id="serviceAndSourceButtons">-->
+                <!--<li><a href="#" onclick="loadServiceProperties();"><i class="fw fw-settings settings-icon"></i></a></li>-->
+                <!--<li><a href="#" id="sourceId" onclick="toggleSource();"><i class="fw fw-view source-icon"></i></a></li>-->
+                <!--</ul>-->
+                <!--</div>-->
             </div>
             <!-- End: breadcrumb row -->
             <!-- Start: file explorer and editor area row -->
             <div class="row">
-                <!-- Ace editor view start-->
-                <div id="sourceViewTab"  style="display:none" class="col-sm-2">
-                    <div id="ace-editor"></div>
-                </div>
-                <!--Ace editor view end-->
+
                 <!-- Start: left container -->
                 <div id="left-container" class="col-sm-2" style="display: none" ><!-- TODO make this visible -->
                     <!-- Start: file explorer -->
@@ -290,7 +320,7 @@
                 <!-- End: left container -->
                 <!-- Start: right container -->
                 <div id="right-container" class="col-sm-12"><!-- TODO resize to col-sm-10 once left container made visible -->
-                    <div class="container-fluid" id="empty-workspace-wrapper">
+                    <div class="container-fluid" id="empty-workspace-wrapper" style="display: none;">
                         <div class="col-sm-5"></div>
                         <div class="col-sm-2" id="start-actions-container">
                             <h3>Create new or open existing</h3>
@@ -306,16 +336,33 @@
                     <div class="container-fluid" id="resource-tabs-wrapper">
                         <div class="row">
                             <!-- Start: resource tabs -->
-                            <div id="tab-container" class="">
+                            <div id="tab-container" class="col-sm-2">
+                                <div  id="serviceAndSourceButtonsRow" >
+                                    <ul class="" id="serviceAndSourceButtons">
+                                        <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="configure service properties" onclick="loadServiceProperties();">
+                                            <i class="fw fw-settings settings-icon"></i></a></li>
+                                        <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="toggle source view" id="sourceId" onclick="toggleSource();"><i class="fw fw-view source-icon"></i></a></li>
+                                    </ul>
+                                </div>
                                 <ul class="nav nav-tabs tabList" id="tabList" role="tablist">
-                                    <li class=".add-resource-btn"><a href="#" class="add-resource">+</a></li>
                                 </ul>
+
                             </div>
                             <!-- End: resource tabs -->
+                            <!-- Ace editor view start-->
+                            <div id="sourceViewTab" class= "col-sm-10" style="display:none">
+                                <div id="ace-editor"></div>
+                            </div>
+                            <!--Ace editor view end-->
                         </div>
-                        <div class="row">
+                        <div class="row" id="editor-view">
                             <!-- Start: tool-palette -->
-                            <div id="tool-palette" class="col-sm-2"></div>
+                            <div id="tool-palette" class="col-sm-2">
+                                <div class="search-bar">
+                                    <input type="text" class="search-input" placeholder="Search">
+                                    <i class="fw fw-search searchIcon"></i>
+                                </div>
+                            </div>
                             <!-- End: tool-palette -->
                             <!-- Start: Editor Container -->
                             <div id="editor-container"  class="col-sm-8">
@@ -346,16 +393,11 @@
                                 </div>
                             </div>
                             <!-- End: Editor Container -->
-                            <!-- Start: Property and Preview Container -->
-                            <div class="property-container col-sm-2" id="property-container1">
-                                <div class="preview-container">
-                                </div>
-                                <div id="propertyPaneContainer">
-                                    <div id="propertyPane"></div>
-                                </div>
+                            <!-- Start: Preview Container -->
+                            <div class="preview-container col-sm-2">
                             </div>
+                            <!-- End: Preview Container -->
                         </div>
-                        <!-- End: Property and Preview Container -->
                     </div>
                 </div>
                 <!-- End: right container -->
@@ -468,10 +510,12 @@
 <script src="js/sequence_diagram/lifeline-view.js"></script>
 
 <script src="js/tree.js"></script>
+<script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 <script src="js/nel-parser/generate-design.js"></script>
 
 <script>
+    var tempStorage = new Backbone.LocalStorage('tempBallerinaFiles');
     var formatter;
     define('formatter', ['beautify/beautify'],
             function(beautify) {
@@ -516,10 +560,10 @@
 </script>
 <script>
     var configLocation,
-        configFileName,
-        saveServiceURL = workspaceServiceURL + "/write",
-        newWizardError = $('#newWizardError'),
-        alertArea = $('#alertArea');
+            configFileName,
+            saveServiceURL = workspaceServiceURL + "/write",
+            newWizardError = $('#newWizardError'),
+            alertArea = $('#alertArea');
 
     newWizardError.hide();
     alertArea.hide();
@@ -528,20 +572,20 @@
 
     function openFileBrowser(){
         $('#fileBrowserModel').modal('show');
-        $('#newConfigModal').modal('hide');
+        $('#saveConfigModal').modal('hide');
         fileBrowser = new Tools.Views.FileBrowser({container:"#fileTree"});
     }
 
     function onFileBrowserClose(){
         $('#fileBrowserModel').modal('hide');
-        $('#newConfigModal').modal('show');
+        $('#saveConfigModal').modal('show');
     }
 
     function onFileSelected(){
         var selected = fileBrowser.selected;
         if(selected){
             $('#fileBrowserModel').modal('hide');
-            $('#newConfigModal').modal('show');
+            $('#saveConfigModal').modal('show');
             $('#location').val(selected);
         }
     }
@@ -585,22 +629,23 @@
 
     function onNewClick(){
         newWizardError.hide();
-        $('#newConfigModal').modal('show');
+        $('#saveConfigModal').modal('show');
     }
 
     function saveConfiguration() {
-        var tags = serviceTags.split(",");
+
+        var tags = defaultView.serviceTags.split(",");
         var tagString = "{";
         tags.forEach(function (tag) {
             tagString += ('"' + tag + '",');
         });
         tagString += '}';
-        var config = '@Path ("' + serviceBasePath + '")\n' +
+        var config = '@Path ("' + defaultView.serviceBasePath + '")\n' +
                 '@Source (interface="default")\n' +
-                '@Service (tags =' + tagString + ', description = "' + serviceDescription + '", produces = ' + serviceProduces + ')\n' +
-                'package ' + servicePackageName + ';\n\n';
+                '@Service (tags =' + tagString + ', description = "' + defaultView.serviceDescription + '", produces = ' + defaultView.serviceProduces + ')\n' +
+                'package ' + defaultView.servicePackageName + ';\n\n';
         config += diagram.parseTree();
-        var payload = "location=" + (btoa(configLocation.value + "/" + configFileName.value)) + "&config=" + (btoa(config));
+        var payload = "location=" + (btoa(defaultView.configLocation + "/" + defaultView.configFileName)) + "&config=" + (btoa(config));
 
         $.ajax({
             url: saveServiceURL,
@@ -610,7 +655,8 @@
             async: false,
             success: function (data, textStatus, xhr) {
                 if (xhr.status == 200) {
-                   alertSuccess("Configuration was saved successfully.");
+                    alertSuccess("Service was saved successfully.");
+                    setBreadcrumb(defaultView.configLocation, defaultView.configFileName)
                 } else {
                     alertError("Something went wrong. " + textStatus);
                 }
@@ -634,91 +680,54 @@
             newWizardError.show();
             return;
         }
-
-
-        var config = '@Path ("/stock")\n' +
-                '@Source (interface="default")\n' +
-                '@Service (tags = {"stock_info","stock_update"}, description = "Rest api for do operations on admin", produces = MediaType.APPLICATION_JSON)\n' +
-                'package com.sample;\n\n';
-
-        var payload = "location=" + (btoa(configLocation.value + "/" + configFileName.value)) + "&config=" + (btoa(config));
-
-        $.ajax({
-            url: saveServiceURL,
-            type: "POST",
-            data: payload,
-            contentType: "text/plain; charset=utf-8",
-            async: false,
-            success: function (data, textStatus, xhr) {
-                if (xhr.status == 200) {
-                    alertSuccess("File " + configLocation.value + "/" + configFileName.value  + " created successfully.");
-                    $('#newConfigModal').modal('hide');
-                    $("#breadcrumbRow").show();
-                    setBreadcrumb(configLocation.value, configFileName.value);
-                    $("#empty-workspace-wrapper").hide();
-                    $("#resource-tabs-wrapper").show();
-                    $("#serviceAndSourceButtonsRow").show();
-                    initTabs();
-                } else {
-                    newWizardError.text("Something went wrong. " + textStatus);
-                    newWizardError.show();
-                }
-            },
-            error: function(res, errorCode, error){
-                newWizardError.text("Something went wrong. " + errorCode + " " + error + " " + res.responseText);
-                newWizardError.show();
-            }
-        });
-
+        defaultView.configLocation = configLocation.value;
+        defaultView.configFileName = configFileName.value;
+        $('#saveConfigModal').modal('hide');
+        saveConfiguration();
     }
+
     function toggleSource() {
         var editorMain = document.getElementById("sourceViewTab");
-        var leftContainer = document.getElementById("left-container");
-        var rightContainer = document.getElementById("right-container");
+        var tabContainer = document.getElementById("tab-container");
+        var editorContainer = document.getElementById("editor-view");
 
         //Reset ace editor content
         mainEditor.setValue("");
         //Hard coded sourceConfig :TODO
-        var tags = serviceTags.split(",");
+        var tags = defaultView.serviceTags.split(",");
         var tagString = "{";
         tags.forEach(function (tag) {
             tagString += ('"' + tag + '",');
         });
         tagString = tagString.substring(0, tagString.length - 1);
         tagString += '}';
-        var sourceConfig = '@Path ("' + serviceBasePath + '")\n' +
+        var sourceConfig = '@Path ("' + defaultView.serviceBasePath + '")\n' +
                 '@Source (interface="default")\n' +
-                '@Service (tags =' + tagString + ', description = "' + serviceDescription + '", produces = ' + serviceProduces + ')\n' +
-                'package ' + servicePackageName + ';\n\n';
+                '@Service (tags =' + tagString + ', description = "' + defaultView.serviceDescription + '", produces = ' + defaultView.serviceProduces + ')\n' +
+                'package ' + defaultView.servicePackageName + ';\n\n';
 
-        //Source not loaded yet
+        //Source not loaded yet load source
         if (editorMain.style.display == "none") {
-            // hide tool pallette
-            leftContainer.style.display = "none";
-            // hide design view
-            rightContainer.style.display = "none";
-            // show source view
+            // hide design editor area
+            editorContainer.style.display = "none";
+            // show tab area
+            tabContainer.style.display = "block";
+            //show ace editor
             editorMain.style.display = "block";
-            // update link heading to Design:TODO
-            $('#sourceId').html('DESIGN');
             var treeResult = diagram.parseTree();
             var formattedValue = formatter(treeResult, {indent_size: 3});
             sourceConfig += formattedValue;
             mainEditor.session.setValue(sourceConfig);
-            console.log("editor content" + mainEditor.getValue());
         }
         //source already loaded, hence need to load the design view
         else {
             // Hide source view
             editorMain.style.display = "none";
-
-            // Left container is temporarily not showing since we have disabled the file explorer at the moment
-            // leftContainer.style.display = "block";
-            rightContainer.style.display = "block";
-            $('#sourceId').html('SOURCE');
+            //show design editor area
+            editorContainer.style.display = "block";
+           // $('#sourceId').html('SOURCE');
             var source = $('.ace_content').text();
             sendMessage(source);
-
         }
     }
 
@@ -727,20 +736,20 @@
     }
 
     function loadServiceProperties() {
-        $("#produces").val(serviceProduces);
-        $("#basePath").val(serviceBasePath);
-        $("#packageName").val(servicePackageName);
-        $("#tags").val(serviceTags);
-        $("#description").val(serviceDescription);
+        $("#produces").val(defaultView.serviceProduces);
+        $("#basePath").val(defaultView.serviceBasePath);
+        $("#packageName").val(defaultView.servicePackageName);
+        $("#tags").val(defaultView.serviceTags);
+        $("#description").val(defaultView.serviceDescription);
         $('#servicePropertiesModal').modal('show');
     }
 
     function saveServiceProperties() {
-        serviceProduces = $("#produces").val();
-        serviceBasePath = $("#basePath").val();
-        servicePackageName = $("#packageName").val();
-        serviceTags = $("#tags").val();
-        serviceDescription = $("#description").val();
+        defaultView.serviceProduces = $("#produces").val();
+        defaultView.serviceBasePath = $("#basePath").val();
+        defaultView.servicePackageName = $("#packageName").val();
+        defaultView.serviceTags = $("#tags").val();
+        defaultView.serviceDescription = $("#description").val();
         $('#servicePropertiesModal').modal('hide');
     }
 

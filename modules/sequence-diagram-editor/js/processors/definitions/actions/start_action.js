@@ -27,7 +27,14 @@ var Processors = (function (processors) {
         colour : "#ffffff",
         type : "Action",
         height: 30,
-        width: 130
+        width: 130,
+        utils: {
+            getMySubTree: function (model) {
+                var parameters = model.attributes.parameters;
+                var log_configStart = "Start Action";
+                return new TreeNode("StartAction", "StartAction", "", "");
+            }
+        }
     };
 
     actions.startAction = startAction;

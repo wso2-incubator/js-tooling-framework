@@ -311,7 +311,7 @@ var Diagrams = (function (diagrams) {
 
         defaults: {
             resourceId: "id-not-set",
-            resourceTitle: "",
+            resourceTitle: "untitled service",
             hrefId: "id-not-set",
             createdTab: false,
         }

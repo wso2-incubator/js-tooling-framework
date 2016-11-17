@@ -77,14 +77,16 @@ var SequenceD = (function (sequenced) {
                 );
                 console.log("started");
                 var height = (model.getHeight() - prefs.rect.height);
-                var middleRect = d3Ref.draw.centeredBasicRect(createPoint(center.x(),
-                    center.y()+100), 150, height, 0, 0);
-                middleRect.on('mouseover', function () {
+
+                rect.middleRect.on('mouseover', function () {
                     defaultView.model.selectedNode = viewObj.model;
+                    d3.select(this).style("fill", "green").style("fill-opacity", 0.1);
                 }).on('mouseout', function () {
                     defaultView.model.destinationLifeLine = defaultView.model.selectedNode;
                     defaultView.model.selectedNode = null;
+                    d3.select(this).style("fill-opacity", 0.01);
                 }).on('mouseup', function (data) {
+
                 });
                 console.log(middleRect);
 
@@ -98,7 +100,7 @@ var SequenceD = (function (sequenced) {
                 }).on('mouseup', function (data) {
                 });
 
-                group.middleRect = middleRect;
+                group.middleRect = rect.middleRect;
                 group.rect = rect.containerRect;
                 group.titleRect = rect.titleRect;
                 group.text = rect.text;
@@ -148,9 +150,9 @@ var SequenceD = (function (sequenced) {
                 this.model.get("parent").setHeight(this.model.get("parent").getHeight() + totalHeight - modelHeight);
                 this.model.setWidth(totalWidth);
                 this.model.setX(newX);
-                middleRect.attr("height", totalHeight-30);
-                middleRect.attr("width", totalWidth);
-                middleRect.attr("x", parseInt(middleRect.attr("x")) - deviation);
+                rect.middleRect.attr("height", totalHeight);
+                rect.middleRect.attr("width", totalWidth);
+                rect.middleRect.attr("x", parseInt(rect.middleRect.attr("x")) - deviation);
 
                 if (viewObj.model.get("title") === "Try" || viewObj.model.get("title") === "If") {
                     var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
