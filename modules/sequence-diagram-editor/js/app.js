@@ -197,7 +197,7 @@ function initTabs(){
     var tab = new Diagrams.Models.Tab({
         resourceId: "seq_1",
         hrefId: "#seq_1",
-        resourceTitle: "Resource",
+        resourceTitle: "Service",
         createdTab: false
     });
 
