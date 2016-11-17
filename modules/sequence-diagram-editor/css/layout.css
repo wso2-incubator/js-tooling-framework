@@ -220,27 +220,17 @@ div[class*="col-sm-"] {
     height: 25px;
     border-bottom-width: 1px;
     background-color: #e4e4e4;
-    width:1540px;
+    width:100%;
 }
 
 .series{
     height: 19px;
 }
 
+#editor-view{
+    position:relative;
+}
 /** Resource level tabs related styles | -> End **/
-/*//////////////////////////////////////////////////*/
-
-
-/*//////////////////////////////////////////////////*/
-/** Breadcrumbs related styles | Start -> **/
-/*.breadcrumb{*/
-    /*padding-left: 50px;*/
-    /*display: inline-block;*/
-    /*float: right;*/
-/*}*/
-/** Breadcrumbs related styles | -> End **/
-/*//////////////////////////////////////////////////*/
-
 /*//////////////////////////////////////////////////*/
 
 /*//////////////////////////////////////////////////*/
