@@ -724,7 +724,7 @@ body.inverse .fade-edge:after {
  * ======================================================================== */
 header {
   background: #024675;
-  min-height: 50px;
+  min-height: 35px;
   position: relative;
 }
 
@@ -1223,11 +1223,11 @@ ul.sidebar-messages > li {
 .breadcrumb {
   margin: 0;
   overflow: hidden;
-  text-transform: uppercase;
+  text-transform: capitalize;
   background: #282828;
   color: #ffffff;
-  min-height: 30px;
-  padding: 5px 15px;
+  min-height: 25px;
+  padding: 3px 15px;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
