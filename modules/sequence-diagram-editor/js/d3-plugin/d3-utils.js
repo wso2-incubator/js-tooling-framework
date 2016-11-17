@@ -69,6 +69,17 @@ var D3Utils = (function (d3_utils) {
             .attr("rx", rx)
             .attr("fill-opacity",.4)
             .attr("ry", ry);
+        var middleRect = group.append("rect")
+            .attr("id", "middleRect")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("width", containerWidth)
+            .attr("height", containerHeight)
+            .attr("fill", "#ffffff")
+            .attr("stroke-width", 1)
+            .attr("rx", rx)
+            .attr("fill-opacity",.4)
+            .attr("ry", ry);
         var titleRect = group.append("rect")
             .attr("id", "titleRect")
             .attr("x", x)
@@ -90,6 +101,7 @@ var D3Utils = (function (d3_utils) {
         composite.containerRect = containerRect;
         composite.titleRect = titleRect;
         composite.text = text;
+        composite.middleRect = middleRect;
         return composite;
     };
 
