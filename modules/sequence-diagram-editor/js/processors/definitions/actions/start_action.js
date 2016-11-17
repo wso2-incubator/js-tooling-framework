@@ -32,7 +32,7 @@ var Processors = (function (processors) {
             getMySubTree: function (model) {
                 var parameters = model.attributes.parameters;
                 var log_configStart = "Start Action";
-                return new TreeNode("StartAction", "StartAction", log_configStart, ");");
+                return new TreeNode("StartAction", "StartAction", "", "");
             }
         }
     };

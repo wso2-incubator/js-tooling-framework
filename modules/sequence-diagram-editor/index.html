@@ -72,14 +72,14 @@
 <!-- End: Modal for file-browser -->
 
 <!-- Start: Modal for file dialog for saving the configuration-->
-<div class="modal fade" id="newConfigModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="saveConfigModal" tabindex="-1" role="dialog" aria-tydden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="newConfigModalLabel">New Ballerina Configuration Wizard</h4>
+                <h4 class="modal-title" id="newConfigModalLabel">Ballerina Service Save Wizard</h4>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -102,7 +102,7 @@
                         <div class="form-group">
                             <div class="col-sm-offset-2     col-sm-10">
                                 <button type="button" class="btn btn-primary" data-dismiss="modal">cancel</button>
-                                <button type="button" class="btn btn-primary" onclick="newConfiguration();">create
+                                <button type="button" class="btn btn-primary" onclick="newConfiguration();">save
                                 </button>
                             </div>
                         </div>
@@ -195,9 +195,9 @@
         <div class="dropdown file-menu">
             <a class="dropdown-toggle" data-toggle="dropdown">File</a>
             <ul class="dropdown-menu">
-                <li><a onclick="tabListView.addResourceTab()" href="#">new</a></li>
-                <li><a href="#">open</a></li>
-                <li><a href="#">save</a></li>
+                <li><a onclick="tabListView.addResourceTab()" href="#">new service</a></li>
+                <li><a onclick="onNewClick()" href="#">save to file</a></li>
+                <li><a class="disabled" href="#">open file</a></li>
             </ul>
         </div>
         <div class="dropdown">
@@ -315,8 +315,9 @@
                             <div id="tab-container" class="col-sm-2">
                                 <div  id="serviceAndSourceButtonsRow" >
                                     <ul class="" id="serviceAndSourceButtons">
-                                        <li><a href="#" onclick="loadServiceProperties();"><i class="fw fw-settings settings-icon" title="service properties"></i></a></li>
-                                        <li><a href="#" id="sourceId" onclick="toggleSource();"><i class="fw fw-view source-icon" title="source view"></i></a></li>
+                                        <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="configure service properties" onclick="loadServiceProperties();">
+                                            <i class="fw fw-settings settings-icon"></i></a></li>
+                                        <li><a href="#" data-toggle="tooltip" data-placement="bottom" title="toggle source view" id="sourceId" onclick="toggleSource();"><i class="fw fw-view source-icon"></i></a></li>
                                     </ul>
                                 </div>
                                 <ul class="nav nav-tabs tabList" id="tabList" role="tablist">
@@ -545,20 +546,20 @@
 
     function openFileBrowser(){
         $('#fileBrowserModel').modal('show');
-        $('#newConfigModal').modal('hide');
+        $('#saveConfigModal').modal('hide');
         fileBrowser = new Tools.Views.FileBrowser({container:"#fileTree"});
     }
 
     function onFileBrowserClose(){
         $('#fileBrowserModel').modal('hide');
-        $('#newConfigModal').modal('show');
+        $('#saveConfigModal').modal('show');
     }
 
     function onFileSelected(){
         var selected = fileBrowser.selected;
         if(selected){
             $('#fileBrowserModel').modal('hide');
-            $('#newConfigModal').modal('show');
+            $('#saveConfigModal').modal('show');
             $('#location').val(selected);
         }
     }
@@ -602,22 +603,23 @@
 
     function onNewClick(){
         newWizardError.hide();
-        $('#newConfigModal').modal('show');
+        $('#saveConfigModal').modal('show');
     }
 
     function saveConfiguration() {
-        var tags = serviceTags.split(",");
+
+        var tags = defaultView.serviceTags.split(",");
         var tagString = "{";
         tags.forEach(function (tag) {
             tagString += ('"' + tag + '",');
         });
         tagString += '}';
-        var config = '@Path ("' + serviceBasePath + '")\n' +
+        var config = '@Path ("' + defaultView.serviceBasePath + '")\n' +
                 '@Source (interface="default")\n' +
-                '@Service (tags =' + tagString + ', description = "' + serviceDescription + '", produces = ' + serviceProduces + ')\n' +
-                'package ' + servicePackageName + ';\n\n';
+                '@Service (tags =' + tagString + ', description = "' + defaultView.serviceDescription + '", produces = ' + defaultView.serviceProduces + ')\n' +
+                'package ' + defaultView.servicePackageName + ';\n\n';
         config += diagram.parseTree();
-        var payload = "location=" + (btoa(configLocation.value + "/" + configFileName.value)) + "&config=" + (btoa(config));
+        var payload = "location=" + (btoa(defaultView.configLocation + "/" + defaultView.configFileName)) + "&config=" + (btoa(config));
 
         $.ajax({
             url: saveServiceURL,
@@ -627,7 +629,8 @@
             async: false,
             success: function (data, textStatus, xhr) {
                 if (xhr.status == 200) {
-                    alertSuccess("Configuration was saved successfully.");
+                    alertSuccess("Service was saved successfully.");
+                    setBreadcrumb(defaultView.configLocation, defaultView.configFileName)
                 } else {
                     alertError("Something went wrong. " + textStatus);
                 }
@@ -651,43 +654,12 @@
             newWizardError.show();
             return;
         }
-
-
-        var config = '@Path ("/stock")\n' +
-                '@Source (interface="default")\n' +
-                '@Service (tags = {"stock_info","stock_update"}, description = "Rest api for do operations on admin", produces = MediaType.APPLICATION_JSON)\n' +
-                'package com.sample;\n\n';
-
-        var payload = "location=" + (btoa(configLocation.value + "/" + configFileName.value)) + "&config=" + (btoa(config));
-
-        $.ajax({
-            url: saveServiceURL,
-            type: "POST",
-            data: payload,
-            contentType: "text/plain; charset=utf-8",
-            async: false,
-            success: function (data, textStatus, xhr) {
-                if (xhr.status == 200) {
-                    alertSuccess("File " + configLocation.value + "/" + configFileName.value  + " created successfully.");
-                    $('#newConfigModal').modal('hide');
-                    $("#breadcrumbRow").show();
-                    setBreadcrumb(configLocation.value, configFileName.value);
-                    $("#empty-workspace-wrapper").hide();
-                    $("#resource-tabs-wrapper").show();
-                    $("#serviceAndSourceButtonsRow").show();
-                    initTabs();
-                } else {
-                    newWizardError.text("Something went wrong. " + textStatus);
-                    newWizardError.show();
-                }
-            },
-            error: function(res, errorCode, error){
-                newWizardError.text("Something went wrong. " + errorCode + " " + error + " " + res.responseText);
-                newWizardError.show();
-            }
-        });
-
+        defaultView.configLocation = configLocation.value;
+        defaultView.configFileName = configFileName.value;
+        $('#saveConfigModal').modal('hide');
+        saveConfiguration();
     }
+
     function toggleSource() {
         var editorMain = document.getElementById("sourceViewTab");
         var tabContainer = document.getElementById("tab-container");
