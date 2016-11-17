@@ -36,8 +36,7 @@ html{
 
 #editor-container{
     height: 100%;
-    /*width: 1363px;*/
-    width:1106px;
+    width:89%;
 }
 
 #navbar-wrapper{

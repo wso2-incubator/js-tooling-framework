@@ -1,10 +1,10 @@
 .preview-container{
-    padding: 10px;
     background: white;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
-    border: 5px solid #232323;
-    border-top: none;
-    border-bottom: none;
+    border: 1px solid #1e1e1e;
+    position: absolute;
+    margin-top: 445px;
+    margin-left: 1268px;
 }
 .diagram-preview
 {
