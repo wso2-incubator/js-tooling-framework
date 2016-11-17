@@ -24,7 +24,7 @@ var Processors = (function (processors) {
     var forkJoinProcessor = {
         id: "ForkJoinProcessor",
         title: "Fork Join",
-        icon: "images/tool-icons/fork.svg",
+        icon: "images/tool-icons/dgm-fork.svg",
         colour : "#ffffff",
         type : "MultiRegionHolderProcessor",
         containers: [
@@ -77,14 +77,14 @@ var Processors = (function (processors) {
             //    ]
             //}
         ],
-        dragCursorOffset : { left: 50, top: -5 },
+        dragCursorOffset : { left: 30, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/fork.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/dgm-fork.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
-                    d3.select(svg).attr("width", "100px").attr("height", "85px");
+                    d3.select(svg).attr("width", "48px").attr("height", "108px");
                     div.node().appendChild(svg);
                 });
                 return div.node();

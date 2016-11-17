@@ -23,7 +23,7 @@ var MainElements = (function (mainElements) {
     var workerLifeline = {
         id: "Worker",
         title: "Worker",
-        icon: "images/tool-icons/lifeline.svg",
+        icon: "images/tool-icons/worker.svg",
         colour : "#FFFFFF",
         class : "worker",
         shape: 'rect',
@@ -31,7 +31,7 @@ var MainElements = (function (mainElements) {
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/lifeline.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/worker.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "100px");
