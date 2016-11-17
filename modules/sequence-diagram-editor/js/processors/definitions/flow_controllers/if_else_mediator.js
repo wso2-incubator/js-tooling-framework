@@ -24,18 +24,18 @@ var Processors = (function (processors) {
     var ifElseMediator = {
         id: "IfElseMediator",
         title: "If Else",
-        icon: "images/tool-icons/tryblock.svg",
+        icon: "images/tool-icons/dgm-if-else.svg",
         colour : "#ffffff",
         type : "ComplexProcessor",
         containableElements: [{container:"ifContainer",children:[{title:"If"}]},{container:"elseContainer",children:[{title:"Else"}]}],
-        dragCursorOffset : { left: 50, top: -5 },
+        dragCursorOffset : { left: 24, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/tryblock_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/dgm-if-else.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
-                    d3.select(svg).attr("width", "100px").attr("height", "85px");
+                    d3.select(svg).attr("width", "48px").attr("height", "108px");
                     div.node().appendChild(svg);
                 });
                 return div.node();
