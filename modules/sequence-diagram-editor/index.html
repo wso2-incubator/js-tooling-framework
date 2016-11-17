@@ -187,8 +187,44 @@
             </a>
         </div>
 
+
     </div>
     <!-- End: header - logo & title -->
+
+    <div class="menu-bar">
+        <div class="dropdown file-menu">
+            <a class="dropdown-toggle" data-toggle="dropdown">File</a>
+            <ul class="dropdown-menu">
+                <li><a onclick="tabListView.addResourceTab()" href="#">new</a></li>
+                <li><a href="#">open</a></li>
+                <li><a href="#">save</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Edit</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Run</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Window</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+        <div class="dropdown  help-menu">
+            <a class="dropdown-toggle disabled" data-toggle="dropdown">Help</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">about</a></li>
+            </ul>
+        </div>
+    </div>
 
     <!--TODO: remove once the file explorer is implemented-->
     <!-- Start: Temporary file save and new menus -->
@@ -260,7 +296,7 @@
                 <!-- End: left container -->
                 <!-- Start: right container -->
                 <div id="right-container" class="col-sm-12"><!-- TODO resize to col-sm-10 once left container made visible -->
-                    <div class="container-fluid" id="empty-workspace-wrapper">
+                    <div class="container-fluid" id="empty-workspace-wrapper" style="display: none;">
                         <div class="col-sm-5"></div>
                         <div class="col-sm-2" id="start-actions-container">
                             <h3>Create new or open existing</h3>
@@ -448,9 +484,11 @@
 <script src="js/sequence_diagram/lifeline-view.js"></script>
 
 <script src="js/tree.js"></script>
+<script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 
 <script>
+    var tempStorage = new Backbone.LocalStorage('tempBallerinaFiles');
     var formatter;
     define('formatter', ['beautify/beautify'],
             function(beautify) {
@@ -658,17 +696,17 @@
         //Reset ace editor content
         mainEditor.setValue("");
         //Hard coded sourceConfig :TODO
-        var tags = serviceTags.split(",");
+        var tags = defaultView.serviceTags.split(",");
         var tagString = "{";
         tags.forEach(function (tag) {
             tagString += ('"' + tag + '",');
         });
         tagString = tagString.substring(0, tagString.length - 1);
         tagString += '}';
-        var sourceConfig = '@Path ("' + serviceBasePath + '")\n' +
+        var sourceConfig = '@Path ("' + defaultView.serviceBasePath + '")\n' +
                 '@Source (interface="default")\n' +
-                '@Service (tags =' + tagString + ', description = "' + serviceDescription + '", produces = ' + serviceProduces + ')\n' +
-                'package ' + servicePackageName + ';\n\n';
+                '@Service (tags =' + tagString + ', description = "' + defaultView.serviceDescription + '", produces = ' + defaultView.serviceProduces + ')\n' +
+                'package ' + defaultView.servicePackageName + ';\n\n';
 
         //Source not loaded yet load source
         if (editorMain.style.display == "none") {
@@ -697,20 +735,20 @@
     }
 
     function loadServiceProperties() {
-        $("#produces").val(serviceProduces);
-        $("#basePath").val(serviceBasePath);
-        $("#packageName").val(servicePackageName);
-        $("#tags").val(serviceTags);
-        $("#description").val(serviceDescription);
+        $("#produces").val(defaultView.serviceProduces);
+        $("#basePath").val(defaultView.serviceBasePath);
+        $("#packageName").val(defaultView.servicePackageName);
+        $("#tags").val(defaultView.serviceTags);
+        $("#description").val(defaultView.serviceDescription);
         $('#servicePropertiesModal').modal('show');
     }
 
     function saveServiceProperties() {
-        serviceProduces = $("#produces").val();
-        serviceBasePath = $("#basePath").val();
-        servicePackageName = $("#packageName").val();
-        serviceTags = $("#tags").val();
-        serviceDescription = $("#description").val();
+        defaultView.serviceProduces = $("#produces").val();
+        defaultView.serviceBasePath = $("#basePath").val();
+        defaultView.servicePackageName = $("#packageName").val();
+        defaultView.serviceTags = $("#tags").val();
+        defaultView.serviceDescription = $("#description").val();
         $('#servicePropertiesModal').modal('hide');
     }
 </script>

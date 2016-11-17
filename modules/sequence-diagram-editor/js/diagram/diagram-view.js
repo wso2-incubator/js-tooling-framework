@@ -295,7 +295,6 @@ var Diagrams = (function (diagrams) {
         addResourceTab: function (e) {
             // required to clean previous views
             this.undelegateEvents();
-            e.preventDefault();
             //create Unique id for each tab
             var id =  Math.random().toString(36).substr(2, 9);
             var hrefId = '#seq_' + id;
@@ -304,7 +303,7 @@ var Diagrams = (function (diagrams) {
             var resourceModel = new Diagrams.Models.Tab({
                 resourceId: resourceId,
                 hrefId: hrefId,
-                resourceTitle: "New Resource" ,
+                resourceTitle: "untitled service" ,
                 createdTab: false
             });
 
@@ -380,8 +379,7 @@ var Diagrams = (function (diagrams) {
         tagName: "li",
         className: "series ",
         template: _.template($('#resourceTabsTemplate').html()),
-        initialize: function () {
-
+        initialize: function (options) {
 
         },
         events: {
@@ -693,6 +691,14 @@ var Diagrams = (function (diagrams) {
                 opts.diagram.grid.height = opts.diagram.grid.height || 25;
                 opts.diagram.grid.width = opts.diagram.grid.width || 25;
                 this.options = opts;
+
+                // Setting the default service parameters
+                this.serviceProduces = "MediaType.APPLICATION_JSON";
+                this.serviceBasePath = "/stock";
+                this.servicePackageName = "com.sample";
+                this.serviceTags = "stock_info,stock_update";
+                this.serviceDescription = "Rest api for get stocks details";
+
                 var defaultView = {};
                 this.model.on("messageDrawStart", this.onMessageDrawStart, this);
                 this.model.on("messageDrawEnd", this.onMessageDrawEnd, this);
@@ -854,7 +860,7 @@ var Diagrams = (function (diagrams) {
                 svg.attr("preserveAspectRatio", "xMinYMin meet");
                 // disable zoom in/out handler from plugin to override default behaviour
                 $(svg.node()).unbind("mousewheel DOMMouseScroll MozMousePixelScroll");
-                $(svg.node()).on("wheel", null, this, this.toggleZoom);
+                $(svg.node()).on("mousewheel DOMMouseScroll MozMousePixelScroll", null, this, this.toggleZoom);
             },
 
             toggleZoom: function(ev){

@@ -16,8 +16,6 @@
  * under the License.
  */
 
-
-
 var eventManager = new Diagrams.Models.EventManager({});
 var lifeLineOptions = {};
 var resourceLifeLineOptions = {};
@@ -29,13 +27,6 @@ lifeLineOptions.rect.height = 30;
 lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
-
-// Setting the default service parameters
-serviceProduces = "MediaType.APPLICATION_JSON"
-serviceBasePath = "/stock";
-servicePackageName = "com.sample";
-serviceTags = "stock_info,stock_update";
-serviceDescription = "Rest api for get stocks details";
 
 // Lifeline middle-rect options
 lifeLineOptions.middleRect = {};
@@ -197,11 +188,11 @@ function initTabs(){
     var tab = new Diagrams.Models.Tab({
         resourceId: "seq_1",
         hrefId: "#seq_1",
-        resourceTitle: "Service",
+        resourceTitle: "untitled service",
         createdTab: false
     });
 
-    var tabListView = new Diagrams.Views.TabListView({model: tab});
+    tabListView = new Diagrams.Views.TabListView({model: tab});
     tabListView.render(tab);
     var diagramObj1 = new Diagrams.Models.Diagram({});
     tab.addDiagramForTab(diagramObj1);
@@ -289,10 +280,11 @@ function addInitialElements(tabListView){
 }
 
 $(document).ready(function(){
-    $("#empty-workspace-wrapper").show();
-    $("#resource-tabs-wrapper").hide();
-    $("#breadcrumbRow").hide();
-    $("#serviceAndSourceButtonsRow").hide();
+    $("#empty-workspace-wrapper").hide();
+    $("#resource-tabs-wrapper").show();
+    $("#breadcrumbRow").show();
+    $("#serviceAndSourceButtonsRow").show();
+    initTabs();
 });
 
 

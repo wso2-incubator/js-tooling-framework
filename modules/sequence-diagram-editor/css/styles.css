@@ -46,6 +46,29 @@ svg text::selection {
     -ms-user-select: none;
     user-select: none;
 }
+header .dropdown{
+    margin-left: 15px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    max-height: 25px;
+    min-height: 25px;
+    height: 25px;
+    line-height: 10px;
+}
+
+a.disabled {
+    color: #8d8d8d;
+}
+
+.dropdown-menu{
+    margin-top: 0px;
+}
+
+.menu-bar{
+    position: absolute;
+    top: 5px;
+    left: 400px;
+}
 
 .gradient-pattern {
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
