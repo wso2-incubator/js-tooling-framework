@@ -73,7 +73,7 @@ var SequenceD = (function (sequenced) {
                         });
                     lifeLine.call(drag);
 
-                    var initialHeight = parseInt(lifeLine.line.attr("y2")) - parseInt(lifeLine.line.attr("y1")) ;
+                    var initialHeight = parseInt(lifeLine.line.attr("y2")) - parseInt(lifeLine.line.attr("y1"));
                     // Space between two processors
                     var distanceBetweenProcessors = 30;
                     // Distance from lifeline's center point to first processor.
@@ -172,7 +172,7 @@ var SequenceD = (function (sequenced) {
                 this.title = title;
 
                 var textModel = this.model.attributes.textModel;
-                if(textModel.dynamicRectWidth() === undefined){
+                if (textModel.dynamicRectWidth() === undefined) {
                     textModel.dynamicRectWidth(130);
                 }
 
@@ -180,9 +180,9 @@ var SequenceD = (function (sequenced) {
 
                 if (viewObj.model.definition.shape == 'rect') {
                     topShape = d3Ref.draw.genericCenteredRect(createPoint(center.get('x'),
-                            center.get('y') - prefs.rect.height/2), prefs.rect.width + 30, prefs.rect.height,
+                            center.get('y') - prefs.rect.height / 2), prefs.rect.width + 30, prefs.rect.height,
                         0, 0, lifeLineTopRectGroup, '#FFFFFF', textModel)
-                        .classed(prefs.rect.class, true).classed("genericR",true);
+                        .classed(prefs.rect.class, true).classed("genericR", true);
                 } else if (viewObj.model.definition.shape == 'polygon') {
                     var points = "" + center.x() + "," + (center.y() + polygonYOffset) +
                         " " + (center.x() + polygonXOffset) + "," + center.y() +
@@ -195,24 +195,24 @@ var SequenceD = (function (sequenced) {
                 // get new center.x for dynamic updates
                 var rw = textModel.dynamicRectWidth();
                 var rx = textModel.dynamicRectX();
-                var centerX = parseFloat(rw/2) + parseFloat(rx);
+                var centerX = parseFloat(rw / 2) + parseFloat(rx);
 
                 if (viewObj.model.definition.shape == 'rect') {
                     middleRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
-                            center.get('y') + prefs.rect.height / 2 ),
-                        prefs.middleRect.width, prefs.middleRect.height, 0, 0, group,textModel)
+                            center.get('y') + prefs.rect.height / 2),
+                        prefs.middleRect.width, prefs.middleRect.height, 0, 0, group, textModel)
                         .classed(prefs.middleRect.class, true);
                     line = d3Ref.draw.genericVerticalLine(createPoint(center.get('x'),
-                        center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group,textModel)
+                        center.get('y') + prefs.rect.height / 2), prefs.line.height - prefs.rect.height, group, textModel)
                         .classed(prefs.line.class, true);
                 } else if (viewObj.model.definition.shape == 'polygon') {
-                    var lenNew = prefs.line.height - 2*polygonYOffset;
+                    var lenNew = prefs.line.height - 2 * polygonYOffset;
                     middleRect = d3Ref.draw.centeredBasicRect(createPoint(centerX,
-                            center.get('y') + lenNew/2 + polygonYOffset),
-                        prefs.middleRect.width, lenNew, 0, 0, group,textModel)
+                            center.get('y') + lenNew / 2 + polygonYOffset),
+                        prefs.middleRect.width, lenNew, 0, 0, group, textModel)
                         .classed(prefs.middleRect.class, true);
                     line = d3Ref.draw.genericVerticalLine(createPoint(center.get('x'),
-                        center.get('y') + polygonYOffset), lenNew, group,textModel)
+                        center.get('y') + polygonYOffset), lenNew, group, textModel)
                         .classed(prefs.line.class, true);
                 }
 
@@ -220,16 +220,16 @@ var SequenceD = (function (sequenced) {
                 middleRect.attr('style', 'cursor: pointer');
                 this.center.attributes.x = centerX;
 
-                var text = d3Ref.draw.genericCenteredText(center, title, lifeLineTopRectGroup,textModel)
-                    .classed(prefs.text.class, true).classed("genericT",true);
+                var text = d3Ref.draw.genericCenteredText(center, title, lifeLineTopRectGroup, textModel)
+                    .classed(prefs.text.class, true).classed("genericT", true);
                 text.attr('style', 'cursor: pointer');
                 var lifeLineBottomRectGroup = group.append("g");
 
                 if (viewObj.model.definition.shape == 'rect') {
                     bottomShape = d3Ref.draw.genericCenteredRect(createPoint(center.get('x'),
                             center.get('y') + prefs.line.height - prefs.rect.height / 2), prefs.rect.width + 30,
-                        prefs.rect.height, 0, 0, lifeLineBottomRectGroup,'',textModel)
-                        .classed(prefs.rect.class, true).classed("genericR",true);
+                        prefs.rect.height, 0, 0, lifeLineBottomRectGroup, '', textModel)
+                        .classed(prefs.rect.class, true).classed("genericR", true);
                 } else if (viewObj.model.definition.shape == 'polygon') {
                     var points = "" + center.x() + "," + (center.get('y') + prefs.line.height + 30) +
                         " " + (center.x() + 35) + "," + (center.get('y') + prefs.line.height) +
@@ -239,8 +239,8 @@ var SequenceD = (function (sequenced) {
                 }
 
                 var textBottom = d3Ref.draw.genericCenteredText(createPoint(center.get('x'),
-                    center.get('y') + prefs.line.height), title, lifeLineBottomRectGroup,textModel)
-                    .classed(prefs.text.class, true).classed("genericT",true);
+                    center.get('y') + prefs.line.height), title, lifeLineBottomRectGroup, textModel)
+                    .classed(prefs.text.class, true).classed("genericT", true);
 
                 if (this.model.type == "EndPoint") {
                     topShape.classed("outer-dashed", true);
@@ -260,59 +260,6 @@ var SequenceD = (function (sequenced) {
                     })
                 };
 
-                var optionMenuStartX = center.x() + 2 + (prefs.rect.width + 30)/2;
-                var optionMenuStartY = center.y() - prefs.rect.height/2;
-                var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
-
-                var optionMenuWrapper = d3Ref.draw.rect(optionMenuStartX + 8,
-                    optionMenuStartY,
-                    30,
-                    58,
-                    0,
-                    0,
-                    optionsMenuGroup, "#f9f7f4").
-                attr("style", "stroke: #908D82; stroke-width: 0.5; opacity:0.5; cursor: pointer").
-                on("mouseover", function () {
-                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .1; cursor: pointer");
-                }).
-                on("mouseout", function () {
-                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
-                });
-
-                var deleteOption = d3Ref.draw.rect(optionMenuStartX + 11,
-                    optionMenuStartY + 3,
-                    24,
-                    24,
-                    0,
-                    0,
-                    optionsMenuGroup, "url(#delIcon)").
-                attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
-                on("mouseover", function () {
-                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
-                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7");
-                }).
-                on("mouseout", function () {
-                    d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
-                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
-                });
-
-                var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
-                    optionMenuStartY + 31,
-                    24,
-                    24,
-                    0,
-                    0,
-                    optionsMenuGroup, "url(#editIcon)").
-                attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").
-                on("mouseover", function () {
-                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
-                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7; cursor: pointer");
-                }).
-                on("mouseout", function () {
-                    d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
-                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
-                });
-
                 var viewObj = this;
                 middleRect.on('mouseover', function () {
                     //setting current tab view based diagram model
@@ -330,6 +277,62 @@ var SequenceD = (function (sequenced) {
                 }).on('mouseup', function (data) {
 
                 });
+
+                this.middleRectActivation(middleRect, this);
+
+                if (!_.isUndefined(this.model.definition.editable) && !_.isUndefined(this.model.definition.deletable) && this.model.definition.editable && this.model.definition.deletable) {
+                    this.addEditableAndDeletable(d3Ref, center, prefs, group, lifeLineTopRectGroup);
+                }
+                return group;
+            },
+
+            addEditableAndDeletable: function (d3Ref, center, prefs, group, lifeLineTopRectGroup) {
+
+                var optionMenuStartX = center.x() + 2 + (prefs.rect.width + 30) / 2;
+                var optionMenuStartY = center.y() - prefs.rect.height / 2;
+                var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
+
+                var optionMenuWrapper = d3Ref.draw.rect(optionMenuStartX + 8,
+                    optionMenuStartY,
+                    30,
+                    58,
+                    0,
+                    0,
+                    optionsMenuGroup, "#f9f7f4").attr("style", "stroke: #908D82; stroke-width: 0.5; opacity:0.5; cursor: pointer").on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .1; cursor: pointer");
+                }).on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                });
+
+                var deleteOption = d3Ref.draw.rect(optionMenuStartX + 11,
+                    optionMenuStartY + 3,
+                    24,
+                    24,
+                    0,
+                    0,
+                    optionsMenuGroup, "url(#delIcon)").attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7");
+                }).on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                });
+
+                var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
+                    optionMenuStartY + 31,
+                    24,
+                    24,
+                    0,
+                    0,
+                    optionsMenuGroup, "url(#editIcon)").attr("style", "opacity:0.2; cursor: pointer; stroke: #ede9dc").on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 1; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: .7; cursor: pointer");
+                }).on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #f9f7f4; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #908D82; stroke-width: 0.5; opacity: 0.5; cursor: pointer");
+                });
+
+                var viewObj = this;
 
                 lifeLineTopRectGroup.on("click", (function () {
                     defaultView.model.selectedNode = viewObj.model;
@@ -393,7 +396,7 @@ var SequenceD = (function (sequenced) {
                     //Get the parent of the model and delete it from the parent
                     if (viewObj.model.type === "Resource") {
                         var resourceElements = defaultView.model.get("diagramResourceElements").models;
-                        for (var itr = 0; itr < resourceElements.length; itr ++) {
+                        for (var itr = 0; itr < resourceElements.length; itr++) {
                             if (resourceElements[itr].cid === viewObj.model.cid) {
                                 resourceElements.splice(itr, 1);
                                 var currentResources = defaultView.model.resourceLifeLineCounter();
@@ -405,7 +408,7 @@ var SequenceD = (function (sequenced) {
                         }
                     } else if (viewObj.model.type === "EndPoint") {
                         var endpointElements = defaultView.model.get("diagramEndpointElements").models;
-                        for (var itr = 0; itr < endpointElements.length; itr ++) {
+                        for (var itr = 0; itr < endpointElements.length; itr++) {
                             if (endpointElements[itr].cid === viewObj.model.cid) {
                                 endpointElements.splice(itr, 1);
                                 var currentEndpoints = defaultView.model.endpointLifeLineCounter();
@@ -417,7 +420,7 @@ var SequenceD = (function (sequenced) {
                         }
                     } else if (viewObj.model.type === "Worker") {
                         var workerElements = defaultView.model.get("diagramWorkerElements").models;
-                        for (var itr = 0; itr < workerElements.length; itr ++) {
+                        for (var itr = 0; itr < workerElements.length; itr++) {
                             if (workerElements[itr].cid === viewObj.model.cid) {
                                 workerElements.splice(itr, 1);
                                 var currentWorkers = defaultView.model.workerLifeLineCounter();
@@ -429,7 +432,7 @@ var SequenceD = (function (sequenced) {
                         }
                     } else if (viewObj.model.type === "Source") {
                         var sourceElements = defaultView.model.get("diagramSourceElements").models;
-                        for (var itr = 0; itr < sourceElements.length; itr ++) {
+                        for (var itr = 0; itr < sourceElements.length; itr++) {
                             if (sourceElements[itr].cid === viewObj.model.cid) {
                                 sourceElements.splice(itr, 1);
                                 var currentSources = defaultView.model.sourceLifeLineCounter();
@@ -441,8 +444,25 @@ var SequenceD = (function (sequenced) {
                         }
                     }
                 });
+            },
 
-                return group;
+            middleRectActivation : function (middleRect, viewObj) {
+                middleRect.on('mouseover', function () {
+                    //setting current tab view based diagram model
+                    diagram = defaultView.model;
+                    diagram.selectedNode = viewObj.model;
+                    d3.select(this).style("fill", "green").style("fill-opacity", 0.1);
+                    // Update event manager with current active element type for validation
+                    eventManager.isActivated(diagram.selectedNode.attributes.title);
+                }).on('mouseout', function () {
+                    diagram.destinationLifeLine = diagram.selectedNode;
+                    diagram.selectedNode = null;
+                    d3.select(this).style("fill-opacity", 0.01);
+                    // Update event manager with out of focus on active element
+                    eventManager.isActivated("none");
+                }).on('mouseup', function (data) {
+
+                });
             }
 
         });
