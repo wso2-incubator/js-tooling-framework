@@ -196,7 +196,7 @@ function initTabs(){
     });
 
     tabListView = new Diagrams.Views.TabListView({model: tab});
-    tabListView.render(tab);
+    var tabView = tabListView.render(tab);
     var diagramObj1 = new Diagrams.Models.Diagram({});
     tab.addDiagramForTab(diagramObj1);
     var tabId1 = tab.get("resourceId");
@@ -211,6 +211,7 @@ function initTabs(){
     var currentView1 = dgModel1.createDiagramView(dgModel1, options);
     // set current tab's diagram view as default view
     currentView1.currentDiagramView(currentView1);
+    currentView1.tabView = tabView;
     tab.setDiagramViewForTab(currentView1);
     // mark tab as visited
     tab.setSelectedTab();

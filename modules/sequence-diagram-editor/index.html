@@ -654,6 +654,7 @@
                 if (xhr.status == 200) {
                     alertSuccess("Service was saved successfully.");
                     setBreadcrumb(defaultView.configLocation, defaultView.configFileName)
+                    defaultView.tabView.setTitle(defaultView.configFileName);
                 } else {
                     alertError("Something went wrong. " + textStatus);
                 }
@@ -833,6 +834,6 @@
 </script>
 
 </body>
-<iframe src="http://localhost:63342/wso2-tooling/modules/sequence-diagram-editor/js/nel-parser/index.html" id="iframe"
+<iframe src="js/nel-parser/index.html" id="iframe"
         style="height:60px"></iframe>
 </html>
