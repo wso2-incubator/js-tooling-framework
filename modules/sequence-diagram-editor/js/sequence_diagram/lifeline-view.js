@@ -231,6 +231,12 @@ var SequenceD = (function (sequenced) {
                         prefs.rect.height, 0, 0, lifeLineBottomRectGroup,'',textModel)
                         .classed(prefs.rect.class, true).classed("genericR",true);
                 } else if (viewObj.model.definition.shape == 'polygon') {
+                    var updatedTopShapePoints = "" + center.x() + "," + (center.y() + polygonYOffset) +
+                        " " + (center.x() + polygonXOffset) + "," + center.y() +
+                        " " + center.x() + "," + (center.y() - polygonYOffset) +
+                        " " + (center.x() - polygonXOffset) + "," + center.y();
+                    topShape.attr('points', updatedTopShapePoints);
+
                     var points = "" + center.x() + "," + (center.get('y') + prefs.line.height + 30) +
                         " " + (center.x() + 35) + "," + (center.get('y') + prefs.line.height) +
                         " " + center.x() + "," + (center.get('y') + prefs.line.height - 30) +
