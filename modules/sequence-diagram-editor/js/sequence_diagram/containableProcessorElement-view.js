@@ -273,8 +273,8 @@ var SequenceD = (function (sequenced) {
                                 //reset parent height
                                 parentModel.setHeight(parentModel.getHeight() - parentModelChildren[itr].getHeight)
                                 var parentElement = parentModel
-                                //Find the Resource and adjust height
-                                while(parentElement.type != "Resource"){
+                                //Find the most recent Lifeline parent and adjust height
+                                while(!(parentElement instanceof SequenceD.Models.LifeLine)){
                                     parentElement = parentElement.get("parent")
                                 }
                                 parentElement.setHeight(parentElement.getHeight - parentModelChildren[itr].getHeight)
