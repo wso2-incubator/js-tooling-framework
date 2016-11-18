@@ -138,20 +138,19 @@ var Processors = (function (processors) {
                     Processors.flowControllers.TryBlockMediator.title,
                     position,
                     Processors.flowControllers.TryBlockMediator.id,
-                    {type: Processors.flowControllers.TryBlockMediator.type, initMethod: Processors.flowControllers.TryBlockMediator.init},
+                    {
+                        type: Processors.flowControllers.TryBlockMediator.type,
+                        initMethod: Processors.flowControllers.TryBlockMediator.init
+                    },
                     {colour: Processors.flowControllers.TryBlockMediator.colour},
                     parameters,
                     Processors.flowControllers.TryBlockMediator.utils
                 );
                 model.addChild(processor);
                 return processor;
+                
             },
             createMyContainableProcessorElement: function (processor, title) {
-                // var containableElementsArr = Processors.flowControllers.TryBlockMediator.containableElements;
-                // for (var y = 0; y < containableElementsArr.length; y++) {
-                //     var children = containableElementsArr[y].children;
-
-                //for (var z = 0; z < children.length; z ++) {
                 var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
                 containableProcessorElem.type = 'ContainableProcessorElement';
                 containableProcessorElem.set('title', title);
@@ -159,8 +158,7 @@ var Processors = (function (processors) {
                 containableProcessorElem.parent(processor);
                 processor.containableProcessorElements().add(containableProcessorElem);
                 return containableProcessorElem;
-                // }
-                //  }
+                
             }
         }
     };

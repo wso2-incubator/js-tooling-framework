@@ -178,8 +178,8 @@ var Processors = (function (processors) {
             canConnectTo: function () {
                 return ['EndPoint'];
             },
-            
-            createMyModel : function (model) {
+
+            createMyModel: function (model) {
                 var position = createPoint(0, 0);
                 var processor = model.createProcessor(
                     Processors.manipulators.InvokeMediator.title,
@@ -191,8 +191,8 @@ var Processors = (function (processors) {
                         initMethod: Processors.manipulators.InvokeMediator.init,
                         editable: Processors.manipulators.InvokeMediator.editable,
                         deletable: Processors.manipulators.InvokeMediator.deletable,
-                        hasOutputConnection : Processors.manipulators.InvokeMediator.hasOutputConnection,
-                        messageLinkType : Processors.manipulators.InvokeMediator.messageLinkType
+                        hasOutputConnection: Processors.manipulators.InvokeMediator.hasOutputConnection,
+                        messageLinkType: Processors.manipulators.InvokeMediator.messageLinkType
                     },
                     {colour: Processors.manipulators.InvokeMediator.colour},
                     Processors.manipulators.InvokeMediator.parameters,

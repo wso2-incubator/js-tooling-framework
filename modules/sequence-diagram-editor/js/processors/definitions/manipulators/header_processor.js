@@ -121,8 +121,8 @@ var Processors = (function (processors) {
                         initMethod: Processors.manipulators.HeaderProcessor.init,
                         editable: Processors.manipulators.HeaderProcessor.editable,
                         deletable: Processors.manipulators.HeaderProcessor.deletable,
-                        hasOutputConnection : Processors.manipulators.HeaderProcessor.hasOutputConnection,
-                        messageLinkType : Processors.manipulators.HeaderProcessor.messageLinkType
+                        hasOutputConnection: Processors.manipulators.HeaderProcessor.hasOutputConnection,
+                        messageLinkType: Processors.manipulators.HeaderProcessor.messageLinkType
                     },
                     {colour: Processors.manipulators.HeaderProcessor.colour},
                     parameters,
