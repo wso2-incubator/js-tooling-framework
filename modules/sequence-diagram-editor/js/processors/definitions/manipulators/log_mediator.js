@@ -27,7 +27,7 @@ var Processors = (function (processors) {
         icon: "images/tool-icons/dgm-logger.svg",
         colour : "#ffffff",
         type : "UnitProcessor",
-        dragCursorOffset : { left: 24, top: -1 },
+        dragCursorOffset : { left: 24, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
