@@ -1,6 +1,5 @@
 var NELListener = require('../generated-parser/NELListener').NELListener;
 
-var count = 0;
 var currentResource;
 var rootNode;
 var source;
@@ -43,9 +42,6 @@ function TreeNode(value, type, cStart, cEnd, parameters) {
         this.configStart += value;
     };
 
-    this.setParameters = function (parameters) {
-        this.parameters = parameters;
-    };
     this.appendParameter = function (parameter) {
         //parameter is an object eg: {key: x, value: y}
         if (this.parameters) {
@@ -54,26 +50,20 @@ function TreeNode(value, type, cStart, cEnd, parameters) {
             this.parameters = [parameter];
         }
     };
-    this.setParameterValue = function (key, value) {
-        this.parameters.forEach(function (parameter, index) {
-            if (parameter[index].key === key) {
-                parameter[index].value = parameter[index].value.append(value);
-            }
-        })
-    };
+
     this.getParameterValue = function (key) {
-        var value;
-        this.parameters.forEach(function (parameter) {
+        for (var i = 0; i < this.parameters.length; i++) {
+            var parameter = this.parameters[i];
             if (parameter.key === key) {
-                value = parameter.value;
+                return parameter.value;
             }
-        });
-        return value;
+        }
     }
 }
 
 NELListenerImpl = function () {
-    NELListener.call(this); // inherit default listener
+    // inherit default listener
+    NELListener.call(this);
     return this;
 };
 
@@ -769,7 +759,6 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
 
 // Exit a parse tree produced by NELParser#mediatorCall.
 NELListenerImpl.prototype.exitMediatorCall = function (ctx) {
-    console.log("exitMediatorCall" + count++);
     if (currentMediator.getValue() === "HeaderProcessor") {
         // "setHeader(messageRef = response, headerName = \"HTTP.StatusCode\", headerValue = 500);"
         currentMediator.appendConfigStart(
@@ -777,7 +766,7 @@ NELListenerImpl.prototype.exitMediatorCall = function (ctx) {
             + currentMediator.getParameterValue("headerName") + ", headerValue = " + currentMediator.getParameterValue(
                 "headerValue"));
     } else if (currentMediator.getValue() === "InvokeMediator") {
-//invoke(messageRef = m, endpointRef = stockEP);"+
+        //invoke(messageRef = m, endpointRef = stockEP);"+
         currentMediator.appendConfigStart(
             "messageRef = " + currentMediator.getParameterValue("messageRef") + ", endpointRef = "
             + currentMediator.getParameterValue("endpointRef"))
