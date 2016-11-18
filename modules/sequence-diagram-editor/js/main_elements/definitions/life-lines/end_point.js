@@ -28,6 +28,8 @@ var MainElements = (function (mainElements) {
         class : "endpoint",
         shape: 'rect',
         dragdrop : true,
+        editable : true,
+        deletable: true,
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {

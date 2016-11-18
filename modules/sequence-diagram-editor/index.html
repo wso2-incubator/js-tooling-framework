@@ -42,11 +42,22 @@
     <script>
 
         function receiveMessage(event) {
-            var treeObj = JSON.parse(event.data);
-            generateDesign(treeObj);
+            //Receive the tree object which represents the source content
+            if (event.data === "ERROR") {
+                //Show a message, if there is an error occurred while parsing the source
+                $('#parserErrorModal').modal('show');
+            } else {
+                // Hide source view
+                document.getElementById("sourceViewTab").style.display = "none";
+                //Show design editor area
+                document.getElementById("editor-view").style.display = "block";
+                var treeObj = JSON.parse(event.data);
+                sourceToDesign(treeObj);
+            }
         }
         window.addEventListener("message", receiveMessage, false);
     </script>
+
     <script type="text/javascript">
         function sendMessage(source) {
             var win = document.getElementById("iframe").contentWindow;
@@ -189,6 +200,22 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="saveServiceProperties()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal for the parser error-->
+<div id="parserErrorModal" tabindex="-1" class="modal fade" role="dialog">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color:lightgoldenrodyellow">Error!</h4>
+            </div>
+            <div class="modal-body">
+                <p>Cannot parse the given source. Please check your source again!</p>
             </div>
         </div>
     </div>
@@ -443,9 +470,7 @@
 <script src="lib/backbone_v1.3.3/backbone.js"></script>
 <script src="lib/backbone_storage_adapter_v1.1.0/backbone.localStorage.js"></script>
 <script src="lib/d3_v4.1.1/d3.js"></script>
-<!--<script type="text/javascript" src="lib/custom-require_js/custom_require.js"></script>-->
 <script src="lib/requirejs-2.1.11/require.js"></script>
-<!--<script src="lib/custom-require_js/custom_require.js"></script>-->
 <script src="lib/svg-panNZoom/jquery.svg.pan.zoom.js"></script>
 
 <script src="js/logger/logger.js"></script>
@@ -719,12 +744,11 @@
         }
         //source already loaded, hence need to load the design view
         else {
-            // Hide source view
+            //send the current source content for parsing
+//            var source = $('.ace_content').text();
+//            sendMessage(source);
             editorMain.style.display = "none";
-            //show design editor area
             editorContainer.style.display = "block";
-            var source = $('.ace_content').text();
-            sendMessage(source);
         }
     }
 
@@ -751,86 +775,11 @@
     }
 
     function generateDesignFromSource() {
-        var source = $('.ace_content').text();//source from the editor
+        //get source from the editor
+        var source = $('.ace_content').text();
         sendMessage(source);
     }
 
-    function generateDesign(treeObj) {
-        console.log(treeObj);
-//            var treeObj = {"children": [{
-//            "children": [],
-//            "value": "Endpoint",
-//            "type": "Endpoint",
-//            "configStart": "constant endpoint stockEP = new EndPoint(http://localhost:8080/exchange/)",
-//            "configEnd": ";\n",
-//            "parameters": [{"key": "title", "value": "stockEP"},
-//                {"key": "url", "value": "http://localhost:8080/exchange/"}]
-//        }, {
-//            "children": [{
-//                "children": [{
-//                    "children": [{
-//                        "children": [],
-//                        "value": "LogMediator",
-//                        "type": "LogMediator",
-//                        "configStart": "log(level = custom, status = Message Received at getStocksResource",
-//                        "configEnd": ");\n",
-//                        "parameters": [{"key": "level", "value": "custom"},
-//                            {"key": "status", "value": "Message Received at getStocksResource"}]
-//                    }, {
-//                        "children": [],
-//                        "value": "InvokeMediator",
-//                        "type": "InvokeMediator",
-//                        "configStart": "response = invoke(messageRef = m, endpointRef = stockEP",
-//                        "configEnd": ");\n",
-//                        "parameters": [{"key": "messageRef", "value": "m"}, {"key": "endpointRef", "value": "stockEP"}]
-//                    }], "value": "TryBlock", "type": "TryBlock", "configStart": "try {\n", "configEnd": "}"
-//                }, {
-//                    "children": [{
-//                        "children": [],
-//                        "value": "HeaderProcessor",
-//                        "type": "HeaderProcessor",
-//                        "configStart": "setHeader(messageRef = response, headerName = HTTP.StatusCode, headerValue = 500",
-//                        "configEnd": ");\n",
-//                        "parameters": [{"key": "messageRef", "value": "response"},
-//                            {"key": "headerName", "value": "HTTP.StatusCode"}, {"key": "headerValue", "value": "500"}]
-//                    }],
-//                    "value": "CatchBlock",
-//                    "type": "CatchBlock",
-//                    "configStart": " catch (Exception e) {\n",
-//                    "configEnd": "}\n"
-//                }],
-//                "value": "TryCatchMediator", "type": "TryCatchMediator", "configStart": "", "configEnd": ""
-//            }, {
-//                "children": [],
-//                "value": "ResponseMsg",
-//                "type": "ResponseMsg",
-//                "configStart": "reply response",
-//                "configEnd": ";\n"
-//            }],
-//            "value": "Resource",
-//            "type": "Resource",
-//            "configStart": "@GET\n@PUT\n@POST\n@Path(\"/passthrough\")\nresource passthrough(message m) {\nmessage response;\n",
-//            "configEnd": "}",
-//            "parameters": [{"key": "get", "value": true}, {"key": "put", "value": true}, {"key": "post", "value": true},
-//                {"key": "path", "value": "/passthrough"}, {"key": "inputParameter", "value": "m"},
-//                {"key": "title", "value": "passthrough"},
-//                {"key": "property", "value": {"key": "response", "name": "message"}}]
-//        }],
-//            "value": "Service",
-//            "type": "Service",
-//            "configStart": "@Path(\"/stock\")\n@Source(interface=\"x\")\n@Service(tags={\"stock_info\",\"stock_update\"},description=\"Rest api for do operations on admin\",produces=MediaType.APPLICATION_JSON)\npackagecom.sample;\n",
-//            "configEnd": "\n",
-//            "parameters": [{"key": "path", "value": "/stock"}, {"key": "sourceValues", "value": {"interface": "x"}}, {
-//                "key": "serviceValues",
-//                "value": {
-//                    "tags": ["stock_info", "stock_update"],
-//                    "description": "Rest api for do operations on admin",
-//                    "producer": {"mediaType": "MediaType.APPLICATION_JSON"}
-//                }
-//            }, {"key": "packageDefinition", "value": "com.sample"}]
-//        };
-        sourceToDesign(treeObj);
-    }
 </script>
 
 </body>
