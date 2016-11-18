@@ -260,6 +260,14 @@ var SequenceD = (function (sequenced) {
                     })
                 };
 
+                if(!_.isUndefined(this.model.definition.editable) && !_.isUndefined(this.model.definition.deletable) && this.model.definition.editable && this.model.definition.deletable) {
+                    this.addEditableAndDeletable(d3Ref, center, prefs, group, middleRect, lifeLineTopRectGroup);
+                }
+                return group;
+            },
+
+            addEditableAndDeletable: function(d3Ref, center, prefs, group, middleRect, lifeLineTopRectGroup){
+
                 var optionMenuStartX = center.x() + 2 + (prefs.rect.width + 30)/2;
                 var optionMenuStartY = center.y() - prefs.rect.height/2;
                 var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
@@ -441,8 +449,6 @@ var SequenceD = (function (sequenced) {
                         }
                     }
                 });
-
-                return group;
             }
 
         });
