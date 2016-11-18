@@ -24,14 +24,14 @@ var Processors = (function (processors) {
     var logMediator = {
         id: "LogMediator",
         title: "Logger",
-        icon: "images/tool-icons/log.svg",
+        icon: "images/tool-icons/dgm-logger.svg",
         colour : "#ffffff",
         type : "UnitProcessor",
-        dragCursorOffset : { left: 24, top: -5 },
+        dragCursorOffset : { left: 24, top: -1 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/log_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/dgm-logger.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "48px").attr("height", "108px");
@@ -142,6 +142,25 @@ var Processors = (function (processors) {
                 inputParams[1] = model.attributes.parameters[1];
 
                 return inputParams;
+            },
+            createMyModel: function (model, parameters) {
+                var position = new GeoCore.Models.Point({
+                    x: 0,
+                    y: 0
+                });
+                var processor = model.createProcessor(
+                    Processors.manipulators.LogMediator.title,
+                    position,
+                    Processors.manipulators.LogMediator.id,
+                    {
+                        type: Processors.manipulators.LogMediator.type,
+                        initMethod: Processors.manipulators.LogMediator.init
+                    },
+                    {colour: Processors.manipulators.LogMediator.colour},
+                    parameters,
+                    Processors.manipulators.LogMediator.utils
+                );
+                model.addChild(processor);
             }
         }
     };

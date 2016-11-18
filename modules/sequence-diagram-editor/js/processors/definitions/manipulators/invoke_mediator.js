@@ -29,14 +29,14 @@ var Processors = (function (processors) {
         type : "Action",
         messageLinkType : Diagrams.Utils.messageLinkType.InOut,
         hasOutputConnection : true,
-        dragCursorOffset : { left: 50, top: -5 },
+        dragCursorOffset : { left: 30, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/invoke_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/invoke.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
-                    d3.select(svg).attr("width", "100px").attr("height", "42px");
+                    d3.select(svg).attr("width", "58px").attr("height", "108px");
                     div.node().appendChild(svg);
                 });
                 return div.node();
@@ -178,6 +178,30 @@ var Processors = (function (processors) {
             canConnectTo: function () {
                 return ['EndPoint'];
             },
+            
+            createMyModel : function (model) {
+                var position = createPoint(0, 0);
+                var processor = model.createProcessor(
+                    Processors.manipulators.InvokeMediator.title,
+                    position,
+                    Processors.manipulators.InvokeMediator.id,
+
+                    {
+                        type: Processors.manipulators.InvokeMediator.type,
+                        initMethod: Processors.manipulators.InvokeMediator.init,
+                        editable: Processors.manipulators.InvokeMediator.editable,
+                        deletable: Processors.manipulators.InvokeMediator.deletable,
+                        hasOutputConnection : Processors.manipulators.InvokeMediator.hasOutputConnection,
+                        messageLinkType : Processors.manipulators.InvokeMediator.messageLinkType
+                    },
+                    {colour: Processors.manipulators.InvokeMediator.colour},
+                    Processors.manipulators.InvokeMediator.parameters,
+                    Processors.manipulators.InvokeMediator.utils
+                );
+                Processors.manipulators.InvokeMediator.init(model, processor);
+                model.addChild(processor);
+                return processor;
+            }
         }
     };
 

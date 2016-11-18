@@ -24,18 +24,18 @@ var Processors = (function (processors) {
     var ifElseMediator = {
         id: "IfElseMediator",
         title: "If Else",
-        icon: "images/tool-icons/tryblock.svg",
+        icon: "images/tool-icons/dgm-if-else.svg",
         colour : "#ffffff",
         type : "ComplexProcessor",
         containableElements: [{container:"ifContainer",children:[{title:"If"}]},{container:"elseContainer",children:[{title:"Else"}]}],
-        dragCursorOffset : { left: 50, top: -5 },
+        dragCursorOffset : { left: 24, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/tryblock_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/dgm-if-else.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
-                    d3.select(svg).attr("width", "100px").attr("height", "85px");
+                    d3.select(svg).attr("width", "48px").attr("height", "108px");
                     div.node().appendChild(svg);
                 });
                 return div.node();
@@ -128,6 +128,39 @@ var Processors = (function (processors) {
             },
             canConnectTo: function () {
                 return ['Worker'];
+            },
+            createMyModel: function (model, parameters) {
+                var position = new GeoCore.Models.Point({
+                    x: 0,
+                    y: 0
+                });
+                var processor = model.createProcessor(
+                    Processors.flowControllers.IfElseMediator.title,
+                    position,
+                    Processors.flowControllers.IfElseMediator.id,
+                    {type: Processors.flowControllers.IfElseMediator.type, initMethod: Processors.flowControllers.IfElseMediator.init},
+                    {colour: Processors.flowControllers.IfElseMediator.colour},
+                    parameters,
+                    Processors.flowControllers.IfElseMediator.utils
+                );
+                model.addChild(processor);
+                return processor;
+            },
+            createMyContainableProcessorElement: function (processor, title) {
+                // var containableElementsArr = Processors.flowControllers.TryBlockMediator.containableElements;
+                // for (var y = 0; y < containableElementsArr.length; y++) {
+                //     var children = containableElementsArr[y].children;
+
+                //for (var z = 0; z < children.length; z ++) {
+                var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
+                containableProcessorElem.type = 'ContainableProcessorElement';
+                containableProcessorElem.set('title', title);
+                containableProcessorElem.set('utils', Processors.flowControllers.IfElseMediator.utils);
+                containableProcessorElem.parent(processor);
+                processor.containableProcessorElements().add(containableProcessorElem);
+                return containableProcessorElem;
+                // }
+                //  }
             }
         }
     };

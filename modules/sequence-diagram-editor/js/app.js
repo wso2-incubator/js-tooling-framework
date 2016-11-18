@@ -16,8 +16,6 @@
  * under the License.
  */
 
-
-
 var eventManager = new Diagrams.Models.EventManager({});
 var lifeLineOptions = {};
 var resourceLifeLineOptions = {};
@@ -29,13 +27,6 @@ lifeLineOptions.rect.height = 30;
 lifeLineOptions.rect.roundX = 20;
 lifeLineOptions.rect.roundY = 20;
 lifeLineOptions.rect.class = "lifeline-rect";
-
-// Setting the default service parameters
-serviceProduces = "MediaType.APPLICATION_JSON"
-serviceBasePath = "/stock";
-servicePackageName = "com.sample";
-serviceTags = "stock_info,stock_update";
-serviceDescription = "Rest api for get stocks details";
 
 // Lifeline middle-rect options
 lifeLineOptions.middleRect = {};
@@ -93,8 +84,11 @@ var mainToolGroup = new Tools.Models.ToolGroup({
 });
 
 for (var lifeline in MainElements.lifelines) {
-    var tool = new Tools.Models.Tool(MainElements.lifelines[lifeline]);
-    mainToolGroup.toolCollection.add(tool);
+    var lifelineDef = MainElements.lifelines[lifeline];
+    if(!_.isUndefined(lifelineDef.dragdrop) && lifelineDef.dragdrop === true) {
+        var tool = new Tools.Models.Tool(lifelineDef);
+        mainToolGroup.toolCollection.add(tool);
+    }
 }
 
 // Create mediators tool group
@@ -197,12 +191,12 @@ function initTabs(){
     var tab = new Diagrams.Models.Tab({
         resourceId: "seq_1",
         hrefId: "#seq_1",
-        resourceTitle: "Resource",
+        resourceTitle: "untitled service",
         createdTab: false
     });
 
-    var tabListView = new Diagrams.Views.TabListView({model: tab});
-    tabListView.render(tab);
+    tabListView = new Diagrams.Views.TabListView({model: tab});
+    var tabView = tabListView.render(tab);
     var diagramObj1 = new Diagrams.Models.Diagram({});
     tab.addDiagramForTab(diagramObj1);
     var tabId1 = tab.get("resourceId");
@@ -217,6 +211,7 @@ function initTabs(){
     var currentView1 = dgModel1.createDiagramView(dgModel1, options);
     // set current tab's diagram view as default view
     currentView1.currentDiagramView(currentView1);
+    currentView1.tabView = tabView;
     tab.setDiagramViewForTab(currentView1);
     // mark tab as visited
     tab.setSelectedTab();
@@ -235,11 +230,11 @@ function initTabs(){
 function addInitialElements(tabListView){
     var model = defaultView.model;
 
-    var centerPoint = createPoint(100, 50);
+    var centerPoint = createPoint(20, 50);
     var type = "Source";
     var lifeLineDef = MainElements.lifelines.SourceLifeline;
 
-    var resourceCenterPoint = createPoint(380, 50);
+    var resourceCenterPoint = createPoint(300, 50);
     var resourceType = "Resource";
     var resourceLifeLineDef = MainElements.lifelines.ResourceLifeline;
 
@@ -289,10 +284,11 @@ function addInitialElements(tabListView){
 }
 
 $(document).ready(function(){
-    $("#empty-workspace-wrapper").show();
-    $("#resource-tabs-wrapper").hide();
-    $("#breadcrumbRow").hide();
-    $("#serviceAndSourceButtonsRow").hide();
+    $("#empty-workspace-wrapper").hide();
+    $("#resource-tabs-wrapper").show();
+    $("#breadcrumbRow").show();
+    $("#serviceAndSourceButtonsRow").show();
+    initTabs();
 });
 
 

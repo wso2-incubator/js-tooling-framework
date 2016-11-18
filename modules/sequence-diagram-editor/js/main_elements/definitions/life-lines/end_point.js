@@ -23,17 +23,18 @@ var MainElements = (function (mainElements) {
     var endPointLifeline = {
         id: "EndPoint",
         title: "End Point",
-        icon: "images/tool-icons/lifeline.svg",
+        icon: "images/tool-icons/endpoint.svg",
         colour : "purple",
         class : "endpoint",
         shape: 'rect',
+        dragdrop : true,
         editable : true,
         deletable: true,
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/lifeline.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/endpoint.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "100px");
@@ -97,7 +98,20 @@ var MainElements = (function (mainElements) {
             canConnectTo: function () {
                 return ['Worker', 'Resource', 'ContainableProcessorElement'];
             },
-            textModel : "undefined"
+            createMyModel: function (model, title, centerPoint, parameters) {
+                var lifeline = createLifeLine(title, centerPoint, MainElements.lifelines.EndPointLifeline.class,
+                                              MainElements.lifelines.EndPointLifeline.utils,
+                                              parameters, MainElements.lifelines.EndPointLifeline.textModel, "Endpoint",
+                                              MainElements.lifelines.EndPointLifeline);
+                var endpointLifeLineOptions = {
+                    class: MainElements.lifelines.EndPointLifeline.class,
+                    diagram: model
+                };
+                model.addElement(lifeline, endpointLifeLineOptions);
+                var endpointCount = model.endpointLifeLineCounter();
+                endpointCount++;
+                model.endpointLifeLineCounter(endpointCount);
+            }
         }
     };
 

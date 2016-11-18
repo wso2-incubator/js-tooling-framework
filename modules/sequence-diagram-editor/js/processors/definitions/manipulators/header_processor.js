@@ -23,14 +23,14 @@ var Processors = (function (processors) {
     var headerProcessor = {
         id: "HeaderProcessor",
         title: "Header",
-        icon: "images/tool-icons/header.svg",
+        icon: "images/tool-icons/dgm-header.svg",
         colour : "#ffffff",
         type : "UnitProcessor",
         dragCursorOffset : { left: 24, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/header_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/dgm-header.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "48px").attr("height", "108px");
@@ -105,6 +105,30 @@ var Processors = (function (processors) {
                 inputParams[1] = model.attributes.parameters[1];
 
                 return inputParams;
+            },
+            createMyModel: function (model, parameters) {
+                var position = new GeoCore.Models.Point({
+                    x: 0,
+                    y: 0
+                });
+                var processor = model.createProcessor(
+                    Processors.manipulators.HeaderProcessor.title,
+                    position,
+                    Processors.manipulators.HeaderProcessor.id,
+
+                    {
+                        type: Processors.manipulators.HeaderProcessor.type,
+                        initMethod: Processors.manipulators.HeaderProcessor.init,
+                        editable: Processors.manipulators.HeaderProcessor.editable,
+                        deletable: Processors.manipulators.HeaderProcessor.deletable,
+                        hasOutputConnection : Processors.manipulators.HeaderProcessor.hasOutputConnection,
+                        messageLinkType : Processors.manipulators.HeaderProcessor.messageLinkType
+                    },
+                    {colour: Processors.manipulators.HeaderProcessor.colour},
+                    parameters,
+                    Processors.manipulators.HeaderProcessor.utils
+                );
+                model.addChild(processor);
             }
         }
     };

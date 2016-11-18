@@ -2,7 +2,7 @@
 #tool-palette{
     border-right: 2px solid #f4f4f4;
     /*width: 170px;*/
-    width: 170px;
+    width: 11%;
     background-color: #ffffff;
     height: 100%;
 }
@@ -87,7 +87,7 @@
 .search-input{
     margin-top: 12px;
     margin-left: 8px;
-    width: 144px;
+    width: 152px;
     background-color: #f0f0f0;
     font-size: smaller;
     font-style: italic;
@@ -96,7 +96,8 @@
 }
 .searchIcon{
     position: absolute;
-    right: 20px;
-    top: 22px;
+    right: 14px;
+    top: 18px;
     color: darkgray;
+    font-size: 10px;
 }

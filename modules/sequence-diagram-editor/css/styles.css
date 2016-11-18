@@ -1,27 +1,32 @@
-body{
+body {
     background: #232323;
 }
 
-#right-container{
+#right-container {
     background-color: #232323;
 }
 
-#main-navbar{
+#main-navbar {
     background-color: #232323;
     border-top: solid #1e1e1e;
     border-bottom: solid #1e1e1e;
 }
 
 .header {
-    background-color:  #1e1e1e;
+    background-color: #1e1e1e;
 }
 
-#editor-container{
+#editor-container {
     background-color: #fff;
 }
 
-.editor-scroller{
+.editor-scroller {
     cursor: move;
+}
+.source-icon{
+    margin-top: 5px;
+    width: 30px;
+    height: 15px;
 }
 
 .circle-hide {
@@ -34,9 +39,11 @@ body{
 
 /*//////////////////////////////////////////////////*/
 /** Editor canvas related styles | Start -> **/
-svg text::selection { background: none; }
+svg text::selection {
+    background: none;
+}
 
-.non-user-selectable{
+.non-user-selectable {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -44,44 +51,70 @@ svg text::selection { background: none; }
     -ms-user-select: none;
     user-select: none;
 }
+header .dropdown{
+    margin-left: 15px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    max-height: 25px;
+    min-height: 25px;
+    height: 25px;
+    line-height: 10px;
+}
+
+a.disabled {
+    color: #8d8d8d;
+}
+
+.dropdown-menu{
+    margin-top: 0px;
+}
+
+.menu-bar{
+    position: absolute;
+    top: 5px;
+    left: 400px;
+}
 
 .gradient-pattern {
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAHUlEQVQYV2NkYGAwBuKzQIwXMBJSAJMfVUidcAQAnUQBC6jEGBUAAAAASUVORK5CYII=');
     background-color: white;
     box-shadow: 0 0 2px lightgray;
 }
+
 /** Editor canvas related styles | -> End **/
 /*//////////////////////////////////////////////////*/
 
-
 /*//////////////////////////////////////////////////*/
 /** Resource level tabs related styles | Start -> **/
-#tab-container{
-    border-bottom-style: solid;
-    border-bottom-color: #8d8d8d;
+#tab-container {
+    /*border-bottom-style: solid;*/
+    /*border-bottom-color: #8d8d8d;*/
 }
+
 .navbar-default .navbar-nav > li a:hover {
     background: #8d8d8d;
 }
+
 .navbar-default .navbar-nav > li a:active {
     background: #8d8d8d;
 }
+
 .navbar-default .navbar-nav > li a:focus {
     background: #8d8d8d;
 }
 
 .nav-tabs > li, .nav-tabs > li > a {
-    height:25px;
+    height: 25px;
 }
 
-.nav-tabs > li > a{
+.nav-tabs > li > a {
     /*border-right: 1px solid #1e1e1e;*/
     border-bottom: 1px solid #8d8d8d;
 }
 
 .nav-tabs > li > span {
-    cursor:pointer;
-    position:absolute;
+    cursor: pointer;
+    position: absolute;
     right: 0;
     top: 12px;
     color: #c0392b;
@@ -96,20 +129,20 @@ svg text::selection { background: none; }
     padding-top: 3px;
 }
 
-.nav-tabs > li  {
+.nav-tabs > li {
     /*color: #7e7e7e;*/
-    background-color: #f8f8f8;
+    background-color: #c4c4c4;
 }
 
-.nav-tabs{
+.nav-tabs {
     border: 0;
 }
 
 .add-resource-btn {
-    width:40px;
+    width: 40px;
 }
 
-.tab-divs{
+.tab-divs {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -125,16 +158,18 @@ svg text::selection { background: none; }
 
 .remove-resource {
     position: absolute;
-    top: 5px;
+    top: 8px;
     right: 9px;
+    font-size: 8px;
+    color: #a8a8a8;
 }
 
 .close-icon {
     cursor: pointer;
 }
+
 /** Resource level tabs related styles | -> End **/
 /*//////////////////////////////////////////////////*/
-
 
 /*//////////////////////////////////////////////////*/
 /** File Explorer related styles |Start -> **/
@@ -143,10 +178,10 @@ svg text::selection { background: none; }
     border: solid #373737;
 }
 
-#tree-action-bar{
+#tree-action-bar {
     background-color: #373737;
     color: #ededed;
-    border-bottom:solid #1e1e1e;
+    border-bottom: solid #1e1e1e;
 }
 
 .tree-view {
@@ -162,41 +197,52 @@ svg text::selection { background: none; }
     background: #fdfdfd;
 
 }
-.tree-action{
+
+.tree-action {
     float: right;
 }
 
-i.tree-action{
+i.tree-action {
     padding: 15px 8px;
 }
-span.tree-action{
+
+span.tree-action {
     padding: 4px;
 }
 
-.tree-view input{
+.tree-view input {
     height: 32px;
     color: black;
 }
+
 /** File Explorer related styles | -> End **/
 /*//////////////////////////////////////////////////*/
 
+.settings-icon {
+    padding-top: 5px;
+}
 
-/*//////////////////////////////////////////////////*/
-/** Breadcrumbs related styles | Start -> **/
-.breadcrumb{
-    text-transform: none;
-    font-size: 14px;
-    padding-top: 3px;
-    height: 30px;
-    background-color:#f1f1f1;
-    float: left;
-    color: black;
-    padding-left: 5px;
+
+.file-browser-container {
+    padding: 15px;
+    max-height: 450px;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
-#breadcrumbRow{
-    border-bottom: 2px solid #f1f1f1;
-    background-color:#f1f1f1;
-    height: 30px;
+
+header .brand img.logo {
+    height: 20px;
+    padding: 0px 10px;
 }
-/** Breadcrumbs related styles | -> End**/
-/*//////////////////////////////////////////////////*/
+
+header .brand {
+    padding: 5px;
+}
+
+header .brand h1 {
+    font-size: 15px;
+}
+
+ol#breadcrumbList {
+    background-color: #444;
+}

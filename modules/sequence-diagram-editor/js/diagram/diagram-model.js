@@ -311,7 +311,7 @@ var Diagrams = (function (diagrams) {
 
         defaults: {
             resourceId: "id-not-set",
-            resourceTitle: "",
+            resourceTitle: "untitled service",
             hrefId: "id-not-set",
             createdTab: false,
         }
@@ -610,13 +610,6 @@ var Diagrams = (function (diagrams) {
                 defaultView.model.attributes.diagramResourceElements.length = 0;
                 defaultView.model.attributes.diagramEndpointElements.models = [];
                 defaultView.model.attributes.diagramEndpointElements.length = 0;
-            },
-
-            defaults: {
-                path: '',
-                get: false,
-                put: false,
-                post: false
             }
 
         });

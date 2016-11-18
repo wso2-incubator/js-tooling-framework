@@ -1344,7 +1344,7 @@ var requirejs, require, define;
 
                 //If a deps array or a config callback is specified, then call
                 //require with those args. This is useful when require is defined as a
-                //config object before require.js is loaded.
+                //config object before custom_require.js is loaded.
                 if (cfg.deps || cfg.callback) {
                     context.require(cfg.deps || [], cfg.callback);
                 }
@@ -1940,7 +1940,7 @@ var requirejs, require, define;
 
     //Look for a data-main script attribute, which could also adjust the baseUrl.
     if (isBrowser && !cfg.skipDataMain) {
-        //Figure out baseUrl. Get it from the script tag with require.js in it.
+        //Figure out baseUrl. Get it from the script tag with custom_require.js in it.
         eachReverse(scripts(), function (script) {
             //Set the 'head' where we can append children by
             //using the script's parent.

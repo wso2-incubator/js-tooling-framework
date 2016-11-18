@@ -24,7 +24,7 @@ var Processors = (function (processors) {
     var forkProcessor = {
         id: "ForkProcessor",
         title: "Fork",
-        icon: "images/tool-icons/fork.svg",
+        icon: "images/tool-icons/dgm-fork.svg",
         colour : "#27ae60",
         type : "CustomProcessor",
         dragCursorOffset : { left: 50, top: -5 },
