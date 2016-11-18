@@ -745,8 +745,10 @@
         //source already loaded, hence need to load the design view
         else {
             //send the current source content for parsing
-            var source = $('.ace_content').text();
-            sendMessage(source);
+//            var source = $('.ace_content').text();
+//            sendMessage(source);
+            editorMain.style.display = "none";
+            editorContainer.style.display = "block";
         }
     }
 
