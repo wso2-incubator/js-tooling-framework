@@ -611,9 +611,6 @@ SourceFileContext.prototype.exitRule = function(listener) {
 	}
 };
 
-
-
-
 NELParser.SourceFileContext = SourceFileContext;
 
 NELParser.prototype.sourceFile = function() {

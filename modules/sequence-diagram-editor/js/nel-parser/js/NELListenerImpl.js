@@ -74,7 +74,6 @@ function TreeNode(value, type, cStart, cEnd, parameters) {
 }
 
 NELListenerImpl = function () {
-    console.log("NELListenerImpl constructor" + count++);
     NELListener.call(this); // inherit default listener
     return this;
 };
@@ -85,7 +84,6 @@ NELListenerImpl.prototype.constructor = NELListenerImpl;
 
 // Enter a parse tree produced by NELParser#sourceFile.
 NELListenerImpl.prototype.enterSourceFile = function (ctx) {
-    console.log("enterSourceFile" + count++);
     //TODO set source para
     rootNode = new TreeNode("Service", "Service");
 };
@@ -93,7 +91,6 @@ NELListenerImpl.prototype.enterSourceFile = function (ctx) {
 // Exit a parse tree produced by NELParser#sourceFile.
 NELListenerImpl.prototype.exitSourceFile = function (ctx) {
     rootNode.setConfigEnd("\n");
-    console.log("exitSourceFile" + count++);
     console.log(JSON.stringify(rootNode));
     console.log(rootNode);
     generatedTree = JSON.stringify(rootNode);
@@ -103,54 +100,37 @@ NELListenerImpl.prototype.exitSourceFile = function (ctx) {
 
 // Enter a parse tree produced by NELParser#definition.
 NELListenerImpl.prototype.enterDefinition = function (ctx) {
-    console.log("enterDefinition" + count++);
 };
 
 // Exit a parse tree produced by NELParser#definition.
 NELListenerImpl.prototype.exitDefinition = function (ctx) {
-    console.log("exitDefinition" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#constants.
 NELListenerImpl.prototype.enterConstants = function (ctx) {
-    console.log("enterConstants" + count++);
 };
 
 // Exit a parse tree produced by NELParser#constants.
 NELListenerImpl.prototype.exitConstants = function (ctx) {
-    console.log("exitConstants" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#globalVariables.
 NELListenerImpl.prototype.enterGlobalVariables = function (ctx) {
-    console.log("enterGlobalVariables" + count++);
 };
 
 // Exit a parse tree produced by NELParser#globalVariables.
 NELListenerImpl.prototype.exitGlobalVariables = function (ctx) {
-    console.log("exitGlobalVariables" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#resources.
 NELListenerImpl.prototype.enterResources = function (ctx) {
-    //console.log("Resource ctx: " + ctx.getText());
-
-    //new TreeNode("Resource", "Resource", "resource passthrough (message m) {\nmessage response;", "}");
-
-    console.log("enterResources" + count++);
 };
 
 // Exit a parse tree produced by NELParser#resources.
 NELListenerImpl.prototype.exitResources = function (ctx) {
-
-    //currentResource.setConfigStart();
-    //currentResource.setConfigEnd("}");
-    console.log("exitResources" + count++);
-    //rootNode.getChildren().push(currentResource);
-    //currentResource = null;
 };
 
 
@@ -160,13 +140,11 @@ NELListenerImpl.prototype.enterPackageDef = function (ctx) {
                                  key: "packageDefinition",
                                  value: ctx.qualifiedName().getText()
                              });
-    console.log("enterPackageDef" + count++);
     rootNode.appendConfigStart(ctx.getText() + "\n");
 };
 
 // Exit a parse tree produced by NELParser#packageDef.
 NELListenerImpl.prototype.exitPackageDef = function (ctx) {
-    console.log("exitPackageDef" + count++);
 };
 
 
@@ -177,13 +155,10 @@ NELListenerImpl.prototype.enterPath = function (ctx) {
                                  value: ctx.StringLiteral().getText().replace(/['"]+/g, '')
                              });
     rootNode.appendConfigStart(ctx.getText() + "\n");
-    console.log("enterPath" + count++);
 };
 
 // Exit a parse tree produced by NELParser#path.
 NELListenerImpl.prototype.exitPath = function (ctx) {
-    console.log("exitPath" + count++);
-    //check double quote
 };
 
 
@@ -191,71 +166,57 @@ NELListenerImpl.prototype.exitPath = function (ctx) {
 NELListenerImpl.prototype.enterSource = function (ctx) {
     source = {};
     rootNode.appendConfigStart(ctx.getText() + "\n");
-    console.log("enterSource" + count++);
 };
 
 // Exit a parse tree produced by NELParser#source.
 NELListenerImpl.prototype.exitSource = function (ctx) {
-    console.log("exitSource" + count++);
     rootNode.appendParameter({
                                  key: "sourceValues",
                                  value: source
                              });
 };
 
-
 // Enter a parse tree produced by NELParser#api.
 NELListenerImpl.prototype.enterApi = function (ctx) {
-    console.log("enterApi" + count++);
     service = {};
     rootNode.appendConfigStart(ctx.getText() + "\n");
 };
 
 // Exit a parse tree produced by NELParser#api.
 NELListenerImpl.prototype.exitApi = function (ctx) {
-    console.log("exitApi" + count++)
 };
 
 
 // Enter a parse tree produced by NELParser#resourcePath.
 NELListenerImpl.prototype.enterResourcePath = function (ctx) {
-    console.log("Path: " + ctx.getText());
     currentResource.appendConfigStart(ctx.getText() + '\n');
     currentResource.appendParameter({key: "path", value: ctx.StringLiteral().getText().replace(/['"]+/g, '')});
-    console.log("enterResourcePath" + count++);
 };
 
 // Exit a parse tree produced by NELParser#resourcePath.
 NELListenerImpl.prototype.exitResourcePath = function (ctx) {
-    console.log("exitResourcePath" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#getMethod.
 NELListenerImpl.prototype.enterGetMethod = function (ctx) {
-    console.log("enterGetMethod" + count++);
     currentResource.appendParameter({key: "get", value: true});
     currentResource.appendConfigStart(ctx.getText() + '\n');
-
 };
 
 // Exit a parse tree produced by NELParser#getMethod.
 NELListenerImpl.prototype.exitGetMethod = function (ctx) {
-    console.log("exitGetMethod" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#postMethod.
 NELListenerImpl.prototype.enterPostMethod = function (ctx) {
-    console.log("enterPostMethod" + count++);
-   
     currentResource.appendParameter({key: "post", value: true});
     currentResource.appendConfigStart(ctx.getText() + '\n');
 };
 
 // Exit a parse tree produced by NELParser#postMethod.
 NELListener.prototype.exitPostMethod = function (ctx) {
-    console.log("exitPostMethod" + count++);
 };
 
 
@@ -263,12 +224,10 @@ NELListener.prototype.exitPostMethod = function (ctx) {
 NELListenerImpl.prototype.enterPutMethod = function (ctx) {
     currentResource.appendParameter({key: "put", value: true});
     currentResource.appendConfigStart(ctx.getText() + '\n');
-    console.log("enterPutMethod" + count++);
 };
 
 // Exit a parse tree produced by NELParser#putMethod.
 NELListenerImpl.prototype.exitPutMethod = function (ctx) {
-    console.log("exitPutMethod");
 };
 
 
@@ -276,12 +235,10 @@ NELListenerImpl.prototype.exitPutMethod = function (ctx) {
 NELListenerImpl.prototype.enterDeleteMethod = function (ctx) {
     currentResource.appendParameter({key: "delete", value: true});
     currentResource.appendConfigStart(ctx.getText() + '\n');
-    console.log("enter deleteMethod" + count++);
 };
 
 // Exit a parse tree produced by NELParser#deleteMethod.
 NELListenerImpl.prototype.exitDeleteMethod = function (ctx) {
-    console.log("exit deleteMethod" + count++);
 };
 
 
@@ -359,37 +316,30 @@ NELListenerImpl.prototype.exitElementValuePairs = function (ctx) {
 
 // Enter a parse tree produced by NELParser#sourceElementValuePairs.
 NELListenerImpl.prototype.enterSourceElementValuePairs = function (ctx) {
-    //TODO check for non default sample
-    console.log("enterSourceElementValuePairs" + count++);
     source = {};
 };
 
 // Exit a parse tree produced by NELParser#sourceElementValuePairs.
 NELListenerImpl.prototype.exitSourceElementValuePairs = function (ctx) {
-    console.log("exitSourceElementValuePairs" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#interfaceDeclaration.
 NELListenerImpl.prototype.enterInterfaceDeclaration = function (ctx) {
-    console.log("enterInterfaceDeclaration" + count++);
     source.interface = ctx.StringLiteral().getText().replace(/['"]+/g, '');
 };
 
 // Exit a parse tree produced by NELParser#interfaceDeclaration.
 NELListenerImpl.prototype.exitInterfaceDeclaration = function (ctx) {
-    console.log("exitInterfaceDeclaration" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#apiElementValuePairs.
 NELListenerImpl.prototype.enterApiElementValuePairs = function (ctx) {
-    console.log("enterApiElementValuePairs" + count++);
 };
 
 // Exit a parse tree produced by NELParser#apiElementValuePairs.
 NELListenerImpl.prototype.exitApiElementValuePairs = function (ctx) {
-    console.log("exitApiElementValuePairs" + count++);
     rootNode.appendParameter({key: "serviceValues", value: service})
 };
 
@@ -423,62 +373,51 @@ NELListenerImpl.prototype.exitPort = function (ctx) {
 
 // Enter a parse tree produced by NELParser#tags.
 NELListenerImpl.prototype.enterTags = function (ctx) {
-    console.log("enterTags" + count++);
     service.tags = [];
 };
 
 // Exit a parse tree produced by NELParser#tags.
 NELListenerImpl.prototype.exitTags = function (ctx) {
-    console.log("exitTags" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#tag.
 NELListenerImpl.prototype.enterTag = function (ctx) {
-    console.log("entertag" + count++);
     var tags = ctx.StringLiteral();
     tags.forEach(function (t, index) {
         var tag = {tagValue: t.getText().replace(/['"]+/g, '')};
         service.tags.push(t.getText().replace(/['"]+/g, ''));
     });
-    //ctx.apiElementValuePairs().tags().tag()[0].getText()
-    //ctx.apiElementValuePairs().tags().tag()[0].StringLiteral()[0].getText()
 };
 
 // Exit a parse tree produced by NELParser#tag.
 NELListenerImpl.prototype.exitTag = function (ctx) {
-    console.log("exittag" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#descripton.
 NELListenerImpl.prototype.enterDescripton = function (ctx) {
     service.description = ctx.StringLiteral().getText().replace(/['"]+/g, '');
-    console.log("enterDescripton" + count++);
 };
 
 // Exit a parse tree produced by NELParser#descripton.
 NELListenerImpl.prototype.exitDescripton = function (ctx) {
-    console.log("exitDescription" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#producer.
 NELListenerImpl.prototype.enterProducer = function (ctx) {
-    console.log("enterProducer" + count++);
     service.producer = {};
 };
 
 // Exit a parse tree produced by NELParser#producer.
 NELListenerImpl.prototype.exitProducer = function (ctx) {
-    console.log("exitProducer" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#constant.
 NELListenerImpl.prototype.enterConstant = function (ctx) {
     var type = (ctx.classType() != null) ? ctx.classType().getText() : ctx.type().getText();
-    console.log("enterConstant" + count++);
     var endpoint = {};
     var uri, name;
     if (type === "endpoint") {
@@ -502,7 +441,6 @@ NELListenerImpl.prototype.enterConstant = function (ctx) {
 
 // Exit a parse tree produced by NELParser#constant.
 NELListenerImpl.prototype.exitConstant = function (ctx) {
-    console.log("exitConstant" + count++);
 };
 
 
@@ -517,13 +455,10 @@ NELListenerImpl.prototype.exitGlobalVariable = function (ctx) {
 
 // Enter a parse tree produced by NELParser#elementValuePair.
 NELListenerImpl.prototype.enterElementValuePair = function (ctx) {
-    console.log("enterElementValuePair" + count++);
-
 };
 
 // Exit a parse tree produced by NELParser#elementValuePair.
 NELListenerImpl.prototype.exitElementValuePair = function (ctx) {
-    console.log("exitElementValuePair" + count++);
 };
 
 
@@ -538,13 +473,11 @@ NELListenerImpl.prototype.exitElementValue = function (ctx) {
 
 // Enter a parse tree produced by NELParser#resource.
 NELListenerImpl.prototype.enterResource = function (ctx) {
-    console.log("enterresurce"+count++);
     currentResource = new TreeNode("Resource", "Resource");
 };
 
 // Exit a parse tree produced by NELParser#resource.
 NELListenerImpl.prototype.exitResource = function (ctx) {
-    console.log("exitResource"+count++);
     currentResource.setConfigEnd("}");
     rootNode.getChildren().push(currentResource);
 };
@@ -570,32 +503,23 @@ NELListenerImpl.prototype.exitQualifiedName = function (ctx) {
 
 // Enter a parse tree produced by NELParser#resourceDeclaration.
 NELListenerImpl.prototype.enterResourceDeclaration = function (ctx) {
-    console.log("ResourceDec: " + ctx.getText());
     currentResource.appendParameter({key: "inputParameter", value: ctx.Identifier().getText()});
     currentResource.appendConfigStart(
-        "resource " + ctx.resourceName().getText() + "(message " + ctx.Identifier().getText() + ") {\n")
-    //currentResource.appendConfigStart("(message "+ctx.Identifier().getText()+") {" + "\n")
-    console.log("enterResourceDeclaration: " + ctx.Identifier().getText() + " " + count++);
+        "resource " + ctx.resourceName().getText() + "(message " + ctx.Identifier().getText() + ") {\n");
 };
 
 // Exit a parse tree produced by NELParser#resourceDeclaration.
 NELListenerImpl.prototype.exitResourceDeclaration = function (ctx) {
-    //set resource passthrough(message m) - > m
-    console.log("exitResourceDeclaration" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#resourceName.
 NELListenerImpl.prototype.enterResourceName = function (ctx) {
-    console.log("name: " + ctx.getText());
-    console.log("enterResourceName" + count++);
-    // currentResource.appendConfigStart("resource " + ctx.getText());
     currentResource.appendParameter({key: "title", value: ctx.Identifier().getText()});
 };
 
 // Exit a parse tree produced by NELParser#resourceName.
 NELListenerImpl.prototype.exitResourceName = function (ctx) {
-    console.log("exitResourceName" + count++);
 };
 
 
@@ -619,14 +543,12 @@ NELListenerImpl.prototype.exitBlockStatement = function (ctx) {
 
 // Enter a parse tree produced by NELParser#tryCatchBlock.
 NELListenerImpl.prototype.enterTryCatchBlock = function (ctx) {
-    console.log("enterTryCatchBlock");
     var tryCatchMediator = new TreeNode("TryCatchMediator", "TryCatchMediator", "", "");
     parentStack.push(tryCatchMediator);
 };
 
 // Exit a parse tree produced by NELParser#tryCatchBlock.
 NELListenerImpl.prototype.exitTryCatchBlock = function (ctx) {
-    console.log("exitTryCatchBlock ");
     var tryCatchBlock = parentStack.pop();
     var currentParent = parentStack.pop();
     if (currentParent) {
@@ -640,14 +562,12 @@ NELListenerImpl.prototype.exitTryCatchBlock = function (ctx) {
 
 // Enter a parse tree produced by NELParser#tryClause.
 NELListenerImpl.prototype.enterTryClause = function (ctx) {
-    console.log("enterTryClause");
     var tryBlock = new TreeNode("TryBlock", "TryBlock", "try {\n", "}");
     parentStack.push(tryBlock);
 };
 
 // Exit a parse tree produced by NELParser#tryClause.
 NELListenerImpl.prototype.exitTryClause = function (ctx) {
-    console.log("exitTryClause");
     var tryBlock = parentStack.pop();
     var tryCatchBlock = parentStack.pop();
     tryCatchBlock.getChildren().push(tryBlock);
@@ -657,7 +577,6 @@ NELListenerImpl.prototype.exitTryClause = function (ctx) {
 
 // Enter a parse tree produced by NELParser#catchClause.
 NELListenerImpl.prototype.enterCatchClause = function (ctx) {
-    console.log("enterCatchClause");
     var catchBlock = new TreeNode("CatchBlock", "CatchBlock", "", "}\n");
     catchBlock.appendConfigStart(" catch (");
     catchBlock.setConfigEnd("}\n");
@@ -666,7 +585,6 @@ NELListenerImpl.prototype.enterCatchClause = function (ctx) {
 
 // Exit a parse tree produced by NELParser#catchClause.
 NELListenerImpl.prototype.exitCatchClause = function (ctx) {
-    console.log("exitCatchClause");
     var catchBlock = parentStack.pop();
     var tryCatchBlock = parentStack.pop();
     tryCatchBlock.getChildren().push(catchBlock);
@@ -682,6 +600,7 @@ NELListenerImpl.prototype.enterExceptionHandler = function (ctx) {
 NELListenerImpl.prototype.exitExceptionHandler = function (ctx) {
     var catchBlock = parentStack.pop();
     catchBlock.appendConfigStart(ctx.Identifier().getText() + ") {\n");
+    catchBlock.appendParameter({key: "exception", value: ctx.Identifier().getText()});
     parentStack.push(catchBlock);
 };
 
@@ -702,12 +621,10 @@ NELListenerImpl.prototype.exitExceptionType = function (ctx) {
 NELListenerImpl.prototype.enterIfElseBlock = function (ctx) {
     var ifElseBlock = new TreeNode("IfElseMediator", "IfElseMediator", "", "");
     parentStack.push(ifElseBlock);
-    console.log("enterIfElseBlock" + count++);
 };
 
 // Exit a parse tree produced by NELParser#ifElseBlock.
 NELListenerImpl.prototype.exitIfElseBlock = function (ctx) {
-    console.log("exitIfElseBlock" + count++);
     var ifElseBlock = parentStack.pop();
     var currentParent = parentStack.pop();
     if (currentParent) {
@@ -723,7 +640,6 @@ NELListenerImpl.prototype.exitIfElseBlock = function (ctx) {
 NELListenerImpl.prototype.enterIfBlock = function (ctx) {
     var ifBlock = new TreeNode("IfBlock", "IfBlock", "", "}");//without \n
     parentStack.push(ifBlock);
-    console.log("enterIfBlock" + count++);
 };
 
 // Exit a parse tree produced by NELParser#ifBlock.
@@ -734,44 +650,35 @@ NELListenerImpl.prototype.exitIfBlock = function (ctx) {
     var ifElseBlock = parentStack.pop();
     ifElseBlock.getChildren().push(ifBlock);
     parentStack.push(ifElseBlock);
-    console.log("exitIfBlock" + count++);
-
 };
 
 
 // Enter a parse tree produced by NELParser#elseBlock.
 NELListenerImpl.prototype.enterElseBlock = function (ctx) {
-    console.log("enterElseBlock" + count++);
     var elseBlock = new TreeNode("ElseBlock", "ElseBlock", "else {\n", "}\n");
     parentStack.push(elseBlock);
 };
 
 // Exit a parse tree produced by NELParser#elseBlock.
 NELListenerImpl.prototype.exitElseBlock = function (ctx) {
-    console.log("exitElseBlock" + count++);
     var elseBlock = parentStack.pop();
     var ifElseBlock = parentStack.pop();
     ifElseBlock.getChildren().push(elseBlock);
     parentStack.push(ifElseBlock);
-    //remove the parnt ifelseblock
 };
 
 
 // Enter a parse tree produced by NELParser#localVariableDeclarationStatement.
 NELListenerImpl.prototype.enterLocalVariableDeclarationStatement = function (ctx) {
-    console.log("property: " + ctx.getText());
-    console.log("enterLocalVariableDeclarationStatement" + count++);
     var type;
     var variableName;
     var property = {
         key: "",
         name: ""
     };
-    //TODO need a property holder for general case
     if (ctx.type()) {
         type = ctx.type().getText();
-    } else if (ctx.classType()) { // pattern of "message m ';'"
-        console.log("message m");
+    } else if (ctx.classType()) {
         type = ctx.classType().getText();
     }
     variableName = ctx.Identifier().getText();
@@ -784,7 +691,6 @@ NELListenerImpl.prototype.enterLocalVariableDeclarationStatement = function (ctx
 
 // Exit a parse tree produced by NELParser#localVariableDeclarationStatement.
 NELListenerImpl.prototype.exitLocalVariableDeclarationStatement = function (ctx) {
-    console.log("extLocalVariableDeclarationstatement" + count++);
 };
 
 
@@ -802,53 +708,22 @@ NELListenerImpl.prototype.exitLocalVariableInitializationStatement = function (c
 // Enter a parse tree produced by NELParser#localVariableAssignmentStatement.
 NELListenerImpl.prototype.enterLocalVariableAssignmentStatement = function (ctx) {
     if (ctx.mediatorCall()) {
-        console.log("enterLocalVariableAssignmentStatement invoke123: " + ctx.mediatorCall().getText() + count++);
-   //for cases like response = invoke(...etc), keep response
+   //for cases like response = invoke(...etc), keep "response" parameter
         lastMediatorCallVariable = ctx.Identifier().getText();
     }
 };
 
 // Exit a parse tree produced by NELParser#localVariableAssignmentStatement.
 NELListenerImpl.prototype.exitLocalVariableAssignmentStatement = function (ctx) {
-    console.log("exitLocalVariableAssignmentStatement" + count++);
-    var type;
-    var variableName;
-    var variableValue;
-    //TODO commented parts are not needed for passthrough
-    // ParameterHolder parameterHolder = new ParameterHolder();
-    // Mediator propertyMediator = MediatorProviderRegistry.getInstance().getMediator(Constants.PROPERTY_MEDIATOR_NAME);
-
-    // if (ctx.newTypeObjectCreation() != null) { // pattern of " m '=' new message() ';' "
-    //     type = ctx.newTypeObjectCreation().classType().getText();
-    //     variableName = ctx.Identifier().getText();
-    //     // parameterHolder.addParameter(new Parameter(Constants.TYPE, type));
-    //     // parameterHolder.addParameter(new Parameter(Constants.ASSIGNMENT, Boolean.FALSE.toString()));
-    // } else if (ctx.mediatorCall() != null) {
-    //     return;
-    // } else {  // pattern of " i = 4 ';'"
-    //     variableName = ctx.Identifier().getText();
-    //     if (ctx.literal().StringLiteral() != null) {
-    //         variableValue = ctx.literal().getText();
-    //     }
-    //
-    //     // parameterHolder.addParameter(new Parameter(Constants.VALUE, variableValue));
-    //     // parameterHolder.addParameter(new Parameter(Constants.ASSIGNMENT, Boolean.TRUE.toString()));
-    // }
-    // parameterHolder.addParameter(new Parameter(Constants.KEY, variableName));
-    //
-    // propertyMediator.setParameters(parameterHolder);
-    // dropMediatorFilterAware(propertyMediator);
 };
 
 
 // Enter a parse tree produced by NELParser#mediatorCallStatement.
 NELListenerImpl.prototype.enterMediatorCallStatement = function (ctx) {
-    console.log("EntermediatorCallStatement" + count++);
 };
 
 // Exit a parse tree produced by NELParser#mediatorCallStatement.
 NELListenerImpl.prototype.exitMediatorCallStatement = function (ctx) {
-    console.log("ExitmediatorCallStatement" + count++);
 };
 
 
@@ -863,8 +738,6 @@ NELListenerImpl.prototype.exitNewTypeObjectCreation = function (ctx) {
 
 // Enter a parse tree produced by NELParser#mediatorCall.
 NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
-    console.log("enterMediatorCall" + count++);
-    console.log("MediatorCall: " + ctx.getText());
     var mediatorCall = ctx.getText();
     var parameter = {
         key: "",
@@ -872,7 +745,6 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
     };
     //invoke and header mediator
     var mediatorId = ctx.Identifier().getText();
-    console.log("MediatorId: " + mediatorId);
     // call mediator is specified in the language as "invoke". This is a special case.
     if ("invoke" === mediatorId) {
      
@@ -951,19 +823,15 @@ NELListenerImpl.prototype.exitCircuitBreakerAnnotation = function (ctx) {
 
 // Enter a parse tree produced by NELParser#keyValuePairs.
 NELListenerImpl.prototype.enterKeyValuePairs = function (ctx) {
-    console.log("enterKeyValuePairs" + count++);
-
 };
 
 // Exit a parse tree produced by NELParser#keyValuePairs.
 NELListenerImpl.prototype.exitKeyValuePairs = function (ctx) {
-    console.log("exitKeyValuePairs" + count++);
 };
 
 
 // Enter a parse tree produced by NELParser#keyValuePair.
 NELListenerImpl.prototype.enterKeyValuePair = function (ctx) {
-    console.log("enterKeyValuePair");
     //(Identifier | classType) '='  ( literal | Identifier )
     var value, key;
 
@@ -990,7 +858,6 @@ NELListenerImpl.prototype.enterKeyValuePair = function (ctx) {
 
 // Exit a parse tree produced by NELParser#keyValuePair.
 NELListenerImpl.prototype.exitKeyValuePair = function (ctx) {
-    console.log("exitKeyValuePair");
 };
 
 
@@ -1005,7 +872,6 @@ NELListenerImpl.prototype.exitMessageModificationStatement = function (ctx) {
 
 // Enter a parse tree produced by NELParser#returnStatement.
 NELListenerImpl.prototype.enterReturnStatement = function (ctx) {
-    console.log("enterReturnStatement" + count++);
     //Mediator respondMediator = MediatorProviderRegistry.getInstance().getMediator(Constants.RESPOND_MEDIATOR_NAME);
     var respondMediator = {messageId: ""};
     //ParameterHolder parameterHolder = new ParameterHolder();
@@ -1014,14 +880,20 @@ NELListenerImpl.prototype.enterReturnStatement = function (ctx) {
         respondMediator.messageId = messageId;
     }
     var replyNode = new TreeNode("ResponseMsg", "ResponseMsg", "reply " + messageId, ";\n");
-    currentResource.getChildren().push(replyNode);
+
+    //TODO addd
+    var currentParent = parentStack.pop();
+    if(currentParent){
+        currentParent.getChildren().push(replyNode);
+        parentStack.push(currentParent);
+    }else{
+        currentResource.getChildren().push(replyNode);
+    }
+
 };
 
 // Exit a parse tree produced by NELParser#returnStatement.
 NELListenerImpl.prototype.exitReturnStatement = function (ctx) {
-    //reply response;
-    console.log("exitReturnStatement" + count++);
-    //dropMediatorFilterAware(respondMediator);
 };
 
 
@@ -1029,7 +901,6 @@ NELListenerImpl.prototype.exitReturnStatement = function (ctx) {
 NELListenerImpl.prototype.enterParExpression = function (ctx) {
     var conditionWithBrackets = ctx.getText();
     var condition = conditionWithBrackets.substring(1, conditionWithBrackets.length - 1);
-    console.log("enterParExpression" + count++ + "   condition: " + condition);
     var currentIf = parentStack.pop();
     currentIf.appendParameter({key: "condition", value: condition});
     parentStack.push(currentIf);
@@ -1037,7 +908,6 @@ NELListenerImpl.prototype.enterParExpression = function (ctx) {
 
 // Exit a parse tree produced by NELParser#parExpression.
 NELListenerImpl.prototype.exitParExpression = function (ctx) {
-    console.log("exitParExpression" + count++);
 };
 
 
@@ -1071,12 +941,10 @@ NELListenerImpl.prototype.exitLiteral = function (ctx) {
 // Enter a parse tree produced by NELParser#mediaType.
 NELListenerImpl.prototype.enterMediaType = function (ctx) {
     service.producer = {mediaType: ctx.getText()};
-    console.log("enterMediaType" + count++);
 };
 
 // Exit a parse tree produced by NELParser#mediaType.
 NELListenerImpl.prototype.exitMediaType = function (ctx) {
-    console.log("exitMediaType" + count++);
 };
 
 

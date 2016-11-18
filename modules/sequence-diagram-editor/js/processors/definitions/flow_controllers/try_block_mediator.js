@@ -144,21 +144,23 @@ var Processors = (function (processors) {
                     Processors.flowControllers.TryBlockMediator.utils
                 );
                 model.addChild(processor);
+                return processor;
             },
-            createMyContainableProcessorElement: function (model, processor) {
-                var containableElementsArr = Processors.flowControllers.TryBlockMediator.containableElements;
-                for (var y = 0; y < containableElementsArr.length; y++) {
-                    var children = containableElementsArr[y].children;
+            createMyContainableProcessorElement: function (processor, title) {
+                // var containableElementsArr = Processors.flowControllers.TryBlockMediator.containableElements;
+                // for (var y = 0; y < containableElementsArr.length; y++) {
+                //     var children = containableElementsArr[y].children;
 
-                    for (var z = 0; z < children.length; z ++) {
-                        var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
-                        containableProcessorElem.type = 'ContainableProcessorElement';
-                        containableProcessorElem.set('title', children[z].title);
-                        containableProcessorElem.set('utils', Processors.flowControllers.TryBlockMediator.utils);
-                        containableProcessorElem.parent(processor);
-                        processor.containableProcessorElements().add(containableProcessorElem);
-                    }
-                }
+                //for (var z = 0; z < children.length; z ++) {
+                var containableProcessorElem = new SequenceD.Models.ContainableProcessorElement(lifeLineOptions);
+                containableProcessorElem.type = 'ContainableProcessorElement';
+                containableProcessorElem.set('title', title);
+                containableProcessorElem.set('utils', Processors.flowControllers.TryBlockMediator.utils);
+                containableProcessorElem.parent(processor);
+                processor.containableProcessorElements().add(containableProcessorElem);
+                return containableProcessorElem;
+                // }
+                //  }
             }
         }
     };

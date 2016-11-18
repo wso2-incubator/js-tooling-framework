@@ -28,11 +28,10 @@ var traverseTree = function (node, model, view) {
             traverseTree(child, model, view);
         });
     } else if (node.type === "Resource") {
-        console.log("resource");
         var parameters = [
             {
                 key: "title",
-                value: getParameterValue(node.parameters, "title")
+                value: "Resource"
             },
             {
                 key: "path",
@@ -184,6 +183,55 @@ var traverseTree = function (node, model, view) {
         var headerProcessor = Processors.manipulators.HeaderProcessor.utils.createMyModel(model, parameters);
     } else if(node.type === "TryCatchMediator") {
         console.log("trycatch");
+        var parameters = [
+            {
+                key: "exception",
+                value: "Exception"
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ];
+        var tryCatchMediator = Processors.flowControllers.TryBlockMediator.utils.createMyModel(model, parameters);
+        node.children.forEach(function (child) {
+            traverseTree(child, tryCatchMediator, view);
+        });
+    } else if(node.type ==="TryBlock"){
+        var tryBlock = Processors.flowControllers.TryBlockMediator.utils.createMyContainableProcessorElement(model, "Try");
+        node.children.forEach(function (child) {
+            traverseTree(child, tryBlock, view);
+        });
+    } else if(node.type ==="CatchBlock"){
+        var catchBlock = Processors.flowControllers.TryBlockMediator.utils.createMyContainableProcessorElement(model, "Catch");
+        node.children.forEach(function (child) {
+            traverseTree(child, catchBlock, view);
+        });
+    } else if(node.type === "IfElseMediator") {
+        var parameters = [
+            {
+                key: "condition",
+                value: getParameterValue(node.parameters,"condition")
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ];
+        var ifElseMediator = Processors.flowControllers.IfElseMediator.utils.createMyModel(model, parameters);
+        node.children.forEach(function (child) {
+            traverseTree(child, ifElseMediator, view);
+        });
+    } else if (node.type ==="IfBlock"){
+        var ifBlock = Processors.flowControllers.IfElseMediator.utils.createMyContainableProcessorElement(model, "If");
+        node.children.forEach(function (child) {
+            traverseTree(child, ifBlock, view);
+        });
+    } else if (node.type ==="ElseBlock") {
+        var elseBlock = Processors.flowControllers.IfElseMediator.utils.createMyContainableProcessorElement(model, "Else");
+        node.children.forEach(function (child) {
+            traverseTree(child, elseBlock, view);
+        });
     }
 };
 
@@ -299,11 +347,13 @@ var setCurrentDiagramView = function () {
 
 var getParameterValue = function (parameters, key) {
     var value = "";
-    parameters.forEach(function (parameter) {
-       if( parameter.key === key) {
-           value = parameter.value;
-       }
-    });
+    if(parameters) {
+        parameters.forEach(function (parameter) {
+            if (parameter.key === key) {
+                value = parameter.value;
+            }
+        });
+    }
     return value;
 };
 
