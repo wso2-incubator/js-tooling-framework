@@ -52,13 +52,12 @@ function TreeNode(value, type, cStart, cEnd, parameters) {
     };
 
     this.getParameterValue = function (key) {
-        var value;
-        this.parameters.forEach(function (parameter) {
+        for (var i = 0; i < this.parameters.length; i++) {
+            var parameter = this.parameters[i];
             if (parameter.key === key) {
-                value = parameter.value;
+                return parameter.value;
             }
-        });
-        return value;
+        }
     }
 }
 

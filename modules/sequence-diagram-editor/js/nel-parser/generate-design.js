@@ -258,13 +258,12 @@ var traverseTree = function (node, model, view) {
 
 var getEndpoint = function (endpointRef, viewModel) {
     var endpointModels = viewModel.attributes.diagramEndpointElements.models;
-    var endpointReference = null;
-    endpointModels.forEach(function (endpoint) {
-        if ((endpoint.attributes.title.toLowerCase() === endpointRef.toLowerCase() && endpointReference === null)) {
-            endpointReference = endpoint;
+    for (var i = 0; i < endpointModels.length; i++) {
+        var endpoint = endpointModels[i];
+        if (endpoint.attributes.title.toLowerCase() === endpointRef.toLowerCase()) {
+            return endpoint;
         }
-    });
-    return endpointReference;
+    }
 };
 
 var setCurrentDiagramView = function () {
@@ -325,15 +324,14 @@ var addNewEmptyTab = function () {
 };
 
 var getParameterValue = function (parameters, key) {
-    var value = "";
     if (parameters) {
-        parameters.forEach(function (parameter) {
+        for (var i = 0; i < parameters.length; i++) {
+            var parameter = parameters[i];
             if (parameter.key === key) {
-                value = parameter.value;
+                return parameter.value;
             }
-        });
+        }
     }
-    return value;
 };
 
 var addInitArrow = function (source, destination, diagramView) {

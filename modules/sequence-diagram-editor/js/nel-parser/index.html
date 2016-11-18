@@ -1,68 +1,64 @@
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
+        <title>ANTLR parser for NEL</title>
+        <script type="text/javascript" src="lib/required_js/require.js"></script>
 
-    <title>ANTLR parser for NEL</title>
-    <script type="text/javascript" src="lib/required_js/require.js"></script>
+        <script>
+            function receiveMessage(event) {
+                var source = event.data;
+                try {
+                    generateTreeObject(source);
+                    event.source.postMessage(
+                            generatedTree,
+                            "http://localhost:63342/wso2-tooling"
+                    );
+                } catch (err) {
+                    event.source.postMessage(
+                            "ERROR",
+                            "http://localhost:63342/wso2-tooling"
+                    );
+                }
 
-    <script>
-        function receiveMessage(event) {
-            var source = event.data;
-            try {
-                generateTreeObject(source);
-                event.source.postMessage(
-                        generatedTree,
-                        "http://localhost:63342/wso2-tooling"
-                );
-            } catch (err) {
-                event.source.postMessage(
-                        "ERROR",
-                        "http://localhost:63342/wso2-tooling"
-                );
             }
+            window.addEventListener("message", receiveMessage, false);
+        </script>
+    </head>
 
-        }
-        window.addEventListener("message", receiveMessage, false);
-    </script>
+    <body>
+        <script type="text/javascript">
+            var generatedTree;
+            var antlr4 = require('antlr4/index');
+            var NELLexer = require('generated-parser/NELLexer');
+            var NELParser = require('generated-parser/NELParser');
+            var NELListener = require('js/NELListenerImpl');
 
-</head>
+            function generateTreeObject(source) {
 
-<body>
+                if (!antlr4) {
+                    antlr4 = require('antlr4/index');
+                }
+                if (!NELLexer) {
+                    NELLexer = require('generated-parser/NELLexer');
+                }
+                if (!NELParser) {
+                    NELParser = require('generated-parser/NELParser');
+                }
+                if (!NELListener) {
+                    NELListener = require('js/NELListenerImpl');
+                }
 
-<script type="text/javascript">
-    var generatedTree;
-    var antlr4 = require('antlr4/index');
-    var NELLexer = require('generated-parser/NELLexer');
-    var NELParser = require('generated-parser/NELParser');
-    var NELListener = require('js/NELListenerImpl');
+                var chars = new antlr4.InputStream(source);
+                var lexer = new NELLexer.NELLexer(chars);
+                var tokens = new antlr4.CommonTokenStream(lexer);
+                var parser = new NELParser.NELParser(tokens);
+                var listener = new NELListenerImpl();
+                parser.buildParseTrees = true;
 
-    function generateTreeObject(source) {
-
-        if (!antlr4) {
-            antlr4 = require('antlr4/index');
-        }
-        if (!NELLexer) {
-            NELLexer = require('generated-parser/NELLexer');
-        }
-        if (!NELParser) {
-            NELParser = require('generated-parser/NELParser');
-        }
-        if (!NELListener) {
-            NELListener = require('js/NELListenerImpl');
-        }
-
-        var chars = new antlr4.InputStream(source);
-        var lexer = new NELLexer.NELLexer(chars);
-        var tokens = new antlr4.CommonTokenStream(lexer);
-        var parser = new NELParser.NELParser(tokens);
-        var listener = new NELListenerImpl();
-        parser.buildParseTrees = true;
-
-        //parse the NEL source using the custom listener
-        var tree = parser.sourceFile();
-        antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
-    }
-</script>
-
-</body>
+                //parse the NEL source using the custom listener
+                var tree = parser.sourceFile();
+                antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
+            }
+        </script>
+    </body>
 </html>
