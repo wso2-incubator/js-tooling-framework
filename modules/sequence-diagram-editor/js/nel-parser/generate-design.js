@@ -1,12 +1,25 @@
 var tabListView;
+
+/**
+ * This method generates the diagram model for the given tree object, and set the generated model for the default view
+ * @param treeObject Tree object which represents NEL source data
+ */
 var sourceToDesign = function (treeObject) {
     var view = setCurrentDiagramView(treeObject);
     traverseTree(treeObject, view.model, view);
     view.render();
 };
 
+/**
+ * This represents a diagram element
+ * @param node Current node
+ * @param model Node's parent model
+ * @param view Current view
+ */
 var traverseTree = function (node, model, view) {
+
     if (node.type === "Service") {
+
         var parameters = [
             {
                 key: "title",
@@ -16,6 +29,23 @@ var traverseTree = function (node, model, view) {
         MainElements.lifelines.SourceLifeline.utils.createMyModel(model, parameters);
         view.render();
 
+        var serviceValues = getParameterValue(node.parameters, "serviceValues");
+        var tags = "";
+        serviceValues["tags"].forEach(function (tag, index) {
+            if (index != 0) {
+                tags += ", ";
+            }
+            tags += tag;
+        });
+
+        //set service parameters for the default view
+        view.serviceProduces = serviceValues["producer"]["mediaType"];
+        view.serviceBasePath = getParameterValue(node.parameters, "path");
+        view.servicePackageName = getParameterValue(node.parameters, "packageDefinition");
+        view.serviceTags = tags;
+        view.serviceDescription = serviceValues["description"];
+
+        //traverse services children (can be resources or endpoints)
         node.children.forEach(function (child) {
             traverseTree(child, model, view);
         });
@@ -49,6 +79,7 @@ var traverseTree = function (node, model, view) {
         var currentSource = view.model.diagramSourceElements().models[0];
         addInitArrow(currentSource, processor, view);
 
+        //traverse resources children (can be a logger, header processor, if-else, try-catch, endpoint..etc)
         node.children.forEach(function (child) {
             traverseTree(child, model.get('diagramResourceElements').models[0], view);
         });
@@ -94,14 +125,13 @@ var traverseTree = function (node, model, view) {
             type: 2
         });
 
-        var destinationModel = getEndpoint("", view.model);
-        if (destinationModel) {
+        var destinationModel = getEndpoint(getParameterValue(node.parameters, "endpointRef"), view.model);
 
+        if (destinationModel) {
             var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
             var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
             invokeModel.outputConnector(sourcePoint);
             destinationModel.addChild(destinationPoint, messageOptionsInbound);
-
         }
 
     } else if (node.type === "ResponseMsg") {
@@ -130,7 +160,7 @@ var traverseTree = function (node, model, view) {
                 value: getParameterValue(node.parameters, "status")
             }
         ];
-        
+
         Processors.manipulators.LogMediator.utils.createMyModel(model, parameters);
 
     } else if (node.type === "HeaderProcessor") {
@@ -151,16 +181,7 @@ var traverseTree = function (node, model, view) {
         Processors.manipulators.HeaderProcessor.utils.createMyModel(model, parameters);
 
     } else if (node.type === "TryCatchMediator") {
-        var parameters = [
-            {
-                key: "exception",
-                value: "Exception"
-            },
-            {
-                key: "description",
-                value: "Description"
-            }
-        ];
+        var parameters = [];
         var tryCatchMediator = Processors.flowControllers.TryBlockMediator.utils.createMyModel(model, parameters);
 
         node.children.forEach(function (child) {
@@ -170,7 +191,7 @@ var traverseTree = function (node, model, view) {
     } else if (node.type === "TryBlock") {
         var tryBlock = Processors.flowControllers.TryBlockMediator.utils.createMyContainableProcessorElement(model,
                                                                                                              "Try");
-
+        //traverse try block's inner elements
         node.children.forEach(function (child) {
             traverseTree(child, tryBlock, view);
         });
@@ -178,12 +199,33 @@ var traverseTree = function (node, model, view) {
     } else if (node.type === "CatchBlock") {
         var catchBlock = Processors.flowControllers.TryBlockMediator.utils.createMyContainableProcessorElement(model,
                                                                                                                "Catch");
+        var parameters = [
+            {
+                key: "exception",
+                value: getParameterValue(node.parameters, "exception")
+            },
+            {
+                key: "description",
+                value: "Description"
+            }
+        ];
+        model.attributes.parameters = parameters;
 
+        //traverse catch block's inner elements
         node.children.forEach(function (child) {
             traverseTree(child, catchBlock, view);
         });
 
     } else if (node.type === "IfElseMediator") {
+        var parameters = [];
+        var ifElseMediator = Processors.flowControllers.IfElseMediator.utils.createMyModel(model, parameters);
+
+        node.children.forEach(function (child) {
+            traverseTree(child, ifElseMediator, view);
+        });
+
+    } else if (node.type === "IfBlock") {
+        var ifBlock = Processors.flowControllers.IfElseMediator.utils.createMyContainableProcessorElement(model, "If");
         var parameters = [
             {
                 key: "condition",
@@ -194,15 +236,9 @@ var traverseTree = function (node, model, view) {
                 value: "Description"
             }
         ];
-        var ifElseMediator = Processors.flowControllers.IfElseMediator.utils.createMyModel(model, parameters);
+        model.attributes.parameters = parameters;
 
-        node.children.forEach(function (child) {
-            traverseTree(child, ifElseMediator, view);
-        });
-
-    } else if (node.type === "IfBlock") {
-        var ifBlock = Processors.flowControllers.IfElseMediator.utils.createMyContainableProcessorElement(model, "If");
-
+        //traverse if block's inner elements
         node.children.forEach(function (child) {
             traverseTree(child, ifBlock, view);
         });
@@ -210,7 +246,7 @@ var traverseTree = function (node, model, view) {
     } else if (node.type === "ElseBlock") {
         var elseBlock = Processors.flowControllers.IfElseMediator.utils.createMyContainableProcessorElement(model,
                                                                                                             "Else");
-
+        //traverse else block's inner elements
         node.children.forEach(function (child) {
             traverseTree(child, elseBlock, view);
         });
@@ -219,7 +255,14 @@ var traverseTree = function (node, model, view) {
 };
 
 var getEndpoint = function (endpointRef, viewModel) {
-    return viewModel.attributes.diagramEndpointElements.models[0];
+    var endpointModels = viewModel.attributes.diagramEndpointElements.models;
+    var endpointReference;
+    endpointModels.forEach(function (endpoint) {
+        if (endpoint.attributes.title.toLowerCase() === endpointRef.toLowerCase()) {
+            endpointReference = endpoint;
+        }
+    });
+    return endpointReference;
 };
 
 var setCurrentDiagramView = function () {
