@@ -27,6 +27,8 @@ var Processors = (function (processors) {
         icon: "images/tool-icons/invoke.svg",
         colour : "#ffffff",
         type : "Action",
+        editable : true,
+        deletable: true,
         messageLinkType : Diagrams.Utils.messageLinkType.InOut,
         hasOutputConnection : true,
         dragCursorOffset : { left: 30, top: -5 },
