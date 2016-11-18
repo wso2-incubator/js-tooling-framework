@@ -253,6 +253,10 @@ var SequenceD = (function (sequenced) {
                     bottomShape.classed("outer-dashed", true);
                 }
 
+                if (viewObj.model.definition.shape == 'rect') {
+                    this.middleRectActivation(middleRect, this);
+                }
+
                 group.topShape = topShape;
                 group.bottomShape = bottomShape;
                 group.line = line;
@@ -265,26 +269,6 @@ var SequenceD = (function (sequenced) {
                         return "translate(" + [dx, dy] + ")"
                     })
                 };
-
-                var viewObj = this;
-                middleRect.on('mouseover', function () {
-                    //setting current tab view based diagram model
-                    diagram = defaultView.model;
-                    diagram.selectedNode = viewObj.model;
-                    d3.select(this).style("fill", "green").style("fill-opacity", 0.1);
-                    // Update event manager with current active element type for validation
-                    eventManager.isActivated(diagram.selectedNode.attributes.title);
-                }).on('mouseout', function () {
-                    diagram.destinationLifeLine = diagram.selectedNode;
-                    diagram.selectedNode = null;
-                    d3.select(this).style("fill-opacity", 0.01);
-                    // Update event manager with out of focus on active element
-                    eventManager.isActivated("none");
-                }).on('mouseup', function (data) {
-
-                });
-
-                this.middleRectActivation(middleRect, this);
 
                 if (!_.isUndefined(this.model.definition.editable) && !_.isUndefined(this.model.definition.deletable) && this.model.definition.editable && this.model.definition.deletable) {
                     this.addEditableAndDeletable(d3Ref, center, prefs, group, lifeLineTopRectGroup);
