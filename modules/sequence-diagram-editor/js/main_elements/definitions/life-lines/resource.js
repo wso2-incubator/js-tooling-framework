@@ -26,6 +26,8 @@ var MainElements = (function (mainElements) {
         colour : "#ffffff",
         class : "resource",
         shape: 'rect',
+        editable : true,
+        deletable: true,
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {
