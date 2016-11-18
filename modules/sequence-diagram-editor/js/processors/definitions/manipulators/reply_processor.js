@@ -104,8 +104,8 @@ var Processors = (function (processors) {
             },
             getMySubTree: function (model) {
                 var parameters = model.attributes.parameters;
-                var log_configStart = "log(level=\"" + parameters[1].value + "\"," + "status=\"" + parameters[0].value + "\"";
-                return new TreeNode("LogMediator", "LogMediator", log_configStart, ");");
+                var reply_configStart = "reply " + parameters[0].value;
+                return new TreeNode("ReplyMediator", "ReplyMediator", reply_configStart, ";");
             },
             createMyModel: function (model, view) {
                 var position = createPoint(0, 0);
