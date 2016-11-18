@@ -21,7 +21,7 @@ var Tools = (function (tools) {
 
     var toolView = Backbone.View.extend({
 
-        toolTemplate: _.template("<div id=\"<%=id%>\" class=\"tool-container\"> <img src=\"<%=icon%>\" class=\"tool-image\"  /><p class=\"tool-title\"><%=title%></p></div>"),
+        toolTemplate: _.template("<div id=\"<%=id%>\" class=\"tool-container\" data-placement=\"bottom\" data-toggle=\"tooltip\" title='<%=title%>'> <img src=\"<%=icon%>\" class=\"tool-image\"  /><p class=\"tool-title\"><%=title%></p></div>"),
         handleDragStopEvent: function (event, ui) {
 
         },
@@ -58,6 +58,7 @@ var Tools = (function (tools) {
             var dragCursorOffset = this.model.get("dragCursorOffset");
             var self = this;
             this.$el.html(this.toolTemplate(this.model.attributes));
+            this.$el.tooltip();
             parent.append(this.$el);
 
             this.$el.draggable({

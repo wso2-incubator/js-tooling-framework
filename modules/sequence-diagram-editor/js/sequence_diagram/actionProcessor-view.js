@@ -24,7 +24,7 @@
 var SequenceD = (function (sequenced) {
     var views = sequenced.Views = sequenced.Views || {};
 
-    var ActionProcessorView = Diagrams.Views.ShapeView.extend(
+    var ActionProcessorView = SequenceD.Views.Processor.extend(
         /** @lends ActionProcessorView.prototype */
         {
             /**
@@ -34,15 +34,16 @@ var SequenceD = (function (sequenced) {
              * @param {Object} options Rendering options for the view
              */
             initialize: function (options) {
-                Diagrams.Views.ShapeView.prototype.initialize.call(this, options);
+                SequenceD.Views.Processor.prototype.initialize.call(this, options);
             },
 
             render: function (paperID, center, parentModel, prefs) {
-                var viewObj = this.model;
+                var viewObj = this;
                 var height = this.model.getHeight();
                 var width = this.model.getWidth();
                 var d3Ref = this.getD3Ref(paperID);
                 var group = d3Ref.draw.group();
+                var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
                 var title = this.model.get('title');
 
                 var processorTitleRect = d3Ref.draw.rect((center.x() - width/2),
@@ -92,10 +93,10 @@ var SequenceD = (function (sequenced) {
                     .classed("genericT",true);
 
                 //We will add edit and delete buttons if we have set editable and deletable to true in the processor definition.
-                // if(!_.isUndefined(this.model.model.editable) && !_.isUndefined(this.model.model.deletable)
-                //     && this.model.model.editable && this.model.model.deletable) {
-                //     this.addEditableAndDeletable(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj);
-                // }
+                 if(!_.isUndefined(this.model.model.editable) && !_.isUndefined(this.model.model.deletable)
+                     && this.model.model.editable && this.model.model.deletable) {
+                     viewObj.addEditableAndDeletable(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj);
+                 }
 
                 group.rect = processorTitleRect;
                 group.title = mediatorText;
@@ -112,7 +113,7 @@ var SequenceD = (function (sequenced) {
                     outputMessagePoint.x(center.x() + width/2);
                     outputMessagePoint.y(center.y() + height/2);
                 }
-            }
+            },
 
         });
 

@@ -23,6 +23,11 @@ body {
 .editor-scroller {
     cursor: move;
 }
+.source-icon{
+    margin-top: 5px;
+    width: 30px;
+    height: 15px;
+}
 
 .circle-hide {
     display: none;
@@ -126,7 +131,7 @@ a.disabled {
 
 .nav-tabs > li {
     /*color: #7e7e7e;*/
-    background-color: #f8f8f8;
+    background-color: #c4c4c4;
 }
 
 .nav-tabs {
@@ -148,7 +153,7 @@ a.disabled {
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-    background-color: #c4c4c4;
+    background-color: #f8f8f8;
 }
 
 .remove-resource {
@@ -217,9 +222,6 @@ span.tree-action {
     padding-top: 5px;
 }
 
-.source-icon {
-    padding-top: 5px;
-}
 
 .file-browser-container {
     padding: 15px;
