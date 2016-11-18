@@ -1,4 +1,3 @@
-//TODO remove double quotations
 var NELListener = require('../generated-parser/NELListener').NELListener;
 
 var count = 0;
@@ -84,15 +83,13 @@ NELListenerImpl.prototype.constructor = NELListenerImpl;
 
 // Enter a parse tree produced by NELParser#sourceFile.
 NELListenerImpl.prototype.enterSourceFile = function (ctx) {
-    //TODO set source para
+    //TODO set source parameters
     rootNode = new TreeNode("Service", "Service");
 };
 
 // Exit a parse tree produced by NELParser#sourceFile.
 NELListenerImpl.prototype.exitSourceFile = function (ctx) {
     rootNode.setConfigEnd("\n");
-    console.log(JSON.stringify(rootNode));
-    console.log(rootNode);
     generatedTree = JSON.stringify(rootNode);
     return rootNode;
 };
@@ -682,7 +679,6 @@ NELListenerImpl.prototype.enterLocalVariableDeclarationStatement = function (ctx
         type = ctx.classType().getText();
     }
     variableName = ctx.Identifier().getText();
-    //TODO set to property
     property.key = variableName;
     property.name = type;
     currentResource.appendParameter({key: "property", value: property});
@@ -708,7 +704,7 @@ NELListenerImpl.prototype.exitLocalVariableInitializationStatement = function (c
 // Enter a parse tree produced by NELParser#localVariableAssignmentStatement.
 NELListenerImpl.prototype.enterLocalVariableAssignmentStatement = function (ctx) {
     if (ctx.mediatorCall()) {
-   //for cases like response = invoke(...etc), keep "response" parameter
+        //for cases like response = invoke(...etc), keep "response" parameter
         lastMediatorCallVariable = ctx.Identifier().getText();
     }
 };
@@ -747,7 +743,7 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
     var mediatorId = ctx.Identifier().getText();
     // call mediator is specified in the language as "invoke". This is a special case.
     if ("invoke" === mediatorId) {
-     
+
 
         currentMediator = new TreeNode("InvokeMediator", "InvokeMediator", lastMediatorCallVariable
                                                                            + " = invoke(", ");\n");
@@ -758,7 +754,7 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
         currentMediator = new TreeNode("HeaderProcessor", "HeaderProcessor", "setHeader(", ");\n");
 
     } else if ("log" === mediatorId) {
-       
+
         currentMediator = new TreeNode("LogMediator", "LogMediator", "log(", ");\n");
 
     }
@@ -881,12 +877,11 @@ NELListenerImpl.prototype.enterReturnStatement = function (ctx) {
     }
     var replyNode = new TreeNode("ResponseMsg", "ResponseMsg", "reply " + messageId, ";\n");
 
-    //TODO addd
     var currentParent = parentStack.pop();
-    if(currentParent){
+    if (currentParent) {
         currentParent.getChildren().push(replyNode);
         parentStack.push(currentParent);
-    }else{
+    } else {
         currentResource.getChildren().push(replyNode);
     }
 
