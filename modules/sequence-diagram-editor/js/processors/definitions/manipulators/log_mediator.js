@@ -142,6 +142,25 @@ var Processors = (function (processors) {
                 inputParams[1] = model.attributes.parameters[1];
 
                 return inputParams;
+            },
+            createMyModel: function (model, parameters) {
+                var position = new GeoCore.Models.Point({
+                    x: 0,
+                    y: 0
+                });
+                var processor = model.createProcessor(
+                    Processors.manipulators.LogMediator.title,
+                    position,
+                    Processors.manipulators.LogMediator.id,
+                    {
+                        type: Processors.manipulators.LogMediator.type,
+                        initMethod: Processors.manipulators.LogMediator.init
+                    },
+                    {colour: Processors.manipulators.LogMediator.colour},
+                    parameters,
+                    Processors.manipulators.LogMediator.utils
+                );
+                model.addChild(processor);
             }
         }
     };

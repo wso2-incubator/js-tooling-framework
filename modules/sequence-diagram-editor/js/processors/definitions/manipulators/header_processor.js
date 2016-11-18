@@ -105,6 +105,30 @@ var Processors = (function (processors) {
                 inputParams[1] = model.attributes.parameters[1];
 
                 return inputParams;
+            },
+            createMyModel: function (model, parameters) {
+                var position = new GeoCore.Models.Point({
+                    x: 0,
+                    y: 0
+                });
+                var processor = model.createProcessor(
+                    Processors.manipulators.HeaderProcessor.title,
+                    position,
+                    Processors.manipulators.HeaderProcessor.id,
+
+                    {
+                        type: Processors.manipulators.HeaderProcessor.type,
+                        initMethod: Processors.manipulators.HeaderProcessor.init,
+                        editable: Processors.manipulators.HeaderProcessor.editable,
+                        deletable: Processors.manipulators.HeaderProcessor.deletable,
+                        hasOutputConnection : Processors.manipulators.HeaderProcessor.hasOutputConnection,
+                        messageLinkType : Processors.manipulators.HeaderProcessor.messageLinkType
+                    },
+                    {colour: Processors.manipulators.HeaderProcessor.colour},
+                    parameters,
+                    Processors.manipulators.HeaderProcessor.utils
+                );
+                model.addChild(processor);
             }
         }
     };

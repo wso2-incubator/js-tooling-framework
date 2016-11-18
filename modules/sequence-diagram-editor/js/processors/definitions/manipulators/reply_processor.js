@@ -107,6 +107,29 @@ var Processors = (function (processors) {
                 var log_configStart = "log(level=\"" + parameters[1].value + "\"," + "status=\"" + parameters[0].value + "\"";
                 return new TreeNode("LogMediator", "LogMediator", log_configStart, ");");
             },
+            createMyModel: function (model, view) {
+                var position = createPoint(0, 0);
+                var processor = model.createProcessor(
+                    Processors.manipulators.replyProcessor.title,
+                    position,
+                    Processors.manipulators.replyProcessor.id,
+
+                    {
+                        type: Processors.manipulators.replyProcessor.type || "UnitProcessor",
+                        initMethod: Processors.manipulators.replyProcessor.init,
+                        editable: Processors.manipulators.replyProcessor.editable,
+                        deletable: Processors.manipulators.replyProcessor.deletable,
+                        hasOutputConnection : Processors.manipulators.replyProcessor.hasOutputConnection,
+                        messageLinkType : Processors.manipulators.replyProcessor.messageLinkType
+                    },
+                    {colour: Processors.manipulators.replyProcessor.colour},
+                    Processors.manipulators.replyProcessor.parameters,
+                    Processors.manipulators.replyProcessor.utils
+                );
+                Processors.manipulators.replyProcessor.init(view.model, processor);
+                model.addChild(processor);
+                return processor;
+            },
             outputs: false,
             getInputParams: function (model) {
                 var inputParams = [];

@@ -120,6 +120,53 @@ var MainElements = (function (mainElements) {
             },
             canConnectTo: function () {
                 return ['Worker', 'Source', 'ContainableProcessorElement', 'EndPoint'];
+            },
+            createMyModel: function (model, parameters) {
+                //add the resource model
+                var resourceCenterPoint = createPoint(380, 50);
+                var resourceType = "Resource";
+                var resourceLifeLineDef = MainElements.lifelines.ResourceLifeline;
+
+                var resourceLifeline = createLifeLine(resourceType, resourceCenterPoint, resourceLifeLineDef.class,
+                                                      resourceLifeLineDef.utils,
+                                                      parameters, resourceLifeLineDef.textModel,
+                                                      resourceType, resourceLifeLineDef);
+                //TODO set endpoint title
+               // resourceLifeline._set("title", parameters[0].value);
+                var resourceLifeLineOptions = {
+                    class: MainElements.lifelines.ResourceLifeline.class,
+                    diagram: model
+                };
+                // resourceLifeLineOptions.class = MainElements.lifelines.ResourceLifeline.class;
+                // resourceLifeLineOptions.diagram = model;
+                model.addElement(resourceLifeline, resourceLifeLineOptions);
+                
+                //increment resource counter
+                var resourceCount = model.resourceLifeLineCounter();
+                resourceCount++;
+                model.resourceLifeLineCounter(resourceCount);
+                return resourceLifeline;
+            },
+            createMyStartProcessorModel : function (resourceLifeline) {
+                var position = new GeoCore.Models.Point({x: 0, y: 0});
+                var processor = new SequenceD.Models.ProcessorFactory(Processors.actions.startAction.title,
+                    position,
+                    Processors.actions.startAction.type,
+                    {
+                        type: Processors.actions.startAction.type,
+                        initMethod: Processors.actions.startAction.init
+                    },
+                    {
+                        colour: Processors.actions.startAction.colour
+                    },
+                    Processors.actions.startAction.parameters,
+                    Processors.actions.startAction.utils,
+                    Processors.actions.startAction.textModel,
+                    Processors.actions.startAction.width,
+                    Processors.actions.startAction.height);
+
+                resourceLifeline.addChild(processor);
+                return processor;
             }
         }
     };
