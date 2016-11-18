@@ -86,12 +86,12 @@ var traverseTree = function (node, model, view) {
 
     } else if (node.type === "Endpoint") {
         var centerPoint = createPoint(0, 50);
-        var title = "StockEp";
+        var title = getParameterValue(node.parameters, "title");
 
         var parameters = [
             {
                 key: "title",
-                value: getParameterValue(node.parameters, "title")
+                value: title
             },
             {
                 key: "url",
@@ -256,9 +256,9 @@ var traverseTree = function (node, model, view) {
 
 var getEndpoint = function (endpointRef, viewModel) {
     var endpointModels = viewModel.attributes.diagramEndpointElements.models;
-    var endpointReference;
+    var endpointReference = null;
     endpointModels.forEach(function (endpoint) {
-        if (endpoint.attributes.title.toLowerCase() === endpointRef.toLowerCase()) {
+        if ((endpoint.attributes.title.toLowerCase() === endpointRef.toLowerCase() && endpointReference === null)) {
             endpointReference = endpoint;
         }
     });

@@ -8,11 +8,19 @@
     <script>
         function receiveMessage(event) {
             var source = event.data;
-            generateTreeObject(source);
-            event.source.postMessage(
-                    generatedTree,
-                    "http://localhost:63342/wso2-tooling"
-            );
+            try {
+                generateTreeObject(source);
+                event.source.postMessage(
+                        generatedTree,
+                        "http://localhost:63342/wso2-tooling"
+                );
+            } catch (err) {
+                event.source.postMessage(
+                        "ERROR",
+                        "http://localhost:63342/wso2-tooling"
+                );
+            }
+
         }
         window.addEventListener("message", receiveMessage, false);
     </script>
@@ -49,6 +57,8 @@
         var parser = new NELParser.NELParser(tokens);
         var listener = new NELListenerImpl();
         parser.buildParseTrees = true;
+
+        //parse the NEL source using the custom listener
         var tree = parser.sourceFile();
         antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
     }

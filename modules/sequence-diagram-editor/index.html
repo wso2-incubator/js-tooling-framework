@@ -42,8 +42,12 @@
     <script>
 
         function receiveMessage(event) {
-            var treeObj = JSON.parse(event.data);
-            sourceToDesign(treeObj);
+            if (event.data === "ERROR") {
+                console.log("ERROR in index.html");
+            } else {
+                var treeObj = JSON.parse(event.data);
+                sourceToDesign(treeObj);
+            }
         }
         window.addEventListener("message", receiveMessage, false);
     </script>
@@ -443,9 +447,7 @@
 <script src="lib/backbone_v1.3.3/backbone.js"></script>
 <script src="lib/backbone_storage_adapter_v1.1.0/backbone.localStorage.js"></script>
 <script src="lib/d3_v4.1.1/d3.js"></script>
-<!--<script type="text/javascript" src="lib/custom-require_js/custom_require.js"></script>-->
 <script src="lib/requirejs-2.1.11/require.js"></script>
-<!--<script src="lib/custom-require_js/custom_require.js"></script>-->
 <script src="lib/svg-panNZoom/jquery.svg.pan.zoom.js"></script>
 
 <script src="js/logger/logger.js"></script>
