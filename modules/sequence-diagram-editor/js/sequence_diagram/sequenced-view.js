@@ -58,6 +58,128 @@ var SequenceD = (function (sequenced) {
                 }
             },
 
+            addEditableAndDeletable: function(d3Ref, optionsMenuGroup, processorTitleRect, center, height, width, viewObj){
+                var optionMenuWrapper = d3Ref.draw.rect((center.x() + 10 + width/2),
+                    (center.y()),
+                    30,
+                    58,
+                    0,
+                    0,
+                    optionsMenuGroup, "#f8f8f3").
+                attr("style", "stroke: #ede9dc; stroke-width: 1; opacity:0.5; cursor: pointer").
+                on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                }).
+                on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                });
+
+                var deleteOption = d3Ref.draw.rect((center.x() + 13 + width/2),
+                    (center.y() + 3),
+                    24,
+                    24,
+                    0,
+                    0,
+                    optionsMenuGroup, "url(#delIcon)").
+                attr("style", "opacity:0.5; cursor: pointer").
+                on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7");
+                }).
+                on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                });
+
+                var editOption = d3Ref.draw.rect((center.x() + 13 + width/2),
+                    (center.y() + 31),
+                    24,
+                    24,
+                    0,
+                    0,
+                    optionsMenuGroup, "url(#editIcon)").
+                attr("style", "opacity:0.5; cursor: pointer").
+                on("mouseover", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 1; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: .7; cursor: pointer");
+                }).
+                on("mouseout", function () {
+                    d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                    optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
+                });
+
+                // On click of the mediator show/hide the options menu
+                processorTitleRect.on("click", function () {
+                    if (optionsMenuGroup.classed("option-menu-hide")) {
+                        optionsMenuGroup.classed("option-menu-hide", false);
+                        optionsMenuGroup.classed("option-menu-show", true);
+
+                        if (diagram.selectedOptionsGroup && (diagram.selectedOptionsGroup !== optionsMenuGroup)) {
+                            diagram.selectedOptionsGroup.classed("option-menu-hide", true);
+                            diagram.selectedOptionsGroup.classed("option-menu-show", false);
+                        }
+                        if (diagram.propertyWindow) {
+                            diagram.propertyWindow = false;
+                            defaultView.enableDragZoomOptions();
+                            $('#property-pane-svg').empty();
+                        }
+                        diagram.selectedOptionsGroup = optionsMenuGroup;
+
+                    } else {
+                        optionsMenuGroup.classed("option-menu-hide", true);
+                        optionsMenuGroup.classed("option-menu-show", false);
+                        diagram.propertyWindow = false;
+                        defaultView.enableDragZoomOptions();
+                        defaultView.render();
+                    }
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
+
+                // On click of the edit icon will show the properties to to edit
+                editOption.on("click", function () {
+                    if (diagram.propertyWindow) {
+                        diagram.propertyWindow = false;
+                        defaultView.enableDragZoomOptions();
+                        defaultView.render();
+
+                    } else {
+                        var options = {
+                            x: parseFloat(this.getAttribute("x")) + 6,
+                            y: parseFloat(this.getAttribute("y")) + 21
+                        };
+
+                        defaultView.selectedNode = viewObj.model;
+                        defaultView.drawPropertiesPane(d3Ref, options,
+                            viewObj.model.get('utils').getMyParameters(
+                                viewObj.model),
+                            viewObj.model.get('utils').getMyPropertyPaneSchema(
+                                viewObj.model));
+                    }
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                });
+
+                // On click of the delete icon will delete the processor
+                deleteOption.on("click", function () {
+                    // Get the parent of the model and delete it from the parent
+                    var parentModelChildren = viewObj.model.get("parent").get("children").models;
+                    for (var itr = 0; itr < parentModelChildren.length; itr ++) {
+                        if (parentModelChildren[itr].cid === viewObj.model.cid) {
+
+                            parentModelChildren.splice(itr, 1);
+                            defaultView.render();
+                            break;
+                        }
+                    }
+                });
+
+                var getPropertyPaneSchema = function (model) {
+                    return ;
+                };
+
+            },
+
         });
 
     var MessageLink = Diagrams.Views.DiagramElementView.extend(
