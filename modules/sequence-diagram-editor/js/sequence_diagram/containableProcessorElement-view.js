@@ -266,9 +266,18 @@ var SequenceD = (function (sequenced) {
 
                     deleteOption.on("click", function () {
                         //Get the parent of the model and delete it from the parent
-                        var parentModelChildren = viewObj.model.get("parent").get("parent").get("children").models;
+                        var parentModel = viewObj.model.get("parent").get("parent");
+                        var parentModelChildren = parentModel.get("children").models;
                         for (var itr = 0; itr < parentModelChildren.length; itr ++) {
                             if (parentModelChildren[itr].cid === viewObj.model.get("parent").cid) {
+                                //reset parent height
+                                parentModel.setHeight(parentModel.getHeight() - parentModelChildren[itr].getHeight)
+                                var parentElement = parentModel
+                                //Find the Resource and adjust height
+                                while(parentElement.type != "Resource"){
+                                    parentElement = parentElement.get("parent")
+                                }
+                                parentElement.setHeight(parentElement.getHeight - parentModelChildren[itr].getHeight)
                                 parentModelChildren.splice(itr, 1);
                                 defaultView.render();
                                 break;
