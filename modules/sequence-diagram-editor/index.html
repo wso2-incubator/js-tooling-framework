@@ -46,7 +46,7 @@
             if (event.data === "ERROR") {
                 //Show a message, if there is an error occurred while parsing the source
                 $('#parserErrorModal').modal('show');
-            } else {
+            } else {x
                 // Hide source view
                 document.getElementById("sourceViewTab").style.display = "none";
                 //Show design editor area
@@ -241,9 +241,9 @@
         <div class="dropdown file-menu">
             <a class="dropdown-toggle" data-toggle="dropdown">File</a>
             <ul class="dropdown-menu">
-                <li><a onclick="tabListView.addResourceTab()" href="#">new service</a></li>
-                <li><a onclick="onNewClick()" href="#">save to file</a></li>
-                <li><a class="disabled" href="#">open file</a></li>
+                <li><a onclick="tabListView.addResourceTab()" href="#">New Service</a></li>
+                <li><a onclick="onNewClick()" href="#">Save To File</a></li>
+                <li><a class="disabled" href="#">Open File</a></li>
             </ul>
         </div>
         <div class="dropdown">
@@ -382,10 +382,21 @@
                         <div class="row" id="editor-view">
                             <!-- Start: tool-palette -->
                             <div id="tool-palette" class="col-sm-2">
-                                <div class="search-bar">
-                                    <input type="text" class="search-input" placeholder="Search">
-                                    <i class="fw fw-search searchIcon"></i>
+
+                                <div class=" search-bar input-group input-wrap has-form-control-btn">
+                                    <button class="form-control-btn" type="button" title="Search">
+                                        <i class="fw fw-search" aria-hidden="true"></i>
+                                    </button>
+                                    <input type="text" class="form-control search-input" placeholder="Search">
                                 </div>
+
+                                <!--<div class="search-bar">-->
+                                    <!--<input type="text" class="search-input" placeholder="Search">-->
+                                    <!--<button class="form-control-btn" type="button" title="Search">-->
+                                        <!--<i class="fw fw-search" aria-hidden="true"></i>-->
+                                    <!--</button>-->
+                                <!--</div>-->
+
                             </div>
                             <!-- End: tool-palette -->
                             <!-- Start: Editor Container -->
