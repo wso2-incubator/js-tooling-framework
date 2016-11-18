@@ -31,12 +31,14 @@ var traverseTree = function (node, model, view) {
 
         var serviceValues = getParameterValue(node.parameters, "serviceValues");
         var tags = "";
-        serviceValues["tags"].forEach(function (tag, index) {
-            if (index != 0) {
-                tags += ", ";
-            }
-            tags += tag;
-        });
+        if (serviceValues["tags"]) {
+            serviceValues["tags"].forEach(function (tag, index) {
+                if (index != 0) {
+                    tags += ", ";
+                }
+                tags += tag;
+            });
+        }
 
         //set service parameters for the default view
         view.serviceProduces = serviceValues["producer"]["mediaType"];

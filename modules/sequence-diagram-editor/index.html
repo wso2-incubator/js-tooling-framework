@@ -42,15 +42,22 @@
     <script>
 
         function receiveMessage(event) {
+            //Receive the tree object which represents the source content
             if (event.data === "ERROR") {
-                console.log("ERROR in index.html");
+                //Show a message, if there is an error occurred while parsing the source
+                $('#parserErrorModal').modal('show');
             } else {
+                // Hide source view
+                document.getElementById("sourceViewTab").style.display = "none";
+                //Show design editor area
+                document.getElementById("editor-view").style.display = "block";
                 var treeObj = JSON.parse(event.data);
                 sourceToDesign(treeObj);
             }
         }
         window.addEventListener("message", receiveMessage, false);
     </script>
+
     <script type="text/javascript">
         function sendMessage(source) {
             var win = document.getElementById("iframe").contentWindow;
@@ -195,6 +202,23 @@
                 <button type="button" class="btn btn-primary" onclick="saveServiceProperties()">Save</button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- modal for the parser error-->
+<div id="parserErrorModal" tabindex="-1" class="modal fade" role="dialog">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="color:lightgoldenrodyellow">Error!</h4>
+            </div>
+            <div class="modal-body">
+                <p>Cannot parse the given source. Please check your source again!</p>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -721,10 +745,7 @@
         }
         //source already loaded, hence need to load the design view
         else {
-            // Hide source view
-            editorMain.style.display = "none";
-            //show design editor area
-            editorContainer.style.display = "block";
+            //send the current source content for parsing
             var source = $('.ace_content').text();
             sendMessage(source);
         }
