@@ -63,8 +63,8 @@ svg text::selection { background: none; }
 /*//////////////////////////////////////////////////*/
 /** Resource level tabs related styles | Start -> **/
 #tab-container{
-    border-bottom-style: solid;
-    border-bottom-color: #8d8d8d;
+    /*border-bottom-style: solid;*/
+    /*border-bottom-color: #8d8d8d;*/
 }
 .tab-headers{
     background-color: #e4e4e4;
@@ -131,14 +131,16 @@ svg text::selection { background: none; }
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
     border: 1px solid #8d8d8d;
-    background-color: #f8f8f8;
+    background-color: #c4c4c4;
     color: white;
 }
 
 .remove-resource {
     position: absolute;
-    top: 14px;
+    top: 8px;
     right: 9px;
+    font-size: 8px;
+    color: #a8a8a8;
 }
 
 .close-icon {
@@ -214,3 +216,29 @@ ol#breadcrumbList {
 }
 /** Breadcrumbs related styles | -> End**/
 /*//////////////////////////////////////////////////*/
+.settings-icon{
+    padding-top:5px;
+}
+.source-icon{
+    padding-top:5px;
+}
+.file-browser-container
+{
+    padding: 15px;
+    max-height: 450px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+header .brand img.logo {
+    height: 20px;
+    padding: 0px 10px;
+}
+header .brand {
+    padding:5px;
+}
+header .brand h1 {
+    font-size: 15px;
+}
+ol#breadcrumbList {
+    background-color: #444;
+}
