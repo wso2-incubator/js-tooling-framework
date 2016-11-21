@@ -29,9 +29,6 @@ html{
     max-height: 100vh;
 }
 
-.header {
-    padding: 2px 10px 2px 15px;
-}
 
 #main-navbar{
     border-width: 2px 0 2px 0;
@@ -237,11 +234,11 @@ div[class*="col-sm-"] {
 
 /*//////////////////////////////////////////////////*/
 /** Breadcrumbs related styles | Start -> **/
-.breadcrumb{
-    padding-left: 50px;
-    display: inline-block;
-    float: right;
-}
+/*.breadcrumb{*/
+    /*padding-left: 50px;*/
+    /*display: inline-block;*/
+    /*float: right;*/
+/*}*/
 /** Breadcrumbs related styles | -> End **/
 /*//////////////////////////////////////////////////*/
 
