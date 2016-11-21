@@ -252,11 +252,24 @@ var SequenceD = (function (sequenced) {
                     // Get the parent of the model and delete it from the parent
                     var parentModel = viewObj.model.get("parent");
                     var parentModelChildren = parentModel.get("children").models;
+                    //Get diagram highest height
+                    var highestHeight = diagram.highestLifeline.getHeight();
                     for (var itr = 0; itr < parentModelChildren.length; itr ++) {
                         if (parentModelChildren[itr].cid === viewObj.model.cid) {
                             //reset parent height
-                            parentModel.setHeight(parentModel.getHeight() - parentModelChildren[itr].getHeight);
+                            var currentElementHeight = parentModelChildren[itr].getHeight();
+                            parentModel.setHeight(parentModel.getHeight() - currentElementHeight);
+                            var parentElement = parentModel;
+                            //Find the Resource and adjust height
+                            while(!(parentElement instanceof SequenceD.Models.LifeLine)){
+                                parentElement = parentElement.get("parent")
+                            }
+                            // save current life-line height
+                            var lifelineHeight = parentElement.getHeight();
                             parentModelChildren.splice(itr, 1);
+                            if(lifelineHeight + currentElementHeight >= highestHeight){
+                                diagram.highestLifeline.setHeight(highestHeight - currentElementHeight);
+                            }
                             defaultView.render();
                             break;
                         }
