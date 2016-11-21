@@ -20,14 +20,14 @@ define(['d3'], function (d3) {
     var ResourceLifeline = {
         id: "Resource",
         title: "Pipe Line",
-        icon: "images/tool-icons/lifeline.svg",
+        icon: "images/tool-icons/resource.svg",
         class : "resource",
         shape: 'rect',
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/lifeline.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/resource.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "100px");

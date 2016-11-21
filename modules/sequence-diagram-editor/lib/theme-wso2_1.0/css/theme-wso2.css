@@ -1046,14 +1046,14 @@ header .dropdown[aria-expanded=true], header .dropdown:hover {
 .page-content-wrapper.fixed,
 .page-content-wrapper.fixed > div,
 .page-content-wrapper.fixed > .sidebar-wrapper {
-    max-height: $page-content-wrapper-height;
-    overflow-x: hidden;
+  max-height: $page-content-wrapper-height;
+  overflow-x: hidden;
 }
 
 html:not('.ie') .page-content-wrapper.fixed,
 html:not('.ie') .page-content-wrapper.fixed > div,
 html:not('.ie') .page-content-wrapper.fixed > .sidebar-wrapper {
-    overflow-y: auto;
+  overflow-y: auto;
 }
 
 .page-content-wrapper.fixed,
@@ -1223,7 +1223,7 @@ ul.sidebar-messages > li {
 .breadcrumb {
   margin: 0;
   overflow: hidden;
-  text-transform: uppercase;
+  text-transform: capitalize;
   background: #282828;
   color: #ffffff;
   min-height: 25px;
