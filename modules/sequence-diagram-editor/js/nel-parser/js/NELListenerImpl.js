@@ -1,7 +1,5 @@
-//TODO remove double quotations
 var NELListener = require('../generated-parser/NELListener').NELListener;
 
-var count = 0;
 var currentResource;
 var rootNode;
 var source;
@@ -44,9 +42,6 @@ function TreeNode(value, type, cStart, cEnd, parameters) {
         this.configStart += value;
     };
 
-    this.setParameters = function (parameters) {
-        this.parameters = parameters;
-    };
     this.appendParameter = function (parameter) {
         //parameter is an object eg: {key: x, value: y}
         if (this.parameters) {
@@ -55,26 +50,20 @@ function TreeNode(value, type, cStart, cEnd, parameters) {
             this.parameters = [parameter];
         }
     };
-    this.setParameterValue = function (key, value) {
-        this.parameters.forEach(function (parameter, index) {
-            if (parameter[index].key === key) {
-                parameter[index].value = parameter[index].value.append(value);
-            }
-        })
-    };
+
     this.getParameterValue = function (key) {
-        var value;
-        this.parameters.forEach(function (parameter) {
+        for (var i = 0; i < this.parameters.length; i++) {
+            var parameter = this.parameters[i];
             if (parameter.key === key) {
-                value = parameter.value;
+                return parameter.value;
             }
-        });
-        return value;
+        }
     }
 }
 
 NELListenerImpl = function () {
-    NELListener.call(this); // inherit default listener
+    // inherit default listener
+    NELListener.call(this);
     return this;
 };
 
@@ -84,15 +73,13 @@ NELListenerImpl.prototype.constructor = NELListenerImpl;
 
 // Enter a parse tree produced by NELParser#sourceFile.
 NELListenerImpl.prototype.enterSourceFile = function (ctx) {
-    //TODO set source para
+    //TODO set source parameters
     rootNode = new TreeNode("Service", "Service");
 };
 
 // Exit a parse tree produced by NELParser#sourceFile.
 NELListenerImpl.prototype.exitSourceFile = function (ctx) {
     rootNode.setConfigEnd("\n");
-    console.log(JSON.stringify(rootNode));
-    console.log(rootNode);
     generatedTree = JSON.stringify(rootNode);
     return rootNode;
 };
@@ -682,7 +669,6 @@ NELListenerImpl.prototype.enterLocalVariableDeclarationStatement = function (ctx
         type = ctx.classType().getText();
     }
     variableName = ctx.Identifier().getText();
-    //TODO set to property
     property.key = variableName;
     property.name = type;
     currentResource.appendParameter({key: "property", value: property});
@@ -708,7 +694,7 @@ NELListenerImpl.prototype.exitLocalVariableInitializationStatement = function (c
 // Enter a parse tree produced by NELParser#localVariableAssignmentStatement.
 NELListenerImpl.prototype.enterLocalVariableAssignmentStatement = function (ctx) {
     if (ctx.mediatorCall()) {
-   //for cases like response = invoke(...etc), keep "response" parameter
+        //for cases like response = invoke(...etc), keep "response" parameter
         lastMediatorCallVariable = ctx.Identifier().getText();
     }
 };
@@ -747,7 +733,7 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
     var mediatorId = ctx.Identifier().getText();
     // call mediator is specified in the language as "invoke". This is a special case.
     if ("invoke" === mediatorId) {
-     
+
 
         currentMediator = new TreeNode("InvokeMediator", "InvokeMediator", lastMediatorCallVariable
                                                                            + " = invoke(", ");\n");
@@ -758,7 +744,7 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
         currentMediator = new TreeNode("HeaderProcessor", "HeaderProcessor", "setHeader(", ");\n");
 
     } else if ("log" === mediatorId) {
-       
+
         currentMediator = new TreeNode("LogMediator", "LogMediator", "log(", ");\n");
 
     }
@@ -773,7 +759,6 @@ NELListenerImpl.prototype.enterMediatorCall = function (ctx) {
 
 // Exit a parse tree produced by NELParser#mediatorCall.
 NELListenerImpl.prototype.exitMediatorCall = function (ctx) {
-    console.log("exitMediatorCall" + count++);
     if (currentMediator.getValue() === "HeaderProcessor") {
         // "setHeader(messageRef = response, headerName = \"HTTP.StatusCode\", headerValue = 500);"
         currentMediator.appendConfigStart(
@@ -781,7 +766,7 @@ NELListenerImpl.prototype.exitMediatorCall = function (ctx) {
             + currentMediator.getParameterValue("headerName") + ", headerValue = " + currentMediator.getParameterValue(
                 "headerValue"));
     } else if (currentMediator.getValue() === "InvokeMediator") {
-//invoke(messageRef = m, endpointRef = stockEP);"+
+        //invoke(messageRef = m, endpointRef = stockEP);"+
         currentMediator.appendConfigStart(
             "messageRef = " + currentMediator.getParameterValue("messageRef") + ", endpointRef = "
             + currentMediator.getParameterValue("endpointRef"))
@@ -881,12 +866,11 @@ NELListenerImpl.prototype.enterReturnStatement = function (ctx) {
     }
     var replyNode = new TreeNode("ResponseMsg", "ResponseMsg", "reply " + messageId, ";\n");
 
-    //TODO addd
     var currentParent = parentStack.pop();
-    if(currentParent){
+    if (currentParent) {
         currentParent.getChildren().push(replyNode);
         parentStack.push(currentParent);
-    }else{
+    } else {
         currentResource.getChildren().push(replyNode);
     }
 
