@@ -166,7 +166,22 @@ var SequenceD = (function (sequenced) {
                     var parentModelChildren = viewObj.model.get("parent").get("children").models;
                     for (var itr = 0; itr < parentModelChildren.length; itr ++) {
                         if (parentModelChildren[itr].cid === viewObj.model.cid) {
-
+                            if(!_.isUndefined(viewObj.model.inputConnector()) || !_.isUndefined(viewObj.model.outputConnector())) {
+                                var inboundId, messagePoints;
+                                if(!_.isUndefined(viewObj.model.inputConnector())) {
+                                    inboundId = viewObj.model.inputConnector().message().destination().cid;
+                                    messagePoints = defaultView.model.get("diagramSourceElements").models[0].get("children").models;
+                                }
+                                else if (!_.isUndefined(viewObj.model.outputConnector())) {
+                                    inboundId = viewObj.model.outputConnector().message().destination().cid;
+                                    messagePoints = defaultView.model.get("diagramEndpointElements").models[0].get("children").models;
+                                }
+                                for (var i = 0; i < messagePoints.length; i++) {
+                                    if (messagePoints[i].cid === inboundId) {
+                                        messagePoints.splice(i, 1);
+                                    }
+                                }
+                            }
                             parentModelChildren.splice(itr, 1);
                             defaultView.render();
                             break;
