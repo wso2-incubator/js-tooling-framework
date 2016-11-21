@@ -166,7 +166,9 @@ var SequenceD = (function (sequenced) {
                     var parentModelChildren = viewObj.model.get("parent").get("children").models;
                     for (var itr = 0; itr < parentModelChildren.length; itr ++) {
                         if (parentModelChildren[itr].cid === viewObj.model.cid) {
+                            if(!_.isUndefined(viewObj.model.inputConnector())){
 
+                            }
                             parentModelChildren.splice(itr, 1);
                             defaultView.render();
                             break;
