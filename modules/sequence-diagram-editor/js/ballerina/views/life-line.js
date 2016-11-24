@@ -69,7 +69,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
 
                 this.options = lifeLineOptions;
                 this.serviceView = _.get(options, 'serviceView');
-                if(!this.serviceView.isPreviewMode) {
+                if(!this.serviceView.isPreviewMode()) {
 
                     this.dragDropManager = this.serviceView.toolPalette.dragDropManager;
                 }
@@ -290,7 +290,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                     viewObj.serviceView.model.selectedNode = viewObj.model;
                     d3.select(this).style("fill", "green").style("fill-opacity", 0.1);
                     if(!viewObj.serviceView.isPreviewMode()) {
-                        viewObj.dragDropManager.setActivatedDropTarget(viewObj.model);
+                       viewObj.dragDropManager.setActivatedDropTarget(viewObj.model);
                     }
                 }).on('mouseout', function () {
                     viewObj.serviceView.model.destinationLifeLine = viewObj.serviceView.model.selectedNode;
