@@ -131,7 +131,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  */
                 getCurrentResourceIndex: function() {
                     return _.findIndex(this.parentService.model.get("resources").models, this.model);
-                },
+                }
             });
 
         return ResourceView;

@@ -495,7 +495,13 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 containableProcessorElem.type = 'ContainableProcessorElement';
                 processor.containableProcessorElements().add(containableProcessorElem);
             },
-            createDropHandler: function(serviceView){
+
+            /**
+             * The event fired when a tool is dragged and dropped.
+             * @param serviceView The service view to which the tool was dropped.
+             * @returns {dropHandler}
+             */
+            createDropHandler: function (serviceView) {
                 function dropHandler(event, ui) {
                     // Check for invalid drops on endpoints
                     if (true) {
@@ -568,24 +574,11 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
 
                             serviceView.render();
                         } else if (id == "EndPoint") {
-                            // When an endpoint is dropped.
-                            var countOfEndpoints = currentServiceModel.endpointLifeLineCounter();
-                            ++countOfEndpoints;
-                            serviceView.renderMainElement(id, countOfEndpoints, _.get(MainElements, 'lifelines.EndPoint'));
-                            currentServiceModel.endpointLifeLineCounter(countOfEndpoints);
+                            // When a global endpoint is dropped.
+                            serviceView.renderMainElement(id, _.get(MainElements, 'lifelines.EndPoint'));
                         } else if (id == "Resource") {
                             // When a resource is dropped.
-
-                            serviceView.renderMainElement(id, countOfResources,  _.get(MainElements, 'resource'));
-                            var countOfResources = currentServiceModel.resourceCount();
-                            currentServiceModel.resourceCount(countOfResources + 1);
-                        } else if (id == "Source") {
-                            var countOfSources = currentServiceModel.sourceLifeLineCounter();
-                            if (countOfSources === 0) {
-                                ++countOfSources;
-                                serviceView.renderMainElement(id, countOfSources,  _.get(MainElements, 'lifelines.Source'));
-                                currentServiceModel.sourceLifeLineCounter(countOfSources);
-                            }
+                            serviceView.renderMainElement(id, _.get(MainElements, 'resource'));
                         } else if (id == "Worker") {
                             var countOfWorkers = currentServiceModel.workerLifeLineCounter();
                             countOfWorkers += 1;
@@ -698,7 +691,10 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 return mainGroup;
             },
 
-            addInitialElements: function(){
+            /**
+             * Adding the initial model elements when a new diagram.
+             */
+            addInitialElements: function() {
                 // Creating a new source/client lifeline.
                 var sourceLifeLineCenterPoint = utils.createPoint(100, 50);
                 var sourceLifeLineType = "Source";
@@ -764,19 +760,22 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 });
             },
 
-            renderMainElement: function (lifelineName, counter, lifeLineDef) {
-                var numberOfResourceElements = this.model.attributes.diagramResourceElements.length;
-                var numberOfEndpointElements = this.model.attributes.endpoints.length;
-                var numberOfWorkerElements = this.model.attributes.workers.length;
+            /**
+             * Rendering elements(source/client lifeline, resources and global endpoints) when dragged and dropped to
+             * the svg.
+             * @param lifelineName The name of the lifeline.
+             * @param lifeLineDef The lifeline definition.
+             */
+            renderMainElement: function (lifelineName, lifeLineDef) {
                 var centerPoint;
                 var type;
 
                 // All the lifelines are drawn based on the assumption of, first appear the source, then Resource,
-                // Then Workers in order they are adding and at last endpoints in the order they are adding
+                // and then global endpoints in the order they are adding
 
                 // In order to make the logic clear both ENDPOINT and the WORKER checks are enclosed seperately without
                 // Merging both together in to one, for future reference
-                if(lifelineName == "Source") {
+                if (lifelineName == "Source") {
                     centerPoint = utils.createPoint(200, 50);
                     type = "Source";
                 } else if (lifelineName == "Resource") {
@@ -784,40 +783,18 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     type = "Resource";
                 } else if (lifelineName == "EndPoint") {
                     type = "EndPoint";
-                    if (numberOfEndpointElements > 0) {
-                        var lastEpLifeLine = this.model.attributes.endpoints.models[numberOfEndpointElements - 1];
-                        var rightCorner = lastEpLifeLine.get('centerPoint').x() + lastEpLifeLine.get('textModel').get('dynamicRectWidth')/2;
+                    if (_.size(this.model.get("endpoints").models) > 0) {
+                        var lastEpLifeLine = _.last(this.model.get("endpoints").models);
+                        var rightCorner = lastEpLifeLine.get('centerPoint').x() + lastEpLifeLine.get('textModel').get('dynamicRectWidth') / 2;
                         centerPoint = utils.createPoint(rightCorner + 115, 50);
-                    } else if (numberOfWorkerElements > 0) {
-                        var lastWorkerLifeLine = this.model.attributes.workers.models[numberOfWorkerElements - 1];
-                        var rightCorner = lastWorkerLifeLine.get('centerPoint').x() + lastWorkerLifeLine.get('textModel').get('dynamicRectWidth')/2;
-                        centerPoint = utils.createPoint(rightCorner + 115, 50);
-                    } else {
-                        var resourceLifeLine = this.model.attributes.diagramResourceElements.models[numberOfResourceElements - 1];
-                        var rightCorner = resourceLifeLine.get('centerPoint').x() + resourceLifeLine.get('textModel').get('dynamicRectWidth')/2;
-                        centerPoint = utils.createPoint(rightCorner + 115, 50);
-                    }
-                } else if (lifelineName == "Worker") {
-                    type = "Worker";
-                    if (numberOfEndpointElements > 0) {
-                        var firstEpLifeLine = this.model.attributes.endpoints.models[0];
-                        centerPoint = utils.createPoint(firstEpLifeLine.get('centerPoint').x(), 50);
-                        // Shift the existing Endpoints
-                        this.shiftEndpointsRight();
-                    } else if (numberOfWorkerElements > 0) {
-                        var lastWorkerLifeLine = this.model.attributes.workers.models[numberOfWorkerElements - 1];
-                        centerPoint = utils.createPoint(lastWorkerLifeLine.rightLowerCorner().x + 115, 50);
-                        // Shift existing endpoints
-                        this.shiftEndpointsRight();
-                    } else {
-                        var resourceLifeLine = this.model.attributes.diagramResourceElements.models[numberOfResourceElements - 1];
-                        centerPoint = utils.createPoint(resourceLifeLine.rightLowerCorner().x + 115, 50);
                     }
                 }
 
                 var title = lifelineName;
-                if(lifelineName == "EndPoint" || lifelineName == "Worker") {
-                    title += counter;
+                if (lifelineName == "EndPoint") {
+                    title += _.size(this.model.get("endpoints").models) + 1;
+                } else if(lifelineName == "Worker") {
+                    title += _.size(this.model.get("workers").models) + 1;
                 }
                 var lifeline = createLifeLine(title, centerPoint, lifeLineDef.class, lifeLineDef.utils,
                     lifeLineDef.parameters, lifeLineDef.textModel, type, lifeLineDef);
