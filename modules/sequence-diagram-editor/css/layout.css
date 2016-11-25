@@ -72,7 +72,6 @@ div[class*="col-sm-"] {
 
 #right-container{
     height: 100%;
-    margin-left: 20px;
 }
 
 /*//////////////////////////////////////////////////*/
@@ -316,6 +315,14 @@ div[class*="col-sm-"] {
 
 #tab-content-wrapper {
     position: relative;
+}
+
+.left-container-expanded {
+    margin-left: 200px;
+}
+
+.left-container-default {
+    margin-left: 20px;
 }
 /** ace editor (source view) related styles | -> End **/
 /*//////////////////////////////////////////////////*/

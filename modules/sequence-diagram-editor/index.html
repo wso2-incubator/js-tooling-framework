@@ -76,7 +76,7 @@
                 </div>
                 <!-- End: left container -->
                 <!-- Start: right container -->
-                <div id="right-container">
+                <div id="right-container" class="left-container-default">
                     <!-- Start: service tabs wrapper container-->
                     <div class="container-fluid" id="service-tabs-wrapper">
                         <!-- Start: service tabs wrapper row -->
@@ -390,6 +390,8 @@
                 }
 
             },
+            leftContainer: "#left-container",
+            rightContainer: "#right-container",
             services:   {
                 workspace:  {
                     endpoint: "http://localhost:8289/service/workspace"

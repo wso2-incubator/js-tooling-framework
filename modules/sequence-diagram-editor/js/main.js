@@ -57,6 +57,9 @@ define(['require', 'log', 'jquery', 'lodash', 'backbone', 'app/menu-bar/menu-bar
             //init workspace explorer
             var workspaceExplorerOpts = _.get(this.config, "workspace_explorer");
             _.set(workspaceExplorerOpts, 'application', this);
+            _.set(workspaceExplorerOpts, 'tab-controller-options', this.config.tab_controller);
+            _.set(workspaceExplorerOpts, 'left-container', this.config.leftContainer);
+            _.set(workspaceExplorerOpts, 'right-container', this.config.rightContainer);
             this.workspaceExplorer = new Workspace.Explorer(workspaceExplorerOpts);
 
             //init tool palette
