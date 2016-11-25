@@ -60,6 +60,8 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     // options.diagram.grid = options.diagram.grid || {};
                     // options.diagram.grid.height = options.diagram.grid.height || 25;
                     // options.diagram.grid.width = options.diagram.grid.width || 25;
+                    options.canvas = this.parentService.d3el;
+                    DiagramCore.Views.ShapeView.prototype.initialize.call(this, options);
                     this.options = options;
                 },
 
