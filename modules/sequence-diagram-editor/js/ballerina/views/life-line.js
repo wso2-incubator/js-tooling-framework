@@ -61,11 +61,14 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                 lifeLineOptions.text = options.text || {};
                 lifeLineOptions.text.class = options.text.class || "lifeline-title";
 
+                lifeLineOptions.processors = options.processors || {};
+                lifeLineOptions.processors.initYDistance = options.processors .initYDistance || 60;
+                lifeLineOptions.processors.distanceBetweenProcessors = options.processors .distanceBetweenProcessors || 30;
+
+
                 if(!_.has(options, 'serviceView')){
                   throw "config parent is not provided.";
                 }
-
-
 
                 this.options = lifeLineOptions;
                 this.serviceView = _.get(options, 'serviceView');
@@ -132,9 +135,9 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                 // Minimum length for a Lifeline
                 var minimumLength = 250;
                 // Distance from lifeline's center point to first processor.
-                var initDistance = 60;
+                var initDistance = this.options.processors.initYDistance;
                 // Space between two processors
-                var distanceBetweenProcessors = 30;
+                var distanceBetweenProcessors = this.options.processors.distanceBetweenProcessors;
                 var centerPoint = this.modelAttr('centerPoint');
                 var xValue = centerPoint.x();
                 var yValue = centerPoint.y();
@@ -200,7 +203,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
 
                 if (this.serviceView.model.highestLifeline == undefined || maxHeight < this.model.getHeight()) {
                     this.serviceView.model.highestLifeline = this.model;
-                    this.serviceView.render();
+                    //this.serviceView.render();
                     return false;
                 }
                 return this.d3el;
@@ -483,21 +486,21 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                         for (var itr = 0; itr < resourceElements.length; itr++) {
                             if (resourceElements[itr].cid === viewObj.model.cid) {
                                 resourceElements.splice(itr, 1);
-                                var currentResources =  viewObj.serviceView.model.resourceLifeLineCounter();
-                                viewObj.serviceView.model.resourceLifeLineCounter(currentResources - 1);
+                                var currentResources =  viewObj.serviceView.model.resourceCount();
+                                viewObj.serviceView.model.resourceCount(currentResources - 1);
                                 viewObj.serviceView.model.get("diagramResourceElements").length -= 1;
                                 viewObj.serviceView.render();
                                 break;
                             }
                         }
                     } else {
-                        var endpointElements =  viewObj.serviceView.model.get("diagramEndpointElements").models;
+                        var endpointElements =  viewObj.serviceView.model.get("endpoints").models;
                         for (var itr = 0; itr < endpointElements.length; itr++) {
                             if (endpointElements[itr].cid === viewObj.model.cid) {
                                 endpointElements.splice(itr, 1);
                                 var currentEndpoints = viewObj.serviceView.model.endpointLifeLineCounter();
                                 viewObj.serviceView.model.endpointLifeLineCounter(currentEndpoints - 1);
-                                viewObj.serviceView.model.get("diagramEndpointElements").length -= 1;
+                                viewObj.serviceView.model.get("endpoints").length -= 1;
                                 viewObj.serviceView.render();
                                 break;
                             }

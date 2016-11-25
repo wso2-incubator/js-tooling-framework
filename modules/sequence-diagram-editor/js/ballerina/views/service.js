@@ -16,13 +16,13 @@
  * under the License.
  */
 define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
-        './service-outline', 'processors', './life-line',
-        'ballerina_models/containable-processor-element', 'ballerina_models/life-line',  'app/ballerina/models/message-point',
+        './service-outline', 'processors', './life-line', './resource',
+        'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/resource', 'app/ballerina/models/message-point',
         'app/ballerina/models/message-link', 'ballerina_models/service', 'app/ballerina/utils/module',
         'app/ballerina/utils/processor-factory', 'app/layout-manager/layout-manager', 'svg_pan_zoom', 'jquery_ui'],
 
 function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements, DiagramPreview, Processors, LifeLineView,
-          ContainableProcessorElement, LifeLine, MessagePoint, MessageLink, Service, utils, ProcessorFactory, LayoutManager
+          ResourceView, ContainableProcessorElement, LifeLine, Resource, MessagePoint, MessageLink, Service, utils, ProcessorFactory, LayoutManager
 
 ) {
     var createLifeLine = function (title, center, cssClass, utils, parameters, textModel, type, definition) {
@@ -81,9 +81,7 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 this.model.on("messageDrawStart", this.onMessageDrawStart, this);
                 this.model.on("messageDrawEnd", this.onMessageDrawEnd, this);
 
-                          var container = d3.select(this.options.container);
-
-
+                var container = d3.select(this.options.container);
                 if (_.isUndefined(this.options.container)) {
                     log.error("options.container is not defined");
                 }
@@ -498,15 +496,15 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     // Check for invalid drops on endpoints
                     if (true) {
                         var newDraggedElem = $(ui.draggable).clone();
-                        var txt = serviceView.model;
+                        var currentServiceModel = serviceView.model;
                         var id = ui.draggable.context.lastChild.id;
                         var position = new DiagramCore.Models.Point({x: ui.offset.left, y: ui.offset.top});
                         //convert drop position to relative svg coordinates
                         position = serviceView.toViewBoxCoordinates(position);
 
-                        if (Processors.manipulators[id] && txt.selectedNode) {
+                        if (Processors.manipulators[id] && currentServiceModel.selectedNode) {
                             //manipulators are unit processors
-                            var processor = txt.selectedNode.createProcessor(
+                            var processor = currentServiceModel.selectedNode.createProcessor(
                                 Processors.manipulators[id].title,
                                 position,
                                 Processors.manipulators[id].id,
@@ -528,13 +526,13 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                             );
 
                             if(typeof Processors.manipulators[id].init !== "undefined") {
-                                Processors.manipulators[id].init(txt, processor);
+                                Processors.manipulators[id].init(currentServiceModel, processor);
                             }
-                            txt.selectedNode.addChild(processor);
+                            currentServiceModel.selectedNode.addChild(processor);
 
                             serviceView.render();
-                        } else if (Processors.flowControllers[id] && txt.selectedNode) {
-                            var processor = txt.selectedNode.createProcessor(
+                        } else if (Processors.flowControllers[id] && currentServiceModel.selectedNode) {
+                            var processor = currentServiceModel.selectedNode.createProcessor(
                                 Processors.flowControllers[id].title,
                                 position,
                                 Processors.flowControllers[id].id,
@@ -564,36 +562,34 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                                 });
                             }
 
-                            txt.selectedNode.addChild(processor);
+                            currentServiceModel.selectedNode.addChild(processor);
 
                             serviceView.render();
                         } else if (id == "EndPoint") {
-                            var countOfEndpoints = txt.endpointLifeLineCounter();
+                            // When an endpoint is dropped.
+                            var countOfEndpoints = currentServiceModel.endpointLifeLineCounter();
                             ++countOfEndpoints;
                             serviceView.renderMainElement(id, countOfEndpoints, _.get(MainElements, 'lifelines.EndPoint'));
-                            txt.endpointLifeLineCounter(countOfEndpoints);
+                            currentServiceModel.endpointLifeLineCounter(countOfEndpoints);
                         } else if (id == "Resource") {
-                            var countOfResources = txt.resourceLifeLineCounter();
-                            //if no resource elements added to this tab view, as only one resource element is allowed in a tab
-                            if (countOfResources === 0) {
-                                ++countOfResources;
-                                serviceView.renderMainElement(id, countOfResources,  _.get(MainElements, 'lifelines.Resource'));
-                                txt.resourceLifeLineCounter(countOfResources);
-                            }
+                            // When a resource is dropped.
 
+                            serviceView.renderMainElement(id, countOfResources,  _.get(MainElements, 'resource'));
+                            var countOfResources = currentServiceModel.resourceCount();
+                            currentServiceModel.resourceCount(countOfResources + 1);
                         } else if (id == "Source") {
-                            var countOfSources = txt.sourceLifeLineCounter();
+                            var countOfSources = currentServiceModel.sourceLifeLineCounter();
                             if (countOfSources === 0) {
                                 ++countOfSources;
                                 serviceView.renderMainElement(id, countOfSources,  _.get(MainElements, 'lifelines.Source'));
-                                txt.sourceLifeLineCounter(countOfSources);
+                                currentServiceModel.sourceLifeLineCounter(countOfSources);
                             }
                         } else if (id == "Worker") {
-                            var countOfWorkers = txt.workerLifeLineCounter();
+                            var countOfWorkers = currentServiceModel.workerLifeLineCounter();
                             countOfWorkers += 1;
                             serviceView.renderMainElement(id, countOfWorkers,  _.get(MainElements, 'lifelines.Worker'),
                                 {utils: MainElements.lifelines.get('Worker').utils});
-                            txt.workerLifeLineCounter(countOfWorkers);
+                            currentServiceModel.workerLifeLineCounter(countOfWorkers);
                             this.render();
                         }
                     } //for invalid check
@@ -613,6 +609,7 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     this.model.on("renderDiagram", this.renderDiagram);
                 }
 
+                // Drawing the main svg <g> tag(group). This element will contain all the elements.
                 var mainGroup = this.d3svg.draw.group(this.d3svg).attr("id", this.options.diagram.wrapperId)
                     .attr("width", "100%")
                     .attr("height", "100%");
@@ -628,36 +625,48 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 });
 
                 var lifeLineViews = [];
+                var resourcePaths = [];
 
-                for (var id in this.model.attributes.diagramSourceElements.models) {
-                    if (this.model.attributes.diagramSourceElements.models[id] instanceof LifeLine) {
-                        var lifeLine = this.model.attributes.diagramSourceElements.models[id];
-                        var lifelineOpts = {
-                            model: lifeLine,
+                // Creating source/client lifeline view. There will only be one model.
+                if (_.size(this.model.get("source").models) == 1) {
+                    var sourceLifeLine = this.model.get("source").models[0];
+                    var sourceLifeLineOptions = {
+                        model: sourceLifeLine,
+                        serviceView: this,
+                        class:  _.get(MainElements, 'lifelines.Source.class')
+                    };
+                    var sourceLifeLineView = new LifeLineView(sourceLifeLineOptions);
+                    lifeLineViews.push(sourceLifeLineView);
+                } else {
+                    log.error("A service must have a single source/client lifeline. Source models:" + this.model.get("source").models);
+                }
+
+                // Creating views for resources paths.
+                for (var resourcePathID in this.model.get("resources").models) {
+                    if (this.model.get("resources").models[resourcePathID] instanceof Resource) {
+                        var resourcePath = this.model.get("resources").models[resourcePathID];
+                        var resourcePathOptions = {
+                            model: resourcePath,
                             serviceView: this,
-                            class:  _.get(MainElements, 'lifelines.Source.class')
+                            class:  _.get(MainElements, 'resources.class')
                         };
-                        var lifeLineView = new LifeLineView(lifelineOpts);
-                        lifeLineViews.push(lifeLineView);
+
+                        var resourceWrapper = mainGroup.append("g");
+                        if (_.size(this.model.get("resources")) == 0) {
+                            // Drawing the first resource according to source/client lifeline.
+                            //resourceWrapper.attr("transform", "translate(80,25)");
+                        } else {
+                            // Drawing the resource according to the previous resource.
+                        }
+                        var resourceView = new ResourceView(resourcePathOptions, resourceWrapper, this);
+                        resourcePaths.push(resourceView);
                     }
                 }
 
-                for (var id in this.model.attributes.diagramResourceElements.models) {
-                    if (this.model.attributes.diagramResourceElements.models[id] instanceof LifeLine) {
-                        var lifeLine = this.model.attributes.diagramResourceElements.models[id];
-                        var lifelineOpts = {
-                            model: lifeLine,
-                            serviceView: this,
-                            class:  _.get(MainElements, 'lifelines.Resource.class')
-                        };
-                        var lifeLineView = new LifeLineView(lifelineOpts);
-                        lifeLineViews.push(lifeLineView);
-                    }
-                }
-
-                for (var id in this.model.attributes.diagramEndpointElements.models) {
-                    if (this.model.attributes.diagramEndpointElements.models[id] instanceof LifeLine) {
-                        var lifeLine = this.model.attributes.diagramEndpointElements.models[id];
+                // Creating views for global endpoints.
+                for (var id in this.model.get("endpoints").models) {
+                    if (this.model.get("endpoints").models[id] instanceof LifeLine) {
+                        var lifeLine = this.model.get("endpoints").models[id];
                         var lifelineOpts = {
                             model: lifeLine,
                             serviceView: this,
@@ -667,32 +676,41 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                         lifeLineViews.push(lifeLineView);
                     }
                 }
+                // if (!_.isUndefined(this.model.attributes.workers)) {
+                //     for (var id in this.model.attributes.workers.models) {
+                //         if (this.model.attributes.workers.models[id] instanceof LifeLine) {
+                //             lifeLine = this.model.attributes.workers.models[id];
+                //             var lifelineOpts = {
+                //                 model: lifeLine,
+                //                 serviceView: this,
+                //                 class:  _.get(MainElements, 'lifelines.Worker.class')
+                //             };
+                //             var lifeLineView = new LifeLineView(lifelineOpts);
+                //             lifeLineViews.push(lifeLineView);
+                //         }
+                //     }
+                // }
 
-                if (!_.isUndefined(this.model.attributes.diagramWorkerElements)) {
-                    for (var id in this.model.attributes.diagramWorkerElements.models) {
-                        if (this.model.attributes.diagramWorkerElements.models[id] instanceof LifeLine) {
-                            lifeLine = this.model.attributes.diagramWorkerElements.models[id];
-                            var lifelineOpts = {
-                                model: lifeLine,
-                                serviceView: this,
-                                class:  _.get(MainElements, 'lifelines.Worker.class')
-                            };
-                            var lifeLineView = new LifeLineView(lifelineOpts);
-                            lifeLineViews.push(lifeLineView);
-                        }
-                    }
-                }
-
+                // Rendering source/client, global endpoint lifelines.
                 lifeLineViews.forEach(function(lifeLineView){
+                    // Rendering the lifeline.
                     lifeLineView.render();
-                });
-
-                lifeLineViews.forEach(function(lifeLineView){
+                    // Rendering the processors of the lifeline.
                     lifeLineView.renderProcessors();
+                    // Rendering the messages of the lifeline.
+                    lifeLineView.renderMessages();
                 });
 
-                lifeLineViews.forEach(function(lifeLineView){
-                    lifeLineView.renderMessages();
+                // Rendering resource paths.
+                resourcePaths.forEach(function(resourcePathView){
+                    // Rendering the resource.
+                    resourcePathView.render();
+                    // Rendering the default worker of the resource.
+                    resourcePathView.renderDefaultWorker();
+                    // Rendering the workers of the resource.
+                    resourcePathView.renderWorkers();
+                    // Rendering the local endpoints of the resource.
+                    resourcePathView.renderLocalEndpoints();
                 });
 
                 this.trigger("renderCompleted", this.d3svg.node());
@@ -700,27 +718,30 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
             },
 
             addInitialElements: function(){
+                // Creating a new source/client lifeline.
+                var sourceLifeLineCenterPoint = utils.createPoint(100, 50);
+                var sourceLifeLineType = "Source";
+                var sourceLifeLineDef = _.get(MainElements, 'lifelines.Source');
 
-                var centerPoint = utils.createPoint(100, 50);
-                var type = "Source";
-                var lifeLineDef = _.get(MainElements, 'lifelines.Source');
+                var sourceLifeline = utils.createLifeLine("Source", sourceLifeLineCenterPoint, sourceLifeLineDef.class, sourceLifeLineDef.utils,
+                    sourceLifeLineDef.parameters, sourceLifeLineDef.textModel, sourceLifeLineType, sourceLifeLineDef);
 
-                var resourceCenterPoint = utils.createPoint(380, 50);
-                var resourceType = "Resource";
-                var resourceLifeLineDef =_.get(MainElements, 'lifelines.Resource');
+                // Adding source/client lifeline to this service view.
+                this.model.addElement(sourceLifeline, {class: MainElements.lifelines.Source.class });
 
-                var resourceLifeline = createLifeLine("Resource", resourceCenterPoint, resourceLifeLineDef.class, resourceLifeLineDef.utils,
-                    resourceLifeLineDef.parameters, resourceLifeLineDef.textModel, resourceType, resourceLifeLineDef);
+                // Creating a new resource.
+                var resource = new Resource();
 
-                this.model.addElement(resourceLifeline, {class: MainElements.lifelines.Resource.class });
-                this.model.resourceLifeLineCounter(1);
+                // Creating default worker
+                var defaultWorkerLifeLineCenterPoint = utils.createPoint(100, 50);
+                var defaultWorkerLifeLineType = "DefaultWorker";
+                var defaultWorkerLifeLineDef = _.get(MainElements, 'lifelines.DefaultWorker');
 
-                var lifeline = createLifeLine("Source", centerPoint, lifeLineDef.class, lifeLineDef.utils,
-                    lifeLineDef.parameters, lifeLineDef.textModel, type, lifeLineDef);
-                this.model.addElement(lifeline, {class: MainElements.lifelines.Source.class });
-                this.model.sourceLifeLineCounter(1);
+                var defaultWorkerLifeLine = utils.createLifeLine("DefaultWorker", defaultWorkerLifeLineCenterPoint, defaultWorkerLifeLineDef.class, defaultWorkerLifeLineDef.utils,
+                    defaultWorkerLifeLineDef.parameters, defaultWorkerLifeLineDef.textModel, defaultWorkerLifeLineType, defaultWorkerLifeLineDef);
 
-                var position =  utils.createPoint(0,0);
+                // Creating 'Start' action
+                var position = utils.createPoint(0, 0);
                 var processor = new ProcessorFactory(Processors.actions.StartAction.title,
                     position,
                     Processors.actions.StartAction.type,
@@ -737,18 +758,25 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     Processors.actions.StartAction.width,
                     Processors.actions.StartAction.height);
 
-                resourceLifeline.addChild(processor);
+                // Setting 'start' action to the default worker lifeline.
+                defaultWorkerLifeLine.addChild(processor);
 
-                this.addInitArrow(lifeline,resourceLifeline);
+                // Adding the default worker lifeline in to the resource.
+                resource.addElement(defaultWorkerLifeLine);
 
+                // Adding the resource to the current service model.
+                this.model.addElement(resource);
+
+                // Creating the arrow from source/client lifeline to the default worker.
+                this.addInitArrow(sourceLifeline, defaultWorkerLifeLine);
             },
 
             shiftEndpointsRight: function () {
                 var txt = this.model;
-                var numberOfEndpointElements = txt.attributes.diagramEndpointElements.length;
+                var numberOfEndpointElements = txt.attributes.endpoints.length;
 
                 var halfWidth = 0;
-                txt.attributes.diagramEndpointElements.models.forEach(function (endpoint) {
+                txt.attributes.endpoints.models.forEach(function (endpoint) {
                     halfWidth = endpoint.rightLowerCorner().x - endpoint.get('centerPoint').x();
                     endpoint.setX(endpoint.get('centerPoint').x() + halfWidth + 115);
                     endpoint.rightLowerCorner().x = endpoint.rightLowerCorner().x + halfWidth + 115;
@@ -757,8 +785,8 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
 
             renderMainElement: function (lifelineName, counter, lifeLineDef) {
                 var numberOfResourceElements = this.model.attributes.diagramResourceElements.length;
-                var numberOfEndpointElements = this.model.attributes.diagramEndpointElements.length;
-                var numberOfWorkerElements = this.model.attributes.diagramWorkerElements.length;
+                var numberOfEndpointElements = this.model.attributes.endpoints.length;
+                var numberOfWorkerElements = this.model.attributes.workers.length;
                 var centerPoint;
                 var type;
 
@@ -776,11 +804,11 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 } else if (lifelineName == "EndPoint") {
                     type = "EndPoint";
                     if (numberOfEndpointElements > 0) {
-                        var lastEpLifeLine = this.model.attributes.diagramEndpointElements.models[numberOfEndpointElements - 1];
+                        var lastEpLifeLine = this.model.attributes.endpoints.models[numberOfEndpointElements - 1];
                         var rightCorner = lastEpLifeLine.get('centerPoint').x() + lastEpLifeLine.get('textModel').get('dynamicRectWidth')/2;
                         centerPoint = utils.createPoint(rightCorner + 115, 50);
                     } else if (numberOfWorkerElements > 0) {
-                        var lastWorkerLifeLine = this.model.attributes.diagramWorkerElements.models[numberOfWorkerElements - 1];
+                        var lastWorkerLifeLine = this.model.attributes.workers.models[numberOfWorkerElements - 1];
                         var rightCorner = lastWorkerLifeLine.get('centerPoint').x() + lastWorkerLifeLine.get('textModel').get('dynamicRectWidth')/2;
                         centerPoint = utils.createPoint(rightCorner + 115, 50);
                     } else {
@@ -791,12 +819,12 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 } else if (lifelineName == "Worker") {
                     type = "Worker";
                     if (numberOfEndpointElements > 0) {
-                        var firstEpLifeLine = this.model.attributes.diagramEndpointElements.models[0];
+                        var firstEpLifeLine = this.model.attributes.endpoints.models[0];
                         centerPoint = utils.createPoint(firstEpLifeLine.get('centerPoint').x(), 50);
                         // Shift the existing Endpoints
                         this.shiftEndpointsRight();
                     } else if (numberOfWorkerElements > 0) {
-                        var lastWorkerLifeLine = this.model.attributes.diagramWorkerElements.models[numberOfWorkerElements - 1];
+                        var lastWorkerLifeLine = this.model.attributes.workers.models[numberOfWorkerElements - 1];
                         centerPoint = utils.createPoint(lastWorkerLifeLine.rightLowerCorner().x + 115, 50);
                         // Shift existing endpoints
                         this.shiftEndpointsRight();
@@ -912,7 +940,7 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 });
             },
 
-            addInitArrow:function(source,destination){
+            addInitArrow:function(source, destination){
                 var centerS = utils.createPoint(200, 125);
                 var centerR = utils.createPoint(315, 125);
                 var sourcePoint = new MessagePoint({

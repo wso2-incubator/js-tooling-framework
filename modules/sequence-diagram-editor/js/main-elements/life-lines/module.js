@@ -15,13 +15,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['./end-point', './resource', './source', './worker'], function (EndPoint, Resource, Source, Worker) {
+define(['./end-point', './default-worker', './source', './worker'], function (EndPoint, DefaultWorker, Source, Worker) {
 
     var lifelines = {};
 
     lifelines[EndPoint.id] = EndPoint;
-    lifelines[Resource.id] = Resource;
+    lifelines[DefaultWorker.id] = DefaultWorker;
     lifelines[Source.id] = Source;
+    lifelines[Worker.id] = Worker;
 
     return lifelines;
 });

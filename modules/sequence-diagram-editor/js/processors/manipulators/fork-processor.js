@@ -254,21 +254,21 @@ define(['d3', 'tree_node'], function (d3, TreeNode) {
                     //        for (var itr = 0; itr < resourceElements.length; itr ++) {
                     //            if (resourceElements[itr].cid === view.model.cid) {
                     //                resourceElements.splice(itr, 1);
-                    //                var currentResources = defaultView.model.resourceLifeLineCounter();
-                    //                defaultView.model.resourceLifeLineCounter(currentResources - 1);
+                    //                var currentResources = defaultView.model.resourceCount();
+                    //                defaultView.model.resourceCount(currentResources - 1);
                     //                defaultView.model.get("diagramResourceElements").length -= 1;
                     //                defaultView.render();
                     //                break;
                     //            }
                     //        }
                     //    } else {
-                    //        var endpointElements = defaultView.model.get("diagramEndpointElements").models;
+                    //        var endpointElements = defaultView.model.get("endpoints").models;
                     //        for (var itr = 0; itr < endpointElements.length; itr ++) {
                     //            if (endpointElements[itr].cid === view.model.cid) {
                     //                endpointElements.splice(itr, 1);
                     //                var currentEndpoints = defaultView.model.endpointLifeLineCounter();
                     //                defaultView.model.endpointLifeLineCounter(currentEndpoints - 1);
-                    //                defaultView.model.get("diagramEndpointElements").length -= 1;
+                    //                defaultView.model.get("endpoints").length -= 1;
                     //                defaultView.render();
                     //                break;
                     //            }

@@ -15,28 +15,133 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['require', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
-        './service-outline', 'processors', './life-line',
-        'ballerina_models/containable-processor-element', 'ballerina_models/life-line',  'ballerina_models/message-point',
-        'ballerina_models/message-link', 'svg_pan_zoom'],
+define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
+        './service-preview', 'processors', './life-line',
+        'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/message-point',
+        'ballerina_models/message-link', 'app/ballerina/utils/module', 'app/ballerina/utils/processor-factory', 'svg_pan_zoom'],
 
-function (require, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements, DiagramPreview, Processors, LifeLineView,
-          ContainableProcessorElement, LifeLine, MessagePoint, MessageLink
-) {
+    function (require, log, $, d3, D3Utils, Backbone, _, DiagramCore, MainElements, DiagramPreview, Processors, LifeLineView,
+              ContainableProcessorElement, LifeLine, MessagePoint, MessageLink, utils, ProcessorFactory, svgPanZoom) {
 
-    var ResourceView = Backbone.View.extend(
-    /** @lends ResourceView.prototype */
-    {
         /**
-         * @augments Backbone.View
-         * @constructs
-         * @class ResourceView Represents the view for a resource in a ballerina service
-         * @param {Object} options Rendering options for the view
+         * Following diagrams are allows in a resource:
+         * - Default Worker - Mandatory
+         *
          */
-        initialize: function (options) {
-        }
-    });
+        var ResourceView = Backbone.View.extend(
+            /** @lends ResourceView.prototype */
+            {
+                /**
+                 * @augments Backbone.View
+                 * @constructs
+                 * @class ResourceView Represents the view for a resource in a ballerina service
+                 * @param {Object} options Rendering options for the view.
+                 * @param d3Group The svg group of the resource.
+                 * @param service The service model. i.e the parent of this resource.
+                 */
+                initialize: function (options, d3Group, service) {
+                    this.resourceWrapper = d3Group;
+                    this.parentService = service;
 
-    return ResourceView;
-});
+                    // Setting
+                    options.diagram =  {};
+                    options.diagram.defaultWorker = options.diagram.defaultWorker || {};
+                    options.diagram.defaultWorker.centerPoint = options.diagram.defaultWorker.centerPoint || {};
+                    options.diagram.defaultWorker.centerPoint.x = options.diagram.defaultWorker.centerPoint.x || 270;
+                    options.diagram.defaultWorker.centerPoint.y = options.diagram.defaultWorker.centerPoint.y || 180;
+                    // options.diagram.width = options.diagram.width || "100%";
+                    // options.diagram.padding =  options.diagram.padding || 50;
+                    // options.diagram.viewBoxWidth =  options.diagram.viewBoxWidth || 1000;
+                    // options.diagram.viewBoxHeight =  options.diagram.viewBoxHeight || 1000;
+                    //
+                    // options.diagram.class = options.diagram.class || "diagram";
+                    // options.diagram.selector = options.diagram.selector || ".diagram";
+                    // options.diagram.wrapper = options.diagram.wrapper || {};
+                    // // CHANGED
+                    // options.diagram.wrapperId = options.wrapperId || "diagramWrapper";
+                    // options.diagram.grid = options.diagram.grid || {};
+                    // options.diagram.grid.height = options.diagram.grid.height || 25;
+                    // options.diagram.grid.width = options.diagram.grid.width || 25;
+                    this.options = options;
+                },
+
+                /**
+                 * Rendering resources.
+                 */
+                render: function () {
+                    // Setting border to
+                    this.resourceWrapper.attr("id", "resourceWrapper");
+
+                    this.resourceWrapper = D3Utils.decorate(this.resourceWrapper);
+
+                    // If this is the first resource of the service, then draw the resource with hard coded positions. Else use the position of the previous resource.
+                    if (this.getCurrentResourceIndex() == 0) {
+                        this.resourceHeaderWrapper = this.resourceWrapper.draw.basicRect(75, 110, 400, 25, 0, 0, this.resourceWrapper);
+                        this.resourceHeaderWrapper.attr("stroke", "black");
+
+                        this.resourceBodyWrapper = this.resourceWrapper.draw.basicRect(75, 110 + 25, 400, 175, 0, 0, this.resourceWrapper);
+                        this.resourceBodyWrapper.attr("stroke", "black");
+                    } else {
+
+                    }
+                    this.toolPalette = this.parentService.toolPalette;
+                    this.d3el = this.resourceWrapper;
+                },
+
+                /**
+                 * Rendering the default worker belonging to the current resource model.
+                 */
+                renderDefaultWorker: function () {
+                    var defaultWorker = this.model.get("defaultWorker");
+                    var defaultWorkerCenterPoint = utils.createPoint(this.options.diagram.defaultWorker.centerPoint.x, this.options.diagram.defaultWorker.centerPoint.y);
+                    defaultWorker.set("centerPoint", defaultWorkerCenterPoint);
+                    var defaultWorkerOption = {
+                        model: defaultWorker,
+                        serviceView: this,
+                        class: _.get(MainElements, 'lifelines.DefaultWorker.class')
+                    };
+                    var defaultWorkerView = new LifeLineView(defaultWorkerOption);
+                    defaultWorkerView.render();
+                    defaultWorkerView.renderProcessors();
+                    defaultWorkerView.renderMessages();
+                },
+
+                /**
+                 * Rendering the workers belonging to the current resource model.
+                 */
+                renderWorkers: function () {
+                    var workers = this.model.get("workers");
+                    // TODO : iterate the workers and create the lifelines.
+                },
+
+                /**
+                 * Rendering local endpoints belonging to the current resource model.
+                 */
+                renderLocalEndpoints: function () {
+                    // Drawing local endpoints.
+                    var localEndpoints = this.model.get("endpoints");
+                    if (_.size(localEndpoints) > 0) {
+                        for (var localEndpoint in localEndpoints) {
+                            var localEndpointOptions = {
+                                model: localEndpoint,
+                                serviceView: this,
+                                class: _.get(MainElements, 'lifelines.Endpoint.class')
+                            };
+                            var localEndpointView = new LifeLineView(localEndpointOptions);
+                            localEndpointView.render();
+                        }
+                    }
+                },
+
+                /**
+                 * Gets the current index of the resource of the parent service.
+                 * @returns {*} The index.
+                 */
+                getCurrentResourceIndex: function() {
+                    return _.findIndex(this.parentService.model.get("resources").models, this.model);
+                }
+            });
+
+        return ResourceView;
+    });
 
