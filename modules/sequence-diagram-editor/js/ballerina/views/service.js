@@ -19,10 +19,10 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
         './service-outline', 'processors', './life-line',
         'ballerina_models/containable-processor-element', 'ballerina_models/life-line',  'app/ballerina/models/message-point',
         'app/ballerina/models/message-link', 'ballerina_models/service', 'app/ballerina/utils/module',
-        'app/ballerina/utils/processor-factory', 'svg_pan_zoom', 'jquery_ui'],
+        'app/ballerina/utils/processor-factory', 'app/layout-manager/layout-manager', 'svg_pan_zoom', 'jquery_ui'],
 
 function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements, DiagramPreview, Processors, LifeLineView,
-          ContainableProcessorElement, LifeLine, MessagePoint, MessageLink, Service, utils, ProcessorFactory
+          ContainableProcessorElement, LifeLine, MessagePoint, MessageLink, Service, utils, ProcessorFactory, LayoutManager
 
 ) {
     var createLifeLine = function (title, center, cssClass, utils, parameters, textModel, type, definition) {

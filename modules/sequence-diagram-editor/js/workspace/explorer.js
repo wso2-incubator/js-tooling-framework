@@ -16,9 +16,9 @@
  * under the License.
  */
 
-define(['log', 'jquery', 'backbone', 'lodash', 'tree_view', /** void module - jquery plugin **/ 'js_tree', 'nano_scroller'],
+define(['log', 'jquery', 'backbone', 'lodash', 'tree_view', 'app/layout-manager/layout-manager', /** void module - jquery plugin **/ 'js_tree', 'nano_scroller'],
 
-    function (log, $, Backbone, _, TreeMod) {
+    function (log, $, Backbone, _, TreeMod, LayoutManager) {
 
     var WorkspaceExplorer = Backbone.View.extend({
 
@@ -45,6 +45,11 @@ define(['log', 'jquery', 'backbone', 'lodash', 'tree_view', /** void module - jq
             this._options = config;
             this.workspaceServiceURL = _.get(this._options, 'application.config.services.workspace.endpoint');
             this._isActive = false;
+            var layoutManager = new LayoutManager(this._options);
+
+            // Register the commands and the handlers
+            this.application.commandManager.registerCommand("expand-file-explorer", {key: ""});
+            layoutManager.registerFileExplorerExpandAndShrinkHandler("expand-file-explorer");
         },
 
         render: function () {
@@ -61,13 +66,18 @@ define(['log', 'jquery', 'backbone', 'lodash', 'tree_view', /** void module - jq
             verticalSeparator.addClass(_.get(this._options, 'cssClass.separator'));
             sliderContainer.append(verticalSeparator);
 
+            var app = this.application;
+            var opts = this._options;
+
             activateBtn.on('click', function(){
                 if(self._isActive){
                     self._$parent_el.parent().width('20px');
                     self._isActive = false;
+                    app.commandManager.dispatch('expand-file-explorer', opts, false);
                 } else {
                     self._$parent_el.parent().width('200px');
                     self._isActive = true;
+                    app.commandManager.dispatch('expand-file-explorer', opts, true);
                 }
             });
 
