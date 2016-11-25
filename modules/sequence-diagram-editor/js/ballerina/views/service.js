@@ -655,14 +655,14 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                             class:  _.get(MainElements, 'resources.class')
                         };
 
-                        var resourceWrapper = mainGroup.append("g");
-                        if (_.size(this.model.get("resources")) == 0) {
-                            // Drawing the first resource according to source/client lifeline.
-                            //resourceWrapper.attr("transform", "translate(80,25)");
-                        } else {
-                            // Drawing the resource according to the previous resource.
-                        }
-                        var resourceView = new ResourceView(resourcePathOptions, resourceWrapper, this);
+                        // var resourceWrapper = mainGroup.append("g");
+                        // if (_.size(this.model.get("resources")) == 0) {
+                        //     // Drawing the first resource according to source/client lifeline.
+                        //     //resourceWrapper.attr("transform", "translate(80,25)");
+                        // } else {
+                        //     // Drawing the resource according to the previous resource.
+                        // }
+                        var resourceView = new ResourceView(resourcePathOptions, this);
                         resourcePaths.push(resourceView);
                     }
                 }

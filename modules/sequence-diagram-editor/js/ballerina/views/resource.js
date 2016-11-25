@@ -16,19 +16,18 @@
  * under the License.
  */
 define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
-        './service-preview', 'processors', './life-line',
+        './service-outline', 'processors', './life-line',
         'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/message-point',
-        'ballerina_models/message-link', 'app/ballerina/utils/module', 'app/ballerina/utils/processor-factory', 'svg_pan_zoom'],
+        'ballerina_models/message-link', 'app/ballerina/utils/module', 'app/ballerina/utils/processor-factory',
+        'svg_pan_zoom'],
 
-    function (require, log, $, d3, D3Utils, Backbone, _, DiagramCore, MainElements, DiagramPreview, Processors, LifeLineView,
-              ContainableProcessorElement, LifeLine, MessagePoint, MessageLink, utils, ProcessorFactory, svgPanZoom) {
+    function (require, log, $, d3, D3Utils, Backbone, _, DiagramCore, MainElements,
+              DiagramPreview, Processors, LifeLineView,
+              ContainableProcessorElement, LifeLine, MessagePoint,
+              MessageLink, utils, ProcessorFactory,
+              svgPanZoom) {
 
-        /**
-         * Following diagrams are allows in a resource:
-         * - Default Worker - Mandatory
-         *
-         */
-        var ResourceView = Backbone.View.extend(
+        var ResourceView = DiagramCore.Views.ShapeView.extend(
             /** @lends ResourceView.prototype */
             {
                 /**
@@ -39,9 +38,8 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  * @param d3Group The svg group of the resource.
                  * @param service The service model. i.e the parent of this resource.
                  */
-                initialize: function (options, d3Group, service) {
-                    this.resourceWrapper = d3Group;
-                    this.parentService = service;
+                initialize: function (options) {
+                    this.parentService = options.serviceView;
 
                     // Setting
                     options.diagram =  {};
@@ -69,6 +67,9 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  * Rendering resources.
                  */
                 render: function () {
+                    // Creating svg group for the resource
+                    this.resourceWrapper = this.getD3Ref().draw.group(this.getD3Ref());
+
                     // Setting border to
                     this.resourceWrapper.attr("id", "resourceWrapper");
 
@@ -97,7 +98,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     defaultWorker.set("centerPoint", defaultWorkerCenterPoint);
                     var defaultWorkerOption = {
                         model: defaultWorker,
-                        serviceView: this,
+                        serviceView: this.parentService,
                         class: _.get(MainElements, 'lifelines.DefaultWorker.class')
                     };
                     var defaultWorkerView = new LifeLineView(defaultWorkerOption);
@@ -124,7 +125,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                         for (var localEndpoint in localEndpoints) {
                             var localEndpointOptions = {
                                 model: localEndpoint,
-                                serviceView: this,
+                                serviceView: this.parentService,
                                 class: _.get(MainElements, 'lifelines.Endpoint.class')
                             };
                             var localEndpointView = new LifeLineView(localEndpointOptions);
@@ -139,7 +140,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  */
                 getCurrentResourceIndex: function() {
                     return _.findIndex(this.parentService.model.get("resources").models, this.model);
-                }
+                },
             });
 
         return ResourceView;
