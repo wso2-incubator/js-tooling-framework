@@ -22,18 +22,18 @@ define(['d3', 'tree_node', 'app/ballerina/utils/module', 'app/ballerina/models/m
     var ReplyProcessor = {
         id: "replyProcessor",
         title: "Reply",
-        icon: "images/tool-icons/log.svg",
+        icon: "images/tool-icons/left-arrow.svg",
         colour : "#ffffff",
         type : "Action",
         editable : true,
         deletable: true,
-        dragCursorOffset : { left: 24, top: -5 },
+        dragCursorOffset : { left: 28, top: -5 },
         width: 130,
         height: 30,
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/log_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml("images/tool-icons/left-arrow.svg").mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "48px").attr("height", "108px");
