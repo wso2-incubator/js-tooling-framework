@@ -41,27 +41,16 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                 initialize: function (options) {
                     this.parentService = options.serviceView;
 
-                    // Setting
+                    // Creating options for drawing if they doesn't exists.
                     options.diagram =  {};
                     options.diagram.defaultWorker = options.diagram.defaultWorker || {};
                     options.diagram.defaultWorker.centerPoint = options.diagram.defaultWorker.centerPoint || {};
                     options.diagram.defaultWorker.centerPoint.x = options.diagram.defaultWorker.centerPoint.x || 270;
                     options.diagram.defaultWorker.centerPoint.y = options.diagram.defaultWorker.centerPoint.y || 180;
-                    // options.diagram.width = options.diagram.width || "100%";
-                    // options.diagram.padding =  options.diagram.padding || 50;
-                    // options.diagram.viewBoxWidth =  options.diagram.viewBoxWidth || 1000;
-                    // options.diagram.viewBoxHeight =  options.diagram.viewBoxHeight || 1000;
-                    //
-                    // options.diagram.class = options.diagram.class || "diagram";
-                    // options.diagram.selector = options.diagram.selector || ".diagram";
-                    // options.diagram.wrapper = options.diagram.wrapper || {};
-                    // // CHANGED
-                    // options.diagram.wrapperId = options.wrapperId || "diagramWrapper";
-                    // options.diagram.grid = options.diagram.grid || {};
-                    // options.diagram.grid.height = options.diagram.grid.height || 25;
-                    // options.diagram.grid.width = options.diagram.grid.width || 25;
                     options.canvas = this.parentService.d3el;
+
                     DiagramCore.Views.ShapeView.prototype.initialize.call(this, options);
+
                     this.options = options;
                 },
 

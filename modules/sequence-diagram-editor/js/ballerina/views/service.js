@@ -646,23 +646,16 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 }
 
                 // Creating views for resources paths.
-                for (var resourcePathID in this.model.get("resources").models) {
-                    if (this.model.get("resources").models[resourcePathID] instanceof Resource) {
-                        var resourcePath = this.model.get("resources").models[resourcePathID];
-                        var resourcePathOptions = {
-                            model: resourcePath,
+                for (var resourceID in this.model.get("resources").models) {
+                    if (this.model.get("resources").models[resourceID] instanceof Resource) {
+                        var resource = this.model.get("resources").models[resourceID];
+                        var resourceOptions = {
+                            model: resource,
                             serviceView: this,
                             class:  _.get(MainElements, 'resources.class')
                         };
 
-                        // var resourceWrapper = mainGroup.append("g");
-                        // if (_.size(this.model.get("resources")) == 0) {
-                        //     // Drawing the first resource according to source/client lifeline.
-                        //     //resourceWrapper.attr("transform", "translate(80,25)");
-                        // } else {
-                        //     // Drawing the resource according to the previous resource.
-                        // }
-                        var resourceView = new ResourceView(resourcePathOptions, this);
+                        var resourceView = new ResourceView(resourceOptions, this);
                         resourcePaths.push(resourceView);
                     }
                 }
@@ -680,20 +673,6 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                         lifeLineViews.push(lifeLineView);
                     }
                 }
-                // if (!_.isUndefined(this.model.attributes.workers)) {
-                //     for (var id in this.model.attributes.workers.models) {
-                //         if (this.model.attributes.workers.models[id] instanceof LifeLine) {
-                //             lifeLine = this.model.attributes.workers.models[id];
-                //             var lifelineOpts = {
-                //                 model: lifeLine,
-                //                 serviceView: this,
-                //                 class:  _.get(MainElements, 'lifelines.Worker.class')
-                //             };
-                //             var lifeLineView = new LifeLineView(lifelineOpts);
-                //             lifeLineViews.push(lifeLineView);
-                //         }
-                //     }
-                // }
 
                 // Rendering source/client, global endpoint lifelines.
                 lifeLineViews.forEach(function(lifeLineView){
