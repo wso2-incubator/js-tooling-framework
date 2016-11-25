@@ -125,6 +125,9 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
             });
 
+            var optionMenuStartX = (center.x() + 13 + width/2);
+            var optionMenuStartY =  (center.y() + 31);
+
             var deleteOption = d3Ref.draw.rect((center.x() + 13 + width/2),
                 (center.y() + 3),
                 24,
@@ -141,6 +144,13 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                 optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
             });
+           var deleteIcon =  optionsMenuGroup.append("svg:image")
+                .attr("xlink:href", "images/delete.svg")
+                .attr("x",optionMenuStartX + 5)
+                .attr("y", optionMenuStartY -23)
+                .attr("width", 15)
+                .attr("height", 15);
+
 
             var editOption = d3Ref.draw.rect((center.x() + 13 + width/2),
                 (center.y() + 31),
@@ -158,6 +168,15 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                 optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
             });
+
+
+            optionsMenuGroup.append("svg:image")
+                .attr("xlink:href", "images/edit.svg")
+                .attr("x",optionMenuStartX + 5)
+                .attr("y", optionMenuStartY + 4)
+                .attr("width", 15)
+                .attr("height", 15);
+
 
             // On click of the mediator show/hide the options menu
             processorTitleRect.on("click", function () {
@@ -211,8 +230,14 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
             });
-
+             deleteIcon.on("click", function() {
+               deleteElement();
+             });
             deleteOption.on("click", function () {
+               deleteElement();
+            });
+
+            function deleteElement(){
                 // Get the parent of the model and delete it from the parent
                 var parentModel = viewObj.model.get("parent");
                 var parentModelChildren = parentModel.get("children").models;
@@ -262,8 +287,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                         break;
                     }
                 }
-            });
-
+            }
             var getPropertyPaneSchema = function (model) {
                 return ;
             };
