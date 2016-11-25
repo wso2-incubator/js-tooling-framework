@@ -525,8 +525,7 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                                 Processors.manipulators[id].utils,
                                 undefined,
                                 Processors.manipulators[id].width,
-                                Processors.manipulators[id].height,
-                                txt
+                                Processors.manipulators[id].height
                             );
 
                             if(typeof Processors.manipulators[id].init !== "undefined") {
@@ -549,8 +548,7 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                                 Processors.flowControllers[id].utils,
                                 undefined,
                                 undefined,
-                                undefined,
-                                txt
+                                undefined
                             );
                             if (Processors.flowControllers[id].type == "ComplexProcessor") {
                                 (Processors.flowControllers[id].containableElements).forEach(function (elm) {
