@@ -17,12 +17,16 @@
  */
 define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
         './service-outline', 'processors', './life-line', './resource',
-        'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/resource', 'app/ballerina/models/message-point',
-        'app/ballerina/models/message-link', 'ballerina_models/service', 'app/ballerina/utils/module',
-        'app/ballerina/utils/processor-factory', 'app/layout-manager/layout-manager', 'svg_pan_zoom', 'jquery_ui'],
+        'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/resource',
+        'app/ballerina/models/message-point', 'app/ballerina/models/message-link', 'ballerina_models/service',
+        'app/ballerina/utils/module', 'app/ballerina/utils/processor-factory', 'app/layout-manager/layout-manager',
+        'svg_pan_zoom', 'jquery_ui'],
 
-function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements, DiagramPreview, Processors, LifeLineView,
-          ResourceView, ContainableProcessorElement, LifeLine, Resource, MessagePoint, MessageLink, Service, utils, ProcessorFactory, LayoutManager
+function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
+          DiagramPreview, Processors, LifeLineView, ResourceView,
+          ContainableProcessorElement, LifeLine, Resource,
+          MessagePoint, MessageLink, Service,
+          utils, ProcessorFactory, LayoutManager
 
 ) {
     var createLifeLine = function (title, center, cssClass, utils, parameters, textModel, type, definition) {
