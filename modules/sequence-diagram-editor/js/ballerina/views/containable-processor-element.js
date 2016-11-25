@@ -191,6 +191,13 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                             d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                             optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                         });
+                    var deleteIcon  = optionsMenuGroup.append("svg:image")
+                        .attr("xlink:href", "images/delete.svg")
+                        .attr("x",optionMenuStartX + 15)
+                        .attr("y", optionMenuStartY + 7)
+                        .attr("width", 15)
+                        .attr("height", 15);
+
 
                     var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
                         optionMenuStartY + 32,
@@ -208,6 +215,13 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                             d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                             optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                         });
+
+                    optionsMenuGroup.append("svg:image")
+                        .attr("xlink:href", "images/edit.svg")
+                        .attr("x",optionMenuStartX + 15)
+                        .attr("y", optionMenuStartY + 35)
+                        .attr("width", 15)
+                        .attr("height", 15);
 
                     // On click of the mediator show/hide the delete icon
                     rect.containerRect.on("click", function () {
@@ -258,37 +272,43 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                                 viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
                         }
                     });
-
+                    deleteIcon.on("click", function (){
+                       deleteElement();
+                    });
                     deleteOption.on("click", function () {
-                    //Get the parent of the model and delete it from the parent
-                    var parentModel = viewObj.model.get("parent").get("parent");
-                    var parentModelChildren = parentModel.get("children").models;
-                    //Get diagram highest height
-                    var highestHeight = viewObj.model.get("parent").get("serviceView").highestLifeline.get("height");
-                    for (var itr = 0; itr < parentModelChildren.length; itr ++) {
-                        if (parentModelChildren[itr].cid === viewObj.model.get("parent").cid) {
-                        //reset parent height
-                            var currentElementHeight = parentModelChildren[itr].getHeight();
-                            parentModel.setHeight(parentModel.getHeight() - currentElementHeight);
-                            var parentElement = parentModel;
-                            //todo chnage this to get first lifeline type parent instead of Resource
-                            while(!(parentElement.get("type") === "Resource")){
-                                parentElement = parentElement.get("parent")
+                        deleteElement();
+
+                    });
+                    function deleteElement(){
+                        //Get the parent of the model and delete it from the parent
+                        var parentModel = viewObj.model.get("parent").get("parent");
+                        var parentModelChildren = parentModel.get("children").models;
+                        //Get diagram highest height
+                        var highestHeight = viewObj.model.get("parent").get("serviceView").highestLifeline.get("height");
+                        for (var itr = 0; itr < parentModelChildren.length; itr ++) {
+                            if (parentModelChildren[itr].cid === viewObj.model.get("parent").cid) {
+                                //reset parent height
+                                var currentElementHeight = parentModelChildren[itr].getHeight();
+                                parentModel.setHeight(parentModel.getHeight() - currentElementHeight);
+                                var parentElement = parentModel;
+                                //todo chnage this to get first lifeline type parent instead of Resource
+                                while(!(parentElement.get("type") === "Resource")){
+                                    parentElement = parentElement.get("parent")
+                                }
+                                // save current life-line height
+                                var lifelineHeight = parentElement.getHeight();
+                                parentModelChildren.splice(itr, 1);
+                                // adjust life-line height
+                                parentElement.setHeight(lifelineHeight - currentElementHeight);
+                                // if the current life-line is the tallest life-line we adjust it's height
+                                if(lifelineHeight + currentElementHeight >= highestHeight){
+                                    viewObj.model.get("parent").get("serviceView").highestLifeline.setHeight(highestHeight - currentElementHeight);
+                                }
+                                viewObj.serviceView.render();
+                                break;
                             }
-                            // save current life-line height
-                            var lifelineHeight = parentElement.getHeight();
-                            parentModelChildren.splice(itr, 1);
-                            // adjust life-line height
-                            parentElement.setHeight(lifelineHeight - currentElementHeight);
-                            // if the current life-line is the tallest life-line we adjust it's height
-                            if(lifelineHeight + currentElementHeight >= highestHeight){
-                                viewObj.model.get("parent").get("serviceView").highestLifeline.setHeight(highestHeight - currentElementHeight);
-                            }
-                            viewObj.serviceView.render();
-                            break;
                         }
                     }
-                 });
                 }
 
                 return group;

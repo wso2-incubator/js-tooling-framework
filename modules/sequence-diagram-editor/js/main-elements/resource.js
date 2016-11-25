@@ -17,9 +17,9 @@
  */
 define(['d3'], function (d3) {
 
-    var ResourceLifeline = {
+    var Resource = {
         id: "Resource",
-        title: "Pipe Line",
+        title: "Resource",
         icon: "images/tool-icons/lifeline.svg",
         class : "resource",
         shape: 'rect',
@@ -137,9 +137,9 @@ define(['d3'], function (d3) {
                 model.addElement(resourceLifeline, resourceLifeLineOptions);
 
                 //increment resource counter
-                var resourceCount = model.resourceLifeLineCounter();
+                var resourceCount = model.resourceCount();
                 resourceCount++;
-                model.resourceLifeLineCounter(resourceCount);
+                model.resourceCount(resourceCount);
                 return resourceLifeline;
             },
             createMyStartProcessorModel : function (resourceLifeline) {
@@ -166,5 +166,5 @@ define(['d3'], function (d3) {
         }
     };
 
-    return ResourceLifeline;
+    return Resource;
 });
