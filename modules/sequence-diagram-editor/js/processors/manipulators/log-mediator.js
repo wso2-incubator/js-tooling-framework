@@ -21,7 +21,7 @@ define(['d3', 'tree_node'], function (d3, TreeNode) {
     var LogMediator = {
         id: "LogMediator",
         title: "Logger",
-        icon: "images/tool-icons/dgm-logger.svg",
+        icon: GlobalConfigs.getContextAwarePath("images/tool-icons/dgm-logger.svg"),
         colour : "#ffffff",
         type : "UnitProcessor",
         width: 130,
@@ -30,7 +30,7 @@ define(['d3', 'tree_node'], function (d3, TreeNode) {
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/dgm-logger.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml(GlobalConfigs.getContextAwarePath("images/tool-icons/dgm-logger.svg")).mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "48px").attr("height", "108px");
