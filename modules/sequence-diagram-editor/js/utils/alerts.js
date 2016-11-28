@@ -64,7 +64,7 @@ define(['log', 'jquery', 'lodash', 'backbone'], function (log, $, _, Backbone) {
 
         alertInfo: function(message){
             var alertArea = this._alertArea;
-            alertArea.text(msg);
+            alertArea.text(message);
             alertArea.removeClass(this._config.class.error);
             alertArea.removeClass(this._config.class.warning);
             alertArea.addClass(this._config.class.info);
@@ -73,7 +73,7 @@ define(['log', 'jquery', 'lodash', 'backbone'], function (log, $, _, Backbone) {
 
         alertError: function(message){
             var alertArea = this._alertArea;
-            alertArea.text(msg);
+            alertArea.text(message);
             alertArea.removeClass(this._config.class.info);
             alertArea.removeClass(this._config.class.warning);
             alertArea.addClass(this._config.class.error);
@@ -82,7 +82,7 @@ define(['log', 'jquery', 'lodash', 'backbone'], function (log, $, _, Backbone) {
 
         alertWarning: function(message){
             var alertArea = this._alertArea;
-            alertArea.text(msg);
+            alertArea.text(message);
             alertArea.removeClass(this._config.class.error);
             alertArea.removeClass(this._config.class.info);
             alertArea.addClass(this._config.class.warning);

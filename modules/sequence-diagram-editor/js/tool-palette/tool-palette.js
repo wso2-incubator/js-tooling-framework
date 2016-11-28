@@ -16,9 +16,9 @@
  * under the License.
  */
 define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-group',
-        'main_elements', 'processors', './drag-drop-manager'],
+        'main_elements', 'processors', './drag-drop-manager','alerts'],
     function (require, log, $, Backbone, ToolGroupView, ToolGroup,
-              MainElements, Processors, DragDropManager) {
+              MainElements, Processors, DragDropManager,AlertManager) {
 
     var ToolPalette = Backbone.View.extend({
         initialize: function (options) {
@@ -96,8 +96,10 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
                     groupView.render(self.$el);
                     self.$el.addClass('non-user-selectable');
                 });
+            // For search
             var toolGroupList = this._toolGroups;
             var toolView = this;
+            var opts = this._options.application.config.alerts;
 
             //when search input field is empty render entire tool palette
             $("#search-field").unbind('keyup').bind('keyup', function (e) {
@@ -150,8 +152,10 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
                         toolView._toolGroups.push(sampleGroup1);
                         toolView.render();
                     }
-                    if(!foundMain && !foundMediator){
+                    if(_.isUndefined(foundMain) && _.isUndefined(foundMediator)){
                       log.warn("No matching tool was found for keyword: "+ keyword);
+                      var alert = new AlertManager(opts);
+                        alert.alertWarning("No matching tool found");
                     }
                 }
 
