@@ -16,8 +16,8 @@
  * under the License.
  */
 define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
-    'app/ballerina/models/children', 'app/ballerina/models/processor', 'app/ballerina/utils/processor-factory'],
-    function (require, $, d3, Backbone, _, DiagramCore, Children, Processor, ProcessorFactory) {
+    'app/ballerina/models/children', 'app/ballerina/models/processor', 'app/ballerina/models/resource', 'app/ballerina/utils/processor-factory'],
+    function (require, $, d3, Backbone, _, DiagramCore, Children, Processor, Resource, ProcessorFactory) {
 
     var LifeLine = DiagramCore.Models.Shape.extend(
         /** @lends LifeLine.prototype */
@@ -32,6 +32,8 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
 
                 var children = new Children([], {diagram: this});
                 this.children(children);
+                var resources = new Children([], {diagram: this});
+                this.resources(resources);
                 this.type = attrs.type;
                 this.definition = attrs.definition;
 
@@ -125,6 +127,8 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                     var position = this.calculateIndex(element, element.y());
                     var index = position.index;
                     this.children().add(element, {at: index});
+                } else if (element instanceof Resource) {
+                    this.resources().add(element);
                 }
             },
 
@@ -159,6 +163,14 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                     return this.get('children');
                 } else {
                     this.set('children', children);
+                }
+            },
+
+            resources: function (resources) {
+                if (_.isUndefined(resources)) {
+                    return this.get('resources');
+                } else {
+                    this.set('resources', resources);
                 }
             },
 

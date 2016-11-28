@@ -620,7 +620,6 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 });
 
                 var lifeLineViews = [];
-                var resourcePaths = [];
 
                 // Creating source/client lifeline view. There will only be one model.
                 if (_.size(this.model.get("source").models) == 1) {
@@ -634,21 +633,6 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     lifeLineViews.push(sourceLifeLineView);
                 } else {
                     log.error("A service must have a single source/client lifeline. Source models:" + this.model.get("source").models);
-                }
-
-                // Creating views for resources paths.
-                for (var resourceID in this.model.get("resources").models) {
-                    if (this.model.get("resources").models[resourceID] instanceof Resource) {
-                        var resource = this.model.get("resources").models[resourceID];
-                        var resourceOptions = {
-                            model: resource,
-                            serviceView: this,
-                            class:  _.get(MainElements, 'resources.class')
-                        };
-
-                        var resourceView = new ResourceView(resourceOptions, this);
-                        resourcePaths.push(resourceView);
-                    }
                 }
 
                 // Creating views for global endpoints.
@@ -673,18 +657,12 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     lifeLineView.renderProcessors();
                     // Rendering the messages of the lifeline.
                     lifeLineView.renderMessages();
-                });
 
-                // Rendering resource paths.
-                resourcePaths.forEach(function(resourcePathView){
-                    // Rendering the resource.
-                    resourcePathView.render();
-                    // Rendering the default worker of the resource.
-                    resourcePathView.renderDefaultWorker();
-                    // Rendering the workers of the resource.
-                    resourcePathView.renderWorkers();
-                    // Rendering the local endpoints of the resource.
-                    resourcePathView.renderLocalEndpoints();
+                    // Since Resources are the children of Source lifeline
+                    if (lifeLineView.model.type === 'Source') {
+                        //Rendering the Resources
+                        lifeLineView.renderResources();
+                    }
                 });
 
                 this.trigger("renderCompleted", this.d3svg.node());
@@ -717,6 +695,8 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     sourceLifeLineCenterPoint.y() + 60);
 
                 resource.set('centerPoint', resourceInitialCenterPoint);
+
+                sourceLifeline.addChild(resource);
 
                 // Creating default worker
                 var defaultWorkerLifeLineCenterPoint = utils.createPoint(100, 50);
