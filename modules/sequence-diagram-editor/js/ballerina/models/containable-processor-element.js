@@ -124,6 +124,10 @@ define(['require', 'diagram_core', './children', 'app/ballerina/utils/processor-
                 this.get('centerPoint').set('x', x);
             },
 
+            getX: function () {
+                this.get('centerPoint').get('x');
+            },
+
             getWidth: function () {
                 return this.get('width');
             },

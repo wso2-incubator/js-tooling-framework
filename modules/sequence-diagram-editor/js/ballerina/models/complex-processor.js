@@ -48,6 +48,26 @@ define(['diagram_core', './processor'], function (DiagramCore, Processor) {
             } else {
                 this.set('containableProcessorElements', containableProcessorElements);
             }
+        },
+
+        setY: function (y) {
+            this.get('centerPoint').set('y', y);
+        },
+
+        setX: function (x) {
+            this.get('centerPoint').set('x', x);
+        },
+
+        getX: function () {
+            this.get('centerPoint').get('x');
+        },
+
+        getWidth: function () {
+            return this.get('width');
+        },
+
+        setWidth: function (width) {
+            this.set('width', width);
         }
 
     });
