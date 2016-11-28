@@ -622,18 +622,14 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 var lifeLineViews = [];
 
                 // Creating source/client lifeline view. There will only be one model.
-                if (_.size(this.model.get("source").models) == 1) {
-                    var sourceLifeLine = this.model.get("source").models[0];
-                    var sourceLifeLineOptions = {
-                        model: sourceLifeLine,
-                        serviceView: this,
-                        class:  _.get(MainElements, 'lifelines.Source.class')
-                    };
-                    var sourceLifeLineView = new LifeLineView(sourceLifeLineOptions);
-                    lifeLineViews.push(sourceLifeLineView);
-                } else {
-                    log.error("A service must have a single source/client lifeline. Source models:" + this.model.get("source").models);
-                }
+                var sourceLifeLine = this.model.get("source");
+                var sourceLifeLineOptions = {
+                    model: sourceLifeLine,
+                    serviceView: this,
+                    class: _.get(MainElements, 'lifelines.Source.class')
+                };
+                var sourceLifeLineView = new LifeLineView(sourceLifeLineOptions);
+                lifeLineViews.push(sourceLifeLineView);
 
                 // Creating views for global endpoints.
                 for (var id in this.model.get("endpoints").models) {
@@ -732,9 +728,6 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
 
                 // Adding the resource to the current service model.
                 this.model.addElement(resource);
-
-                // Creating the arrow from source/client lifeline to the default worker.
-                this.addInitArrow(sourceLifeline, defaultWorkerLifeLine);
             },
 
             shiftEndpointsRight: function () {
@@ -885,37 +878,8 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                     });
                     serviceView.model.trigger("messageDrawEnd", sourceModel, sourcePoint, destinationPoint);
                 });
-            },
-
-            addInitArrow:function(source, destination){
-                var centerS = utils.createPoint(200, 125);
-                var centerR = utils.createPoint(315, 125);
-                var sourcePoint = new MessagePoint({
-                    model: {type: "messagePoint"},
-                    x: centerS.x(),
-                    y: centerS.y(),
-                    direction: "outbound"
-                });
-                var destinationPoint = new MessagePoint({
-                    model: {type: "messagePoint"},
-                    x: centerR.x(),
-                    y: centerR.y(),
-                    direction: "inbound"
-                });
-                var messageLink = new MessageLink({
-                    source: sourcePoint,
-                    destination: destinationPoint,
-                    priority: destinationPoint,
-                    // type one is out only
-                    type : 1
-                });
-                var messageOptionsInbound = {'class': 'messagePoint', 'direction': 'inbound'};
-                var messageOptionsOutbound = {'class': 'messagePoint', 'direction': 'outbound'};
-                source.addChild(sourcePoint, messageOptionsOutbound);
-                destination.inputConnector(destinationPoint);
             }
         });
 
     return ServiceView;
 });
-
