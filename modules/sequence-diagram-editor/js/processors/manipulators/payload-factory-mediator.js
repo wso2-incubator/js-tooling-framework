@@ -15,20 +15,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['d3', 'tree_node'], function (d3, TreeNode) {
+define(['d3', 'tree_node', 'resource_utils'], function (d3, TreeNode, ResourceConfigs) {
 
     //Payload Factory mediator definition
     var PayloadFactoryMediator = {
         id: "PayLoadFactoryMediator",
         title: "Data Mapper",
-        icon: "images/tool-icons/datamapper.svg",
+        icon: ResourceConfigs.getContextAwarePath("images/tool-icons/datamapper.svg"),
         colour : "#27ae60",
         type : "UnitProcessor",
         dragCursorOffset : { left: 50, top: -5 },
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/datamapper_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml(ResourceConfigs.getContextAwarePath("images/tool-icons/datamapper_drag.svg")).mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "140px");

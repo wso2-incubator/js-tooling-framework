@@ -15,13 +15,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['d3', 'tree_node'], function (d3, TreeNode) {
+define(['d3', 'tree_node', 'resource_utils'], function (d3, TreeNode, ResourceConfigs) {
 
     //Define manipulator mediators
     var InvokeMediator = {
         id: "InvokeMediator",
         title: "Invoke",
-        icon: "images/tool-icons/invoke.svg",
+        icon: ResourceConfigs.getContextAwarePath("images/tool-icons/invoke.svg"),
         colour : "#ffffff",
         type : "Action",
         editable : true,
@@ -35,7 +35,7 @@ define(['d3', 'tree_node'], function (d3, TreeNode) {
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/invoke.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml(ResourceConfigs.getContextAwarePath("images/tool-icons/invoke.svg")).mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "42px");

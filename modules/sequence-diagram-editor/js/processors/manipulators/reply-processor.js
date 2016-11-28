@@ -16,13 +16,13 @@
  * under the License.
  */
 
-define(['d3', 'tree_node', 'app/ballerina/utils/module', 'app/ballerina/models/message-point', 'app/ballerina/models/message-link'],
-    function (d3, TreeNode, utils, MessagePoint, MessageLink) {
+define(['d3', 'tree_node', 'app/ballerina/utils/module', 'app/ballerina/models/message-point', 'app/ballerina/models/message-link', 'resource_utils'],
+    function (d3, TreeNode, utils, MessagePoint, MessageLink, ResourceConfigs) {
 
     var ReplyProcessor = {
         id: "replyProcessor",
         title: "Reply",
-        icon: "images/tool-icons/log.svg",
+        icon: ResourceConfigs.getContextAwarePath("images/tool-icons/log.svg"),
         colour : "#ffffff",
         type : "Action",
         editable : true,
@@ -33,7 +33,7 @@ define(['d3', 'tree_node', 'app/ballerina/utils/module', 'app/ballerina/models/m
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/log_drag.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml(ResourceConfigs.getContextAwarePath("images/tool-icons/log_drag.svg")).mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "48px").attr("height", "108px");

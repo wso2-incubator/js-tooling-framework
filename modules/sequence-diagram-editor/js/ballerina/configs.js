@@ -58,6 +58,7 @@ requirejs.config({
         tool_bar: "js/tool-bar/tool-bar",
         tab: "js/tab/",
         alerts: "js/utils/alerts",
+        resource_utils: "js/utils/resource-utils",
         breadcrumbs: "js/breadcrumbs/breadcrumbs",
         tree_node: "js/ast/node"
     },
@@ -86,20 +87,3 @@ requirejs.config({
         }
     ]
 });
-
-class GlobalConfigs {
-    constructor() {
-        this._base = "";
-    }
-
-    static getContextAwarePath(relative_path) {
-        if (typeof this._base === 'undefined') {
-            this._base = "";
-        }
-        return this._base + relative_path;
-    };
-
-    static setContextRoot(context_root) {
-        this._base = context_root;
-    };
-}
