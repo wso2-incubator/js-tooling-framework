@@ -491,21 +491,23 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                     var titleRect = containableProcessorElementViewArray[i].titleRect;
                     var text = containableProcessorElementViewArray[i].text;
 
-                    var initWidth = middleRect.attr("width");
                     middleRect.attr("width", newWidth);
                     rect.attr("width", newWidth);
 
-                    var deviation = (maximumWidth - initWidth)/2;
+                    var newX = centerPoint.x() - maximumWidth / 2;
+                    if (this.model.getWidth() !== undefined) {
+                        newX = centerPoint.x() - this.model.getWidth() / 2;
+                    }
 
-                    middleRect.attr("x", parseInt(middleRect.attr("x")) - deviation);
-                    rect.attr("x", parseInt(rect.attr("x")) - deviation);
-                    titleRect.attr("x", parseInt(titleRect.attr("x")) - deviation);
-                    text.attr("x", parseInt(text.attr("x")) - deviation);
+                    middleRect.attr("x", newX);
+                    rect.attr("x", newX);
+                    titleRect.attr("x", newX);
+                    text.attr("x", newX + 15);
 
                 }
 
                 this.model.setHeight(totalHeight);
-                this.model.setWidth(maximumWidth);
+                this.model.setWidth(maximumWidth + deltaDistance);
             } else if(this.model.model.type === "CustomProcessor") {
                 if(!_.isUndefined(this.model.get('utils').init)){
                     this.viewRoot = group;
