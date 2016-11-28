@@ -16,13 +16,13 @@
  * under the License.
  */
 define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
-        './service-outline', 'processors', './life-line',
+        './service-outline', 'processors',
         'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/message-point',
         'ballerina_models/message-link', 'app/ballerina/utils/module', 'app/ballerina/utils/processor-factory',
         'svg_pan_zoom'],
 
     function (require, log, $, d3, D3Utils, Backbone, _, DiagramCore, MainElements,
-              DiagramPreview, Processors, LifeLineView,
+              DiagramPreview, Processors,
               ContainableProcessorElement, LifeLine, MessagePoint,
               MessageLink, utils, ProcessorFactory,
               svgPanZoom) {
@@ -39,7 +39,6 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  * @param service The service model. i.e the parent of this resource.
                  */
                 initialize: function (options) {
-                    this.parentService = options.serviceView;
 
                     // Creating options for drawing if they doesn't exists.
                     options.diagram =  {};
@@ -47,7 +46,11 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     options.diagram.defaultWorker.centerPoint = options.diagram.defaultWorker.centerPoint || {};
                     options.diagram.defaultWorker.centerPoint.x = options.diagram.defaultWorker.centerPoint.x || 270;
                     options.diagram.defaultWorker.centerPoint.y = options.diagram.defaultWorker.centerPoint.y || 180;
-                    options.canvas = this.parentService.d3el;
+                    if (_.isUndefined(_.get(options, 'serviceView'))) {
+                        throw "Service View is not available in options";
+                    }
+                    this.serviceView = _.get(options, 'serviceView');
+                    options.canvas = this.serviceView.d3el;
 
                     DiagramCore.Views.ShapeView.prototype.initialize.call(this, options);
 
@@ -83,7 +86,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     } else {
 
                     }
-                    this.toolPalette = this.parentService.toolPalette;
+                    this.toolPalette = this.serviceView.toolPalette;
                     group.resourceBody = resourceBodyWrapper;
                     group.resourceHeader = resourceHeaderWrapper;
                     this.d3el = group;
@@ -98,9 +101,10 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     defaultWorker.set("centerPoint", defaultWorkerCenterPoint);
                     var defaultWorkerOption = {
                         model: defaultWorker,
-                        serviceView: this.parentService,
+                        serviceView: this.serviceView,
                         class: _.get(MainElements, 'lifelines.DefaultWorker.class')
                     };
+                    var LifeLineView = require('app/ballerina/views/life-line');
                     var defaultWorkerView = new LifeLineView(defaultWorkerOption);
                     defaultWorkerView.render();
                     defaultWorkerView.renderProcessors();
@@ -131,9 +135,10 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                         for (var localEndpoint in localEndpoints) {
                             var localEndpointOptions = {
                                 model: localEndpoint,
-                                serviceView: this.parentService,
+                                serviceView: this.serviceView,
                                 class: _.get(MainElements, 'lifelines.Endpoint.class')
                             };
+                            var LifeLineView = require('app/ballerina/views/life-line');
                             var localEndpointView = new LifeLineView(localEndpointOptions);
                             localEndpointView.render();
                         }
@@ -145,7 +150,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  * @returns {*} The index.
                  */
                 getCurrentResourceIndex: function() {
-                    return _.findIndex(this.parentService.model.get("resources").models, this.model);
+                    return _.findIndex(this.serviceView.model.get("resources").models, this.model);
                 },
 
                 /**
@@ -155,6 +160,7 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     // TODO: value 30 has to get from a configuration value
                     var height = workerBottomY - this.d3el.resourceBody.attr('y') + 30;
                     this.d3el.resourceBody.attr("height", height);
+                    this.model.height = height;
                 },
 
                 /**
@@ -162,9 +168,10 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  */
                 increaseElementWidth: function (workerRightX) {
                     // TODO: value 200 has to get from a configuration value
-                    var height = workerRightX - this.d3el.resourceBody.attr('x') + 200;
-                    this.d3el.resourceBody.attr("width", height);
-                    this.d3el.resourceHeader.attr("width", height);
+                    var width = workerRightX - this.d3el.resourceBody.attr('x') + 200;
+                    this.d3el.resourceBody.attr("width", width);
+                    this.d3el.resourceHeader.attr("width", width);
+                    this.model.width = width;
                 }
             });
 
