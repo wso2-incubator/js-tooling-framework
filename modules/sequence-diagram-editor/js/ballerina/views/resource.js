@@ -59,25 +59,34 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  */
                 render: function () {
                     // Creating svg group for the resource
-                    this.resourceWrapper = this.getD3Ref().draw.group(this.getD3Ref());
+                    var d3Ref = this.getD3Ref();
+                    var group = d3Ref.draw.group(this.getD3Ref());
+                    var viewObj = this;
+                    var width = viewObj.model.width;
+                    var height = viewObj.model.height;
+                    var startX = viewObj.model.get('centerPoint').x() - width/2 - 40;
+                    var startY = viewObj.model.get('centerPoint').y();
+                    var headerHeight = 20;
+                    var resourceBodyWrapper;
+                    var resourceHeaderWrapper;
+                    this.resourceWrapper = {};
 
                     // Setting border to
-                    this.resourceWrapper.attr("id", "resourceWrapper");
-
-                    this.resourceWrapper = D3Utils.decorate(this.resourceWrapper);
+                    group.attr("id", "resourceWrapper");
 
                     // If this is the first resource of the service, then draw the resource with hard coded positions. Else use the position of the previous resource.
                     if (this.getCurrentResourceIndex() == 0) {
-                        this.resourceHeaderWrapper = this.resourceWrapper.draw.basicRect(75, 110, 400, 25, 0, 0, this.resourceWrapper);
-                        this.resourceHeaderWrapper.attr("stroke", "black");
-
-                        this.resourceBodyWrapper = this.resourceWrapper.draw.basicRect(75, 110 + 25, 400, 175, 0, 0, this.resourceWrapper);
-                        this.resourceBodyWrapper.attr("stroke", "black");
+                        resourceBodyWrapper = group.draw.basicRect(startX, startY, width, height, 0, 0, group);
+                        resourceBodyWrapper.attr('class', 'resource-body');
+                        resourceHeaderWrapper = group.draw.basicRect(startX, startY, width, headerHeight, 0, 0, group);
+                        resourceHeaderWrapper.attr('class', 'resource-header');
                     } else {
 
                     }
                     this.toolPalette = this.parentService.toolPalette;
-                    this.d3el = this.resourceWrapper;
+                    group.resourceBody = resourceBodyWrapper;
+                    group.resourceHeader = resourceHeaderWrapper;
+                    this.d3el = group;
                 },
 
                 /**
@@ -96,6 +105,12 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                     defaultWorkerView.render();
                     defaultWorkerView.renderProcessors();
                     defaultWorkerView.renderMessages();
+                    var defaultWorkerBottomY = parseInt(defaultWorkerView.d3el.bottomShape.attr('y')) +
+                        parseInt(defaultWorkerView.d3el.bottomShape.attr('height'));
+                    var defaultWorkerRightX = parseInt(defaultWorkerView.d3el.bottomShape.attr('x')) +
+                        parseInt(defaultWorkerView.d3el.bottomShape.attr('width'));
+                    this.increaseElementHeight(defaultWorkerBottomY);
+                    this.increaseElementWidth(defaultWorkerRightX);
                 },
 
                 /**
@@ -131,6 +146,25 @@ define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diag
                  */
                 getCurrentResourceIndex: function() {
                     return _.findIndex(this.parentService.model.get("resources").models, this.model);
+                },
+
+                /**
+                 * Increase the height of the wrapper
+                 */
+                increaseElementHeight: function (workerBottomY) {
+                    // TODO: value 30 has to get from a configuration value
+                    var height = workerBottomY - this.d3el.resourceBody.attr('y') + 30;
+                    this.d3el.resourceBody.attr("height", height);
+                },
+
+                /**
+                 * Increase the width of the wrapper
+                 */
+                increaseElementWidth: function (workerRightX) {
+                    // TODO: value 200 has to get from a configuration value
+                    var height = workerRightX - this.d3el.resourceBody.attr('x') + 200;
+                    this.d3el.resourceBody.attr("width", height);
+                    this.d3el.resourceHeader.attr("width", height);
                 }
             });
 

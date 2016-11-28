@@ -25,6 +25,13 @@ define(['d3'], function (d3) {
         shape: 'rect',
         editable: true,
         deletable: true,
+        width: 500,
+        height: 200,
+        defaultConfigs: {
+            defaultMethod: 'GET',
+            defaultContext: 'context'
+        },
+        type: 'Resource',
         dragCursorOffset : { left: 50, top: 50 },
         createCloneCallback : function(view){
             function cloneCallBack() {

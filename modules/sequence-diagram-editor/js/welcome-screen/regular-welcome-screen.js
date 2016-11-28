@@ -151,10 +151,11 @@ define(['require', 'backbone', 'lodash','ballerina'], function ( require, Backbo
 
                 }
                 // class added after rendering to fix issue in firefox
-                carouselDiv.addClass("carousel-inner");
-                $('.regular-item-carousel').carousel({
-                    interval: false
-                });
+                //TODO: Fix this, since we occur an issue when rendering the welcome screen
+                // carouselDiv.addClass("carousel-inner");
+                // $('.regular-item-carousel').carousel({
+                //     interval: false
+                // });
 
 
 
