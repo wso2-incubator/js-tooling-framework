@@ -16,9 +16,9 @@
  * under the License.
  */
 define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-group',
-        'main_elements', 'processors', './drag-drop-manager'],
+        'main_elements', 'processors', './drag-drop-manager','alerts'],
     function (require, log, $, Backbone, ToolGroupView, ToolGroup,
-              MainElements, Processors, DragDropManager) {
+              MainElements, Processors, DragDropManager,AlertManager) {
 
     var ToolPalette = Backbone.View.extend({
         initialize: function (options) {
@@ -39,8 +39,14 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
             this._options = options;
             this._initTools();
             this.dragDropManager = new DragDropManager();
+            this.commandManager = options.application.commandManager;
+            this._renderCount = 0;
         },
-
+         resetToolGroup: function(){
+           this._toolGroups = [];
+             $("#tool-group-main-tool-group").remove();
+             $("#tool-group-mediators-tool-group").remove();
+         },
         _initTools: function(){
 
             var _toolGroups = [];
@@ -61,31 +67,99 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
             _toolGroups.push(mediatorsToolGroup);
 
             this._toolGroups = _toolGroups;
+
         },
 
         render: function () {
             var self = this;
-            var toolPaletteDiv = $('<div></div>');
-            //Adding search bar to tool-palette
-            var searchBarDiv = $('<div></div>');
-            searchBarDiv.addClass(_.get(this._options, 'search_bar.cssClass.search_box'));
-            var searchInput = $('<input>');
-            searchInput.addClass(_.get(this._options, 'search_bar.cssClass.search_input'));
-            searchInput.attr('id','search-field').attr('placeholder','Search').attr('type','text');
-            var searchIcon = $('<i></i>');
-            searchIcon.addClass(_.get(this._options, 'search_bar.cssClass.search_icon'));
-            searchBarDiv.append(searchIcon);
-            searchBarDiv.append(searchInput);
-            toolPaletteDiv.append(searchBarDiv);
-            // End of adding search bar
-            this._$parent_el.append(toolPaletteDiv);
-            this.$el = toolPaletteDiv;
-            this._toolGroups.forEach(function (group) {
-                var groupView = new ToolGroupView({model: group, toolPalette: self});
-                groupView.render(self.$el);
-                self.$el.addClass('non-user-selectable');
+                var toolPaletteDiv = $('<div></div>');
+                //Adding search bar to tool-palette
+            if(this._renderCount == 0) {
+                var searchBarDiv = $('<div></div>');
+                searchBarDiv.addClass(_.get(this._options, 'search_bar.cssClass.search_box'));
+                var searchInput = $('<input>');
+                searchInput.addClass(_.get(this._options, 'search_bar.cssClass.search_input'));
+                searchInput.attr('id', 'search-field').attr('placeholder', 'Search').attr('type', 'text');
+                var searchIcon = $('<i></i>');
+                searchIcon.addClass(_.get(this._options, 'search_bar.cssClass.search_icon'));
+                searchBarDiv.append(searchIcon);
+                searchBarDiv.append(searchInput);
+                toolPaletteDiv.append(searchBarDiv);
+                this._renderCount++;
+            }
+                // End of adding search bar
+                this._$parent_el.append(toolPaletteDiv);
+                this.$el = toolPaletteDiv;
+
+                this._toolGroups.forEach(function (group) {
+                    var groupView = new ToolGroupView({model: group, toolPalette: self});
+                    groupView.render(self.$el);
+                    self.$el.addClass('non-user-selectable');
+                });
+            // For search
+            var toolGroupList = this._toolGroups;
+            var toolView = this;
+            var opts = this._options.application.config.alerts;
+
+            //when search input field is empty render entire tool palette
+            $("#search-field").unbind('keyup').bind('keyup', function (e) {
+                e.preventDefault();
+                if (!this.value) {
+                    toolView.resetToolGroup();
+                    toolView._initTools();
+                    toolView.render();
+                    toolGroupList = toolView._toolGroups;
+                }
             });
 
+            $("#search-field").keypress(function (e) {
+                var key = e.which;
+                //When user press 'enter'
+                if (key == 13) {
+
+                    var keyword = this.value;
+                    // removing spaces from the keyword
+                    keyword = keyword.replace(/\s+/g, '');
+                    // For main elements
+                    if (toolGroupList[0].tools.length > 0) {
+                        var foundMain = _.find(toolGroupList[0].tools, function (tool) {
+                            return tool.id.toLowerCase().includes(keyword.toLowerCase());
+                        });
+                    }
+                    // For mediators
+                    if (toolGroupList[1]) {
+                        var foundMediator = _.find(toolGroupList[1].tools, function (tool) {
+                            return tool.id.toLowerCase().includes(keyword.toLowerCase());
+                        });
+                    }
+                    // If main element
+                    if (foundMain) {
+                        var sampleGroup = toolGroupList[0];
+                        var toRemove = _.without(toolGroupList[0].tools, foundMain);
+                        var newMainGroup = _.difference(toolGroupList[0].tools, toRemove);
+                        toolView.resetToolGroup();
+                        sampleGroup.tools = newMainGroup;
+                        toolView._toolGroups.push(sampleGroup);
+                        toolView.render();
+                    }
+                    // If mediator
+                    else if (foundMediator) {
+                        var sampleGroup1 = toolGroupList[1];
+                        var toRemove1 = _.without(toolGroupList[1].tools, foundMediator);
+                        var newMediatorGroup = _.difference(toolGroupList[1].tools, toRemove1);
+                        toolView.resetToolGroup();
+                        sampleGroup1.tools = newMediatorGroup;
+                        toolView._toolGroups.push(sampleGroup1);
+                        toolView.render();
+                    }
+                    if(_.isUndefined(foundMain) && _.isUndefined(foundMediator)){
+                      log.warn("No matching tool was found for keyword: "+ keyword);
+                      var alert = new AlertManager(opts);
+                        alert.alertWarning("No matching tool found");
+                    }
+                }
+
+            });
             return this;
         },
 

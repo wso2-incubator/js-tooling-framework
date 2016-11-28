@@ -104,7 +104,6 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                 var totalWidth = 150;
                 this.model.setHeight(30);
 
-                var initWidth =rect.containerRect.attr("width");
 
                 yValue += 60;
                 for (var id in this.modelAttr("children").models) {
@@ -139,21 +138,20 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                     totalWidth = this.model.widestChild.getWidth() + 30;
                 }
 
-                var deviation = (totalWidth - initWidth)/2;
-                var newX = parseInt(rect.containerRect.attr("x")) - deviation;
+                var newX = centerPoint.x() - this.model.getWidth() / 2;
 
                 rect.containerRect.attr("height", totalHeight);
                 rect.containerRect.attr("width", totalWidth);
                 rect.containerRect.attr("x", newX);
-                rect.titleRect.attr("x", parseInt(rect.titleRect.attr("x")) - deviation);
-                rect.text.attr("x", parseInt(rect.text.attr("x")) - deviation);
+                rect.titleRect.attr("x", newX);
+                rect.text.attr("x", newX + 15);
                 this.model.setHeight(totalHeight);
                 this.model.get("parent").setHeight(this.model.get("parent").getHeight() + totalHeight - modelHeight);
                 this.model.setWidth(totalWidth);
                 this.model.setX(newX);
                 rect.middleRect.attr("height", totalHeight-30);
                 rect.middleRect.attr("width", totalWidth);
-                rect.middleRect.attr("x", parseInt(rect.middleRect.attr("x")) - deviation);
+                rect.middleRect.attr("x", newX);
 
                 if (viewObj.model.get("title") === "Try" || viewObj.model.get("title") === "If") {
                     var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
@@ -191,6 +189,13 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                             d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                             optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                         });
+                    var deleteIcon  = optionsMenuGroup.append("svg:image")
+                        .attr("xlink:href", "images/delete.svg")
+                        .attr("x",optionMenuStartX + 15)
+                        .attr("y", optionMenuStartY + 7)
+                        .attr("width", 15)
+                        .attr("height", 15);
+
 
                     var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
                         optionMenuStartY + 32,
@@ -208,6 +213,13 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                             d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                             optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                         });
+
+                    optionsMenuGroup.append("svg:image")
+                        .attr("xlink:href", "images/edit.svg")
+                        .attr("x",optionMenuStartX + 15)
+                        .attr("y", optionMenuStartY + 35)
+                        .attr("width", 15)
+                        .attr("height", 15);
 
                     // On click of the mediator show/hide the delete icon
                     rect.containerRect.on("click", function () {
@@ -258,37 +270,43 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                                 viewObj.model.attributes.parent.get("utils").getMyPropertyPaneSchema());
                         }
                     });
-
+                    deleteIcon.on("click", function (){
+                       deleteElement();
+                    });
                     deleteOption.on("click", function () {
-                    //Get the parent of the model and delete it from the parent
-                    var parentModel = viewObj.model.get("parent").get("parent");
-                    var parentModelChildren = parentModel.get("children").models;
-                    //Get diagram highest height
-                    var highestHeight = viewObj.model.get("parent").get("serviceView").highestLifeline.get("height");
-                    for (var itr = 0; itr < parentModelChildren.length; itr ++) {
-                        if (parentModelChildren[itr].cid === viewObj.model.get("parent").cid) {
-                        //reset parent height
-                            var currentElementHeight = parentModelChildren[itr].getHeight();
-                            parentModel.setHeight(parentModel.getHeight() - currentElementHeight);
-                            var parentElement = parentModel;
-                            //todo chnage this to get first lifeline type parent instead of Resource
-                            while(!(parentElement.get("type") === "Resource")){
-                                parentElement = parentElement.get("parent")
+                        deleteElement();
+
+                    });
+                    function deleteElement(){
+                        //Get the parent of the model and delete it from the parent
+                        var parentModel = viewObj.model.get("parent").get("parent");
+                        var parentModelChildren = parentModel.get("children").models;
+                        //Get diagram highest height
+                        var highestHeight = viewObj.model.get("parent").get("serviceView").highestLifeline.get("height");
+                        for (var itr = 0; itr < parentModelChildren.length; itr ++) {
+                            if (parentModelChildren[itr].cid === viewObj.model.get("parent").cid) {
+                                //reset parent height
+                                var currentElementHeight = parentModelChildren[itr].getHeight();
+                                parentModel.setHeight(parentModel.getHeight() - currentElementHeight);
+                                var parentElement = parentModel;
+                                //todo chnage this to get first lifeline type parent instead of Resource
+                                while(!(parentElement.get("type") === "Resource")){
+                                    parentElement = parentElement.get("parent")
+                                }
+                                // save current life-line height
+                                var lifelineHeight = parentElement.getHeight();
+                                parentModelChildren.splice(itr, 1);
+                                // adjust life-line height
+                                parentElement.setHeight(lifelineHeight - currentElementHeight);
+                                // if the current life-line is the tallest life-line we adjust it's height
+                                if(lifelineHeight + currentElementHeight >= highestHeight){
+                                    viewObj.model.get("parent").get("serviceView").highestLifeline.setHeight(highestHeight - currentElementHeight);
+                                }
+                                viewObj.serviceView.render();
+                                break;
                             }
-                            // save current life-line height
-                            var lifelineHeight = parentElement.getHeight();
-                            parentModelChildren.splice(itr, 1);
-                            // adjust life-line height
-                            parentElement.setHeight(lifelineHeight - currentElementHeight);
-                            // if the current life-line is the tallest life-line we adjust it's height
-                            if(lifelineHeight + currentElementHeight >= highestHeight){
-                                viewObj.model.get("parent").get("serviceView").highestLifeline.setHeight(highestHeight - currentElementHeight);
-                            }
-                            viewObj.serviceView.render();
-                            break;
                         }
                     }
-                 });
                 }
 
                 return group;

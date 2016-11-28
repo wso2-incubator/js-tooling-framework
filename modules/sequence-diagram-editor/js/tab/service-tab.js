@@ -37,6 +37,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             var serviceEditorOpts = _.get(this.options, 'service_editor');
             _.set(serviceEditorOpts, 'toolPalette', this.getParent().options.toolPalette);
             _.set(serviceEditorOpts, 'container', this.$el.get(0));
+            _.set(serviceEditorOpts, 'tabs_container', _.get(this.options, 'tabs_container'));
             var serviceEditor = new Ballerina.Views.ServiceEditor(serviceEditorOpts);
             serviceEditor.render();
         }

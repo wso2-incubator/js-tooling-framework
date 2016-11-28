@@ -125,6 +125,9 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
             });
 
+            var optionMenuStartX = (center.x() + 13 + width/2);
+            var optionMenuStartY =  (center.y() + 31);
+
             var deleteOption = d3Ref.draw.rect((center.x() + 13 + width/2),
                 (center.y() + 3),
                 24,
@@ -141,6 +144,13 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                 optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
             });
+           var deleteIcon =  optionsMenuGroup.append("svg:image")
+                .attr("xlink:href", "images/delete.svg")
+                .attr("x",optionMenuStartX + 5)
+                .attr("y", optionMenuStartY -23)
+                .attr("width", 15)
+                .attr("height", 15);
+
 
             var editOption = d3Ref.draw.rect((center.x() + 13 + width/2),
                 (center.y() + 31),
@@ -158,6 +168,15 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                 optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
             });
+
+
+            optionsMenuGroup.append("svg:image")
+                .attr("xlink:href", "images/edit.svg")
+                .attr("x",optionMenuStartX + 5)
+                .attr("y", optionMenuStartY + 4)
+                .attr("width", 15)
+                .attr("height", 15);
+
 
             // On click of the mediator show/hide the options menu
             processorTitleRect.on("click", function () {
@@ -211,8 +230,14 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
             });
-
+             deleteIcon.on("click", function() {
+               deleteElement();
+             });
             deleteOption.on("click", function () {
+               deleteElement();
+            });
+
+            function deleteElement(){
                 // Get the parent of the model and delete it from the parent
                 var parentModel = viewObj.model.get("parent");
                 var parentModelChildren = parentModel.get("children").models;
@@ -262,8 +287,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                         break;
                     }
                 }
-            });
-
+            }
             var getPropertyPaneSchema = function (model) {
                 return ;
             };
@@ -467,21 +491,23 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                     var titleRect = containableProcessorElementViewArray[i].titleRect;
                     var text = containableProcessorElementViewArray[i].text;
 
-                    var initWidth = middleRect.attr("width");
                     middleRect.attr("width", newWidth);
                     rect.attr("width", newWidth);
 
-                    var deviation = (maximumWidth - initWidth)/2;
+                    var newX = centerPoint.x() - maximumWidth / 2;
+                    if (this.model.getWidth() !== undefined) {
+                        newX = centerPoint.x() - this.model.getWidth() / 2;
+                    }
 
-                    middleRect.attr("x", parseInt(middleRect.attr("x")) - deviation);
-                    rect.attr("x", parseInt(rect.attr("x")) - deviation);
-                    titleRect.attr("x", parseInt(titleRect.attr("x")) - deviation);
-                    text.attr("x", parseInt(text.attr("x")) - deviation);
+                    middleRect.attr("x", newX);
+                    rect.attr("x", newX);
+                    titleRect.attr("x", newX);
+                    text.attr("x", newX + 15);
 
                 }
 
                 this.model.setHeight(totalHeight);
-                this.model.setWidth(maximumWidth);
+                this.model.setWidth(maximumWidth + deltaDistance);
             } else if(this.model.model.type === "CustomProcessor") {
                 if(!_.isUndefined(this.model.get('utils').init)){
                     this.viewRoot = group;

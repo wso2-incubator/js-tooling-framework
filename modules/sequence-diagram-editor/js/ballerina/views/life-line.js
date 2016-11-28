@@ -383,6 +383,13 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                     d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                     optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                 });
+                 var deleteIcon = optionsMenuGroup.append("svg:image")
+                    .attr("xlink:href", "images/delete.svg")
+                    .attr("x",optionMenuStartX + 15)
+                    .attr("y", optionMenuStartY + 7)
+                    .attr("width", 15)
+                    .attr("height", 15);
+
 
                 var editOption = d3Ref.draw.rect(optionMenuStartX + 11,
                     optionMenuStartY + 32,
@@ -400,6 +407,13 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                     d3.select(this).attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                     optionMenuWrapper.attr("style", "stroke: #ede9dc; stroke-width: 1; opacity: 0.5; cursor: pointer");
                 });
+                optionsMenuGroup.append("svg:image")
+                    .attr("xlink:href", "images/edit.svg")
+                    .attr("x",optionMenuStartX + 15)
+                    .attr("y", optionMenuStartY + 35)
+                    .attr("width", 15)
+                    .attr("height", 15);
+
 
                 var viewObj = this;
 
@@ -456,8 +470,13 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                                 viewObj.model));
                     }
                 });
-
+                deleteIcon.on("click", function(){
+                    deleteElement();
+                });
                 deleteOption.on("click", function () {
+                  deleteElement();
+                });
+                function deleteElement(){
                     //Get the parent of the model and delete it from the parent
                     if (~viewObj.model.get("title").indexOf("Resource")) {
                         var resourceElements =  viewObj.serviceView.model.get("diagramResourceElements").models;
@@ -484,7 +503,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                             }
                         }
                     }
-                });
+                }
             }
 
         });
