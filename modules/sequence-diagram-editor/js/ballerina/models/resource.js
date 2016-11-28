@@ -45,27 +45,15 @@ define(['require','log', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', '
         initialize: function (attributes, options) {
             DiagramCore.Models.Shape.prototype.initialize.call(this, attributes, options);
 
-            // When predefined set of models is not passed when creating a service.
-            if (_.isUndefined(attributes)) {
-                this.reloadDiagramArea();
-            } else {
-                this.defaultWorker(attributes.defaultWorker);
-                this.elements(attributes.elements);
-                this.endpoints(attributes.localEndpoints);
-                this.workers(attributes.workers);
+            // Set the httpMethod and the contextPath as model attributes
+            this.set({
+                httpMethod: _.get(attributes, 'definition.defaultConfigs.defaultMethod'),
+                contextPath: _.get(attributes, 'definition.defaultConfigs.defaultContext')
+            });
+            this.width = _.get(attributes, 'definition.width');
+            this.height = _.get(attributes, 'definition.height');
 
-                this.httpMethod = attributes.httpMethod;
-                this.contextPath = attributes.contextPath;
-                this.centerPoint = attributes.centerPoint;
-            }
 
-            this.selectedNode = null;
-
-            this.destinationLifeLine = null;
-            this.deepestPointY = 100;
-            this.sourceLifeLineY = 0;
-            this.X = 0;
-            this.highestLifeline = null;
         },
 
         defaults: {

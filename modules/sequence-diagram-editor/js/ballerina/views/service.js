@@ -17,7 +17,7 @@
  */
 define(['require', 'log', 'jquery', 'd3', 'd3utils', 'backbone', 'lodash', 'diagram_core', 'main_elements',
         './service-outline', 'processors', './life-line', './resource',
-        'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'ballerina_models/resource',
+        'ballerina_models/containable-processor-element', 'ballerina_models/life-line', 'app/ballerina/models/resource',
         'app/ballerina/models/message-point', 'app/ballerina/models/message-link', 'ballerina_models/service',
         'app/ballerina/utils/module', 'app/ballerina/utils/processor-factory', 'app/layout-manager/layout-manager',
         'svg_pan_zoom', 'jquery_ui'],
@@ -699,6 +699,7 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 var sourceLifeLineCenterPoint = utils.createPoint(100, 50);
                 var sourceLifeLineType = "Source";
                 var sourceLifeLineDef = _.get(MainElements, 'lifelines.Source');
+                var resourceDef = _.get(MainElements, 'resource');
 
                 var sourceLifeline = utils.createLifeLine("Source", sourceLifeLineCenterPoint, sourceLifeLineDef.class, sourceLifeLineDef.utils,
                     sourceLifeLineDef.parameters, sourceLifeLineDef.textModel, sourceLifeLineType, sourceLifeLineDef);
@@ -707,7 +708,15 @@ function (require, log, $, d3, D3Utils, Backbone,  _, DiagramCore, MainElements,
                 this.model.addElement(sourceLifeline, {class: MainElements.lifelines.Source.class });
 
                 // Creating a new resource.
-                var resource = new Resource();
+                var resourceAttrs = {
+                    definition: resourceDef
+                };
+                var resource = new Resource(resourceAttrs);
+                var resourceInitialCenterPoint = utils.createPoint(
+                    sourceLifeLineCenterPoint.x() + (_.get(resourceDef, 'width'))/2,
+                    sourceLifeLineCenterPoint.y() + 60);
+
+                resource.set('centerPoint', resourceInitialCenterPoint);
 
                 // Creating default worker
                 var defaultWorkerLifeLineCenterPoint = utils.createPoint(100, 50);

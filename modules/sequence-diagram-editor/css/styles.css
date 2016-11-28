@@ -279,3 +279,14 @@ ol#breadcrumbList {
     width: 100%;
     object-fit: contain;
 }
+
+.resource-header {
+    fill: #ffffff;
+    stroke: #000000;
+}
+
+.resource-body {
+    fill: #ffffff;
+    fill-opacity: 0.5;
+    stroke: #000000;
+}

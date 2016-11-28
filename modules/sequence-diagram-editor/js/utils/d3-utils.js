@@ -122,7 +122,7 @@ define(['require', 'jquery', 'd3'], function (require, $, d3) {
             .attr('stroke-linejoin', 'round');
     };
 
-    var basicRect = function (x, y, width, height, rx, ry, parent) {
+    var basicRect = function (x, y, width, height, rx, ry, parent, colour) {
         parent = parent || d3Ref;
         rx = rx || 0;
         ry = ry || 0;
