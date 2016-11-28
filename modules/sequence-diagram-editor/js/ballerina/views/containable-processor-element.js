@@ -104,7 +104,6 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                 var totalWidth = 150;
                 this.model.setHeight(30);
 
-                var initWidth =rect.containerRect.attr("width");
 
                 yValue += 60;
                 for (var id in this.modelAttr("children").models) {
@@ -139,21 +138,20 @@ define(['lodash', 'd3', 'diagram_core', 'app/ballerina/models/life-line'], funct
                     totalWidth = this.model.widestChild.getWidth() + 30;
                 }
 
-                var deviation = (totalWidth - initWidth)/2;
-                var newX = parseInt(rect.containerRect.attr("x")) - deviation;
+                var newX = centerPoint.x() - this.model.getWidth() / 2;
 
                 rect.containerRect.attr("height", totalHeight);
                 rect.containerRect.attr("width", totalWidth);
                 rect.containerRect.attr("x", newX);
-                rect.titleRect.attr("x", parseInt(rect.titleRect.attr("x")) - deviation);
-                rect.text.attr("x", parseInt(rect.text.attr("x")) - deviation);
+                rect.titleRect.attr("x", newX);
+                rect.text.attr("x", newX + 15);
                 this.model.setHeight(totalHeight);
                 this.model.get("parent").setHeight(this.model.get("parent").getHeight() + totalHeight - modelHeight);
                 this.model.setWidth(totalWidth);
                 this.model.setX(newX);
                 rect.middleRect.attr("height", totalHeight-30);
                 rect.middleRect.attr("width", totalWidth);
-                rect.middleRect.attr("x", parseInt(rect.middleRect.attr("x")) - deviation);
+                rect.middleRect.attr("x", newX);
 
                 if (viewObj.model.get("title") === "Try" || viewObj.model.get("title") === "If") {
                     var optionsMenuGroup = group.append("g").attr("class", "option-menu option-menu-hide");
