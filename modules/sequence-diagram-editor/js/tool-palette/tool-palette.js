@@ -133,7 +133,7 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
                         });
                     }
                     // If main element
-                    if (foundMain) {
+                    if (!_.isUndefined(foundMain)) {
                         var sampleGroup = toolGroupList[0];
                         var toRemove = _.without(toolGroupList[0].tools, foundMain);
                         var newMainGroup = _.difference(toolGroupList[0].tools, toRemove);
@@ -142,8 +142,9 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
                         toolView._toolGroups.push(sampleGroup);
                         toolView.render();
                     }
+
                     // If mediator
-                    else if (foundMediator) {
+                    else if (!_.isUndefined(foundMediator)) {
                         var sampleGroup1 = toolGroupList[1];
                         var toRemove1 = _.without(toolGroupList[1].tools, foundMediator);
                         var newMediatorGroup = _.difference(toolGroupList[1].tools, toRemove1);
@@ -151,11 +152,6 @@ define(['require', 'log', 'jquery', 'backbone', './tool-group-view', './tool-gro
                         sampleGroup1.tools = newMediatorGroup;
                         toolView._toolGroups.push(sampleGroup1);
                         toolView.render();
-                    }
-                    if(_.isUndefined(foundMain) && _.isUndefined(foundMediator)){
-                      log.warn("No matching tool was found for keyword: "+ keyword);
-                      var alert = new AlertManager(opts);
-                        alert.alertWarning("No matching tool found");
                     }
                 }
 
