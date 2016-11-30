@@ -15,12 +15,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './processor', './message-link',
+define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './processor', './message-link', "main_elements", './resource',
         'app/ballerina/models/processor',  'app/ballerina/models/message-point', 'app/ballerina/models/message-link',
         'processors'
 
 ], function (require, $, d3, Backbone, _, DiagramCore, ProcessorView, MessageLinkView,
-             Processor, MessagePoint, MessageLink,
+             MainElements, ResourceView, Processor, MessagePoint, MessageLink,
              Processors) {
 
     var createPoint = function (x, y) {
@@ -164,6 +164,39 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                         processor.setY(yValue);
                         yValue += processor.getHeight() + distanceBetweenProcessors;
                         previousHeight = processor.getHeight();
+
+                        // Drawing the arrow from "Source" lifeline to "Start" action.
+                        if (this.modelAttr("children").models[id].get("title") == Processors.actions.StartAction.title) {
+                            // Get the X axis of source/client lifeline
+                            var xOfSourceLifeLine = this.serviceView.model.get("source").get("centerPoint").get("x");
+                            var sourcePoint = new MessagePoint({
+                                model: {type: "messagePoint"},
+                                x: xOfSourceLifeLine,
+                                y: processorView.d3el.node().getBBox().y + (previousHeight / 2),
+                                direction: "outbound"
+                            });
+                            var destinationPoint = new MessagePoint({
+                                model: {type: "messagePoint"},
+                                x: processorView.d3el.node().getBBox().x,
+                                y: processorView.d3el.node().getBBox().y + (previousHeight / 2),
+                                direction: "inbound"
+                            });
+
+                            var messageLink = new MessageLink({
+                                source: sourcePoint,
+                                destination: destinationPoint,
+                                priority: destinationPoint,
+                                // type one is out only
+                                type : 1
+                            });
+
+                            var messageLinkView = new MessageLinkView({
+                                model: messageLink,
+                                serviceView: this.serviceView,
+                                options: {class: "message"}
+                            });
+                            messageLinkView.render("#" + this.serviceView.model.wrapperId, "messages");
+                        }
                     } else {
                         var messagePoint = this.modelAttr("children").models[id];
                         if (messagePoint.direction() == "outbound") {
@@ -201,7 +234,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                     var maxHeight = this.serviceView.model.highestLifeline.getHeight();
                 }
                 this.model.setHeight(totalHeight);
-                this.adjustHeight(this.d3el, totalHeight - initialHeight);
+                this.adjustHeight(this.d3el, parseInt(totalHeight) - parseInt(initialHeight));
 
                 if (this.serviceView.model.highestLifeline == undefined || maxHeight < this.model.getHeight()) {
                     this.serviceView.model.highestLifeline = this.model;
@@ -209,6 +242,41 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                     return false;
                 }
                 return this.d3el;
+            },
+
+            /**
+             * Render the resources. This will be only called for the Source Lifeline since Only the Source lifeline
+             * has processors as it's children.
+             */
+            renderResources: function () {
+                var viewObj = this;
+
+                for (var id in viewObj.modelAttr("resources").models) {
+                    var resource = viewObj.modelAttr("resources").models[id];
+                    var resourceOptions = {
+                        model: resource,
+                        serviceView: this.serviceView,
+                        class:  _.get(MainElements, 'resources.class')
+                    };
+
+                    var resourceView = new ResourceView(resourceOptions, this);
+
+                    // Rendering the resource.
+                    resourceView.render();
+                    // Rendering the default worker of the resource.
+                    resourceView.renderDefaultWorker();
+                    // Rendering the workers of the resource.
+                    resourceView.renderWorkers();
+                    // Rendering the local endpoints of the resource.
+                    resourceView.renderLocalEndpoints();
+
+                    var initialHeight = parseInt(this.d3el.line.attr("y2")) - parseInt(this.d3el.line.attr("y1"));
+                    var totalHeight = parseInt(resourceView.d3el.resourceBody.attr('y')) +
+                        parseInt(resourceView.d3el.resourceBody.attr('height'));
+
+                    this.adjustHeight(this.d3el, parseInt(totalHeight) - parseInt(initialHeight));
+                }
+
             },
 
             renderMessages: function () {
@@ -226,12 +294,24 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
             },
 
             adjustHeight: function (lifeLine, difference) {
-                var t = 'translate(0,' + difference + ')';
-                lifeLine.bottomShape.attr('transform', t);
+                var polygonYOffset = 30;
+                var polygonXOffset = 35;
                 lifeLine.line.attr("y2", parseInt(lifeLine.line.attr("y2")) + difference);
                 lifeLine.textBottom.attr("y", parseInt(lifeLine.textBottom.attr("y")) + difference);
                 //lifeLine.drawMessageRect.attr("height", parseInt(lifeLine.drawMessageRect.attr("height")) + difference);
                 lifeLine.middleRect.attr("height", parseInt(lifeLine.middleRect.attr("height")) + difference);
+
+                if (this.model.definition.shape == 'polygon') {
+                    var newPolygonPoints = "" + lifeLine.line.attr('x1') + "," + lifeLine.line.attr('y2') +
+                        " " + (parseInt(lifeLine.line.attr('x1')) + polygonXOffset) + "," + (parseInt(lifeLine.line.attr('y2')) + polygonYOffset) +
+                        " " + lifeLine.line.attr('x1') + "," + (parseInt(lifeLine.line.attr('y2')) + 2*polygonYOffset) +
+                        " " + (parseInt(lifeLine.line.attr('x1')) - polygonXOffset) + "," + (parseInt(lifeLine.line.attr('y2')) + polygonYOffset);
+                    // var t = 'translate(0,' + difference + ')';
+                    lifeLine.bottomShape.attr('points', newPolygonPoints);
+                } else {
+                    lifeLine.bottomShape.attr('y', (parseInt(lifeLine.bottomShape.attr('y')) + difference));
+                }
+
 
             },
 
