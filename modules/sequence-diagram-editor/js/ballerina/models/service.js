@@ -109,7 +109,7 @@ define(['require', 'log', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', 
 
                             switch(diagramElementType) {
                                 case "Source":
-                                    this.get('source').add(diagramElement, opts);
+                                    this.set('source', diagramElement, opts);
                                     break;
                                 case "EndPoint":
                                     this.get('endpoints').add(diagramElement, opts);

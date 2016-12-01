@@ -15,11 +15,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './processor', './message-link',
+define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './processor', './message-link', "main_elements", './resource',
+        'app/ballerina/models/processor',  'app/ballerina/models/message-point', 'app/ballerina/models/message-link',
+        'processors'
 
-        'app/ballerina/models/processor',  'app/ballerina/models/message-point', 'main_elements', './resource'
-
-], function (require, $, d3, Backbone, _, DiagramCore, ProcessorView, MessageLinkView, Processor, MessagePoint, MainElements, ResourceView) {
+], function (require, $, d3, Backbone, _, DiagramCore, ProcessorView, MessageLinkView,
+             MainElements, ResourceView, Processor, MessagePoint, MessageLink,
+             Processors) {
 
     var createPoint = function (x, y) {
         return new DiagramCore.Models.Point({x: x, y: y});
@@ -162,6 +164,39 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core', './proc
                         processor.setY(yValue);
                         yValue += processor.getHeight() + distanceBetweenProcessors;
                         previousHeight = processor.getHeight();
+
+                        // Drawing the arrow from "Source" lifeline to "Start" action.
+                        if (this.modelAttr("children").models[id].get("title") == Processors.actions.StartAction.title) {
+                            // Get the X axis of source/client lifeline
+                            var xOfSourceLifeLine = this.serviceView.model.get("source").get("centerPoint").get("x");
+                            var sourcePoint = new MessagePoint({
+                                model: {type: "messagePoint"},
+                                x: xOfSourceLifeLine,
+                                y: processorView.d3el.node().getBBox().y + (previousHeight / 2),
+                                direction: "outbound"
+                            });
+                            var destinationPoint = new MessagePoint({
+                                model: {type: "messagePoint"},
+                                x: processorView.d3el.node().getBBox().x,
+                                y: processorView.d3el.node().getBBox().y + (previousHeight / 2),
+                                direction: "inbound"
+                            });
+
+                            var messageLink = new MessageLink({
+                                source: sourcePoint,
+                                destination: destinationPoint,
+                                priority: destinationPoint,
+                                // type one is out only
+                                type : 1
+                            });
+
+                            var messageLinkView = new MessageLinkView({
+                                model: messageLink,
+                                serviceView: this.serviceView,
+                                options: {class: "message"}
+                            });
+                            messageLinkView.render("#" + this.serviceView.model.wrapperId, "messages");
+                        }
                     } else {
                         var messagePoint = this.modelAttr("children").models[id];
                         if (messagePoint.direction() == "outbound") {
