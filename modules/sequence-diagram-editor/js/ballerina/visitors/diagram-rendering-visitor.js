@@ -36,4 +36,8 @@ define(['lodash', 'log', 'ast-visitor'], function(_, log, ASTVisitor) {
     DiagramRenderingVisitor.prototype.visitWorkerDeclaration = function () {
         return false;
     }
+
+    DiagramRenderingVisitor.prototype.visitFunctionDefinition = function() {
+        return false;
+    }
 });

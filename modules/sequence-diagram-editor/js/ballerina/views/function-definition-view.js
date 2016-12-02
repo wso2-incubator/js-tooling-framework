@@ -16,8 +16,8 @@
  * under the License.
  */
 
-define(['lodash','log','./canvas', 'app/ballerina/ast/function-definition'],
-    function(_, log, Canvas, FunctionDefinition){
+define(['lodash','jquery', 'event_channel','log','./canvas', 'app/ballerina/ast/function-definition'],
+    function(_, $, EventChannel, log, Canvas, FunctionDefinition){
 
     /**
     * View for the function definition model.
@@ -33,7 +33,9 @@ define(['lodash','log','./canvas', 'app/ballerina/ast/function-definition'],
         }
     };
 
+    FunctionDefinitionView.prototype = Object.create(EventChannel.prototype);
     FunctionDefinitionView.prototype.constructor = FunctionDefinitionView;
+
 
     FunctionDefinition.prototype.setModel = function(model){
         if(!_.isNil(model)){
@@ -59,4 +61,21 @@ define(['lodash','log','./canvas', 'app/ballerina/ast/function-definition'],
 
     FunctionDefinitionView.prototype.visitFunctionDefinition = function () {};
 
-    };)
+    FunctionDefinitionView.prototype.render = function(){
+         var d3Ref = this.getD3Ref();
+         var rect = d3Ref.draw.rectWithTitle(
+            center,
+            60,
+            30,
+            150,
+            model.getHeight(),
+            0,
+            0,
+            d3Ref,
+            this.modelAttr('viewAttributes').colour,
+            this.modelAttr('title')
+         );
+
+    };
+
+};)
