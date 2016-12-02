@@ -34,4 +34,10 @@
         return this.args;
     };
 
+    FunctionDefinition.prototype.accept = function(visitor) {
+        visitor.visitFunctionDefinition();
+    }
+
+    return FunctionDefinition;
+
  };)

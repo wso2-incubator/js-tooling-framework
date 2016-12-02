@@ -35,6 +35,12 @@ define(['lodash', 'log', 'ast-visitor'], function(_, log, ASTVisitor) {
 
     DiagramRenderingVisitor.prototype.visitWorkerDeclaration = function () {
         return false;
+    };
+
+    DiagramRenderingVisitor.prototype.visitReturnStatement = function () {
+        //modelView.render();
+        return false;
+    };
     }
 
     DiagramRenderingVisitor.prototype.visitFunctionDefinition = function() {
