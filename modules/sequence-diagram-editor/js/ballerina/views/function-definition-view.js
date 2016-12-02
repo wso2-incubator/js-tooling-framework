@@ -25,17 +25,28 @@ define(['lodash','jquery', 'event_channel','log','./canvas', 'app/ballerina/ast/
     * @param container - the SVG container.
     * @param viewOptions - Options to configure the view
     */
-    var FunctionDefinitionView = function(model,container,viewOptions){
-        if(!_.isNul(mode) && model instanceof FunctionDefinition && !_.isNil(container)){
-            this._model = model;
-            this._container = container;
-            this._viewOptions = viewOptions
-        }
+    var FunctionDefinitionView = function(model){
+        this._model = model;
+        this._container = container;
+        this._viewOptions = viewOptions
     };
 
     FunctionDefinitionView.prototype = Object.create(EventChannel.prototype);
     FunctionDefinitionView.prototype.constructor = FunctionDefinitionView;
 
+    FunctionDefinitionView.prototype.init = function(model,container) {
+        if(_.isUndefined(model)){
+            log.error('Model definition undefined');
+            throw 'Model definition undefined'
+        }
+        this._model = model;
+
+        if(_.isUndefined(container)){
+            log.error('Container is undefined');
+            throw 'Container is undefined';
+        }
+        this._container = container;
+    }
 
     FunctionDefinition.prototype.setModel = function(model){
         if(!_.isNil(model)){
