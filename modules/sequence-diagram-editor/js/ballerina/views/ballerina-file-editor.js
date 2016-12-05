@@ -19,7 +19,7 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
 
     var BallerinaFileEditor = function (canvasList, astRoot, viewOptions) {
         this.canvasList = canvasList || [];
-        this._astRoot = astRoot;
+        this._model = astRoot;
         this.id = "Ballerina File Editor";
         this._viewOptions = viewOptions;
     };
@@ -39,10 +39,11 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
         else {
             log.error("Unable to add empty canvas" + canvas);
         }
-    };
 
+
+    };
     BallerinaFileEditor.prototype.init = function (astRoot, options) {
-        this._astRoot = astRoot;
+        this._model = astRoot;
         var errMsg;
         var editorParent = this;
         if (!_.has(options, 'container')) {
@@ -131,6 +132,10 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
                 parent.append(outerDiv);
             });
         }
+    };
+
+    BallerinaFileEditor.prototype.getModel = function () {
+        return this._model;
     };
 
     return BallerinaFileEditor;
