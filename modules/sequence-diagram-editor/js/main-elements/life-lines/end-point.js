@@ -16,13 +16,13 @@
  * under the License.
  */
 
-define(['d3'], function (d3) {
+define(['d3', 'resource_utils'], function (d3, ResourceConfigs) {
 
     //End point definition
     var EndPointLifeline = {
         id: "EndPoint",
         title: "End Point",
-        icon: "images/tool-icons/dgm-lifeline.svg",
+        icon: ResourceConfigs.getContextAwarePath("images/tool-icons/dgm-lifeline.svg"),
         class : "endpoint",
         shape: 'rect',
         editable : true,
@@ -31,7 +31,7 @@ define(['d3'], function (d3) {
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/lifeline.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml(ResourceConfigs.getContextAwarePath("images/tool-icons/lifeline.svg")).mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "100px");

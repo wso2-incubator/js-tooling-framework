@@ -15,12 +15,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['d3'], function (d3) {
+define(['d3', 'resource_utils'], function (d3, ResourceConfigs) {
 
     var ResourceLifeline = {
         id: "Resource",
         title: "Pipe Line",
-        icon: "images/tool-icons/lifeline.svg",
+        icon: ResourceConfigs.getContextAwarePath("images/tool-icons/lifeline.svg"),
         class : "resource",
         shape: 'rect',
         editable: true,
@@ -29,7 +29,7 @@ define(['d3'], function (d3) {
         createCloneCallback : function(view){
             function cloneCallBack() {
                 var div = view.createContainerForDraggable();
-                d3.xml("images/tool-icons/lifeline.svg").mimeType("image/svg+xml").get(function(error, xml) {
+                d3.xml(ResourceConfigs.getContextAwarePath("images/tool-icons/lifeline.svg")).mimeType("image/svg+xml").get(function(error, xml) {
                     if (error) throw error;
                     var svg = xml.getElementsByTagName("svg")[0];
                     d3.select(svg).attr("width", "100px").attr("height", "100px");
