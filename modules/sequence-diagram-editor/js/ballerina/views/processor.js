@@ -241,7 +241,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                 // Get the parent of the model and delete it from the parent
                 var parentModel = viewObj.model.get("parent");
                 var parentModelChildren = parentModel.get("children").models;
-                var highestHeight = viewObj.model.get("serviceView").highestLifeline.get("height");
+                var highestHeight = viewObj.serviceView.model.highestLifeline.get("height");
                 for (var itr = 0; itr < parentModelChildren.length; itr ++) {
                     if (parentModelChildren[itr].cid === viewObj.model.cid) {
                         if(!_.isUndefined(viewObj.model.inputConnector()) || !_.isUndefined(viewObj.model.outputConnector())) {
@@ -281,7 +281,7 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'diagram_core',
                         //removing current processor
                         parentModelChildren.splice(itr, 1);
                         if(lifelineHeight + currentElementHeight >= highestHeight){
-                            viewObj.model.get("serviceView").highestLifeline.setHeight(highestHeight - currentElementHeight);
+                            viewObj.serviceView.model.highestLifeline.setHeight(highestHeight - currentElementHeight);
                         }
                         serviceView.render();
                         break;
