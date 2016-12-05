@@ -103,15 +103,14 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
                 //draw a collapse accordion
                 var outerDiv = $('<div></div>');
                 // TODO: For the moment disabling the adding classes in order to show the containers
-                // outerDiv.addClass('mainAccordian');
-                // outerDiv.addClass('panel panel-default');
+                 outerDiv.addClass('panel panel-default');
                 var panelHeading = $('<div></div>');
                 panelHeading.addClass('panel-heading');
                 //TODO: UPDATE ID
                 panelHeading.attr('id', canvas[0].id + 3).attr('role', 'tab');
                 var panelTitle = $('<h4></h4>');
                 panelTitle.addClass('panel-title');
-                var titleLink = $('<a>' + canvas[0].id + '</a>');
+                var titleLink = $('<a>'+ 'service' + '</a>');
                 titleLink.addClass("collapsed");
                 //TODO: update href,aria-controls
                 titleLink.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
@@ -120,7 +119,7 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
 
                 var bodyDiv = $('<div></div>');
                 // TODO: For the moment disabling the adding classes in order to show the containers
-                // bodyDiv.addClass('panel-collapse collapse');
+                 bodyDiv.addClass('panel-collapse collapse');
                 //TODO: UPDATE ID
                 bodyDiv.attr('id', canvas[0].id).attr('aria-labelledby', canvas[0].id + 3).attr('role', 'tabpanel');
                 canvas.addClass('panel-body');
@@ -135,7 +134,6 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
             });
         }
     };
-    return ballerinaFileEditor;
 
     return ballerinaFileEditor;
 });
