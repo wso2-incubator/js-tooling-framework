@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', './canvas', 'ast/service-definition'],
-    function (_, log, Canvas, ServiceDefinition) {
+define(['lodash', 'log', './canvas', 'ast/service-definition', './life-line'],
+    function (_, log, Canvas, ServiceDefinition, LifeLine) {
 
         /**
          * The view for the service definition model.
@@ -30,6 +30,9 @@ define(['lodash', 'log', './canvas', 'ast/service-definition'],
                 this._model = model;
                 this._container = container;
                 this._viewOptions = viewOptions;
+
+                // Calling parent constructor.
+                Canvas.call(this, container);
             } else {
                 log.error("Invalid args received for creating a service definition. Model: " + model + ". Container: " +
                     container);
@@ -72,7 +75,9 @@ define(['lodash', 'log', './canvas', 'ast/service-definition'],
         };
 
         ServiceDefinitionView.prototype.render = function () {
-
+            // Creating client lifeline.
+            var clientLifeLine = new LifeLine(_.first($(this._container).children()));
+            clientLifeLine.render();
         };
 
         return ServiceDefinitionView;
