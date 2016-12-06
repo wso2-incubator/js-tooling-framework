@@ -66,7 +66,7 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
                 _.each(serviceDefs, function (serviceModel) {
 
                     //TODO: Add serviceModel id and css props
-                    var serviceContainer = $('<div><svg class="service-container"></svg></div>');
+                    var serviceContainer = $('<div class="outer-box"><svg class="service-container"></svg></div>');
                     serviceContainer.attr('id', serviceModel.id);
                     serviceContainer.attr('name','service');
                     editorParent.addCanvas(serviceContainer);
@@ -104,25 +104,44 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
                 //draw a collapse accordion
                 var outerDiv = $('<div></div>');
                 // TODO: For the moment disabling the adding classes in order to show the containers
-                 outerDiv.addClass('panel panel-default');
+                 outerDiv.addClass('panel panel-default container-outer-div');
                 var panelHeading = $('<div></div>');
-                panelHeading.addClass('panel-heading');
+                //panelHeading.addClass('panel-heading');
                 //TODO: UPDATE ID
                 panelHeading.attr('id', canvas[0].id + 3).attr('role', 'tab');
                 var panelTitle = $('<h4></h4>');
                 panelTitle.addClass('panel-title');
-                var titleLink = $('<a>'+ canvas[0].getAttribute('name') + '</a>');
+                panelTitle.attr('style', 'border-style:solid;border-width:1px;');
+                var panelIcon = $('<i></i>');
+                panelIcon.attr('style', 'padding:10px;background-color:#ced4dd;');
+                if(canvas[0].getAttribute('name') == "service") {
+                    panelIcon.addClass('fw fw-dgm-service');
+                } else if (canvas[0].getAttribute('name') == "connector") {
+                    panelIcon.addClass('fw fw-dgm-connector');
+                }
+                panelTitle.append(panelIcon);
+                var titleLink = $('<a style="padding-left: 10px;">'+ canvas[0].getAttribute('name') + '</a>');
                 titleLink.addClass("collapsed");
                 //TODO: update href,aria-controls
                 titleLink.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
                 panelTitle.append(titleLink);
+
+                var panelRightIcon = $('<i></i>');
+                panelRightIcon.addClass('fw fw-down pull-right right-icon-clickable');
+                panelRightIcon.attr('style', 'padding:10px;');
+                panelTitle.append(panelRightIcon);
+
                 panelHeading.append(panelTitle);
+
+                titleLink.click(function () {
+                    $(this).parent().find('i.right-icon-clickable').toggleClass('fw-down fw-up');
+                });
 
                 var bodyDiv = $('<div></div>');
                 // TODO: For the moment disabling the adding classes in order to show the containers
                  bodyDiv.addClass('panel-collapse collapse');
                 //TODO: UPDATE ID
-                bodyDiv.attr('id', canvas[0].id).attr('aria-labelledby', canvas[0].id + 3).attr('role', 'tabpanel');
+                bodyDiv.attr('id', canvas[0].id).attr('aria-labelledby', canvas[0].id + 3).attr('role', 'tabpanel').attr('style', 'border-style:solid;border-width:1px;');
                 canvas.addClass('panel-body');
                 bodyDiv.append(canvas);
 
