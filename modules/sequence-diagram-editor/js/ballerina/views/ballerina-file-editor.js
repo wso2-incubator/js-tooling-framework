@@ -113,11 +113,13 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
                 panelTitle.addClass('panel-title');
                 panelTitle.attr('style', 'border-style:solid;border-width:1px;');
                 var panelIcon = $('<i></i>');
-                panelIcon.attr('style', 'padding:10px;background-color:#ced4dd;');
+                panelIcon.attr('style', 'padding:10px;background-color:black;');
                 if(canvas[0].getAttribute('name') == "service") {
-                    panelIcon.addClass('fw fw-dgm-service');
+                    panelIcon.addClass('fw fw-dgm-service fw-inverse');
                 } else if (canvas[0].getAttribute('name') == "connector") {
-                    panelIcon.addClass('fw fw-dgm-connector');
+                    panelIcon.addClass('fw fw-dgm-connector fw-inverse');
+                } else if(canvas[0].getAttribute('name') == "function") {
+                    panelIcon.addClass('fw fw-function fw-inverse');
                 }
                 panelTitle.append(panelIcon);
                 var titleLink = $('<a style="padding-left: 10px;">'+ canvas[0].getAttribute('name') + '</a>');
@@ -129,12 +131,17 @@ define(['require', 'lodash', 'log'], function (require, _, log) {
                 var panelRightIcon = $('<i></i>');
                 panelRightIcon.addClass('fw fw-down pull-right right-icon-clickable');
                 panelRightIcon.attr('style', 'padding:10px;');
+                panelRightIcon.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
                 panelTitle.append(panelRightIcon);
 
                 panelHeading.append(panelTitle);
 
                 titleLink.click(function () {
                     $(this).parent().find('i.right-icon-clickable').toggleClass('fw-down fw-up');
+                });
+
+                panelRightIcon.click(function () {
+                    $(this).toggleClass('fw-down fw-up');
                 });
 
                 var bodyDiv = $('<div></div>');
