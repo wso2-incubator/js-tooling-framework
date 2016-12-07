@@ -94,6 +94,7 @@ define(['require', 'log', 'jquery', 'lodash', 'backbone', 'app/menu-bar/menu-bar
             var connectorDefinition1 = ballerinaASTFactory.createConnectorDefinition();
             connectorDefinitions.push(connectorDefinition1);
             ballerinaAstRoot.setConnectorDefinitions(connectorDefinitions);
+            ballerinaAstRoot.addChild(connectorDefinition1);
 
             var serviceDefinition1 = ballerinaASTFactory.createServiceDefinition();
             serviceDefinition1.setBasePath("/basePath1");
@@ -108,16 +109,28 @@ define(['require', 'log', 'jquery', 'lodash', 'backbone', 'app/menu-bar/menu-bar
             serviceDefinition1.setResourceDefinitions([resourceDefinition1, resourceDefinition2]);
 
             serviceDefinitions.push(serviceDefinition1);
-            // serviceDefinitions.push(serviceDefinition2);
+            serviceDefinitions.push(serviceDefinition2);
+
+            ballerinaAstRoot.addChild(serviceDefinition1);
+            ballerinaAstRoot.addChild(serviceDefinition2);
             ballerinaAstRoot.setServiceDefinitions(serviceDefinitions);
 
             // Create Sample Function Definitions
             var functionDefinitions = [];
             var functionDefinition1 = ballerinaASTFactory.createFunctionDefinition();
             functionDefinitions.push(functionDefinition1);
+            ballerinaAstRoot.addChild(functionDefinition1);
             ballerinaAstRoot.setFunctionDefinitions(functionDefinitions);
 
+            /**
+             * Testing the source-gen traverse
+             *
+             */
+            var sourceGenVisitor = new Ballerina.visitors.SourceGen.BallerinaASTRootVisitor();
+
             var fileEditor = new  Ballerina.views.BallerinaFileEditor({model: ballerinaAstRoot, viewOptions: _.get(this.config, "tab_controller.tabs")});
+
+            ballerinaAstRoot.accept(sourceGenVisitor);
         },
 
         validateConfig: function(config){
