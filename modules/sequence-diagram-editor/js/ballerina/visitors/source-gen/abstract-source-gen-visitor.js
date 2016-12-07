@@ -15,20 +15,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', './conditional-statement'], function (_, log, ConditionalStatement) {
+define(['lodash', 'log', 'event_channel', 'ast_visitor'], function(_, log, EventChannel, ASTVisitor) {
 
-    /**
-     * Class for while statement in ballerina.
-     * @param condition The condition of an while statement.
-     * @param statements The statements list of a while statement.
-     * @constructor
-     */
-    var WhileStatement = function (condition, statements) {
-        ConditionalStatement.call(condition, statements);
+    var AbstractSourceGenVisitor = function() {
+        ASTVisitor.call(this);
     };
 
-    WhileStatement.prototype = Object.create(ConditionalStatement.prototype);
-    WhileStatement.prototype.constructor = WhileStatement;
+    AbstractSourceGenVisitor.prototype = Object.create(ASTVisitor.prototype);
+    AbstractSourceGenVisitor.prototype.constructor = AbstractSourceGenVisitor;
 
-    return WhileStatement;
+    return AbstractSourceGenVisitor;
 });
