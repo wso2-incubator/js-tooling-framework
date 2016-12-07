@@ -77,6 +77,11 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             ballerinaAstRoot.addChild(functionDefinition1);
             ballerinaAstRoot.setFunctionDefinitions(functionDefinitions);
 
+            var ifStatements = [];
+            var ifStatement = ballerinaASTFactory.createIfStatement();
+            ifStatements.push(ifStatement);
+            resourceDefinition1.addChild(ifStatement);
+
             /**
              * Testing the source-gen traverse
              *

@@ -174,7 +174,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             };
             var defaultWorker = new LifeLine(svgContainer, defaultWorkerOptions);
             defaultWorker.render();
-
+            this._model.children[0].accept(this);
 
 
             log.debug("Rendering Resource View");
