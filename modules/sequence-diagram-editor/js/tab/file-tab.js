@@ -39,6 +39,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             _.set(ballerinaEditorOptions, 'toolPalette', this.getParent().options.toolPalette);
             _.set(ballerinaEditorOptions, 'container', this.$el.get(0));
 
+
             var ballerinaASTFactory = new Ballerina.ast.BallerinaASTFactory();
             var ballerinaAstRoot = ballerinaASTFactory.createBallerinaAstRoot();
             var serviceDefinitions = [];
@@ -63,9 +64,10 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             ballerinaAstRoot.addChild(serviceDefinition1);
             ballerinaAstRoot.addChild(serviceDefinition2);
             serviceDefinition1.setResourceDefinitions([resourceDefinition1, resourceDefinition2]);
-
+            serviceDefinition1.addChild(resourceDefinition1);
+            serviceDefinition2.addChild(resourceDefinition2);
             serviceDefinitions.push(serviceDefinition1);
-            // serviceDefinitions.push(serviceDefinition2);
+            serviceDefinitions.push(serviceDefinition2);
             ballerinaAstRoot.setServiceDefinitions(serviceDefinitions);
 
             // Create Sample Function Definitions
@@ -84,6 +86,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             var fileEditor = new  Ballerina.views.BallerinaFileEditor({model: ballerinaAstRoot, viewOptions: ballerinaEditorOptions});
             var sourceGenVisitor = new Ballerina.visitors.SourceGen.BallerinaASTRootVisitor();
             ballerinaAstRoot.accept(sourceGenVisitor);
+            ballerinaAstRoot.accept(fileEditor);
         }
     });
 
