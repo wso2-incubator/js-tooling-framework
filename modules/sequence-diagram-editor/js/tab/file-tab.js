@@ -70,6 +70,12 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             functionDefinitions.push(functionDefinition1);
             ballerinaAstRoot.setFunctionDefinitions(functionDefinitions);
 
+            //Test if-else statements
+            var ifStatements = [];
+            var ifStatement = ballerinaASTFactory.createIfStatement();
+            ifStatements.push(ifStatement);
+
+
             var fileEditor = new  Ballerina.views.BallerinaFileEditor({model: ballerinaAstRoot, viewOptions: ballerinaEditorOptions});
             var sourceGenVisitor = new Ballerina.visitors.SourceGen.BallerinaASTRootVisitor();
             ballerinaAstRoot.accept(sourceGenVisitor);

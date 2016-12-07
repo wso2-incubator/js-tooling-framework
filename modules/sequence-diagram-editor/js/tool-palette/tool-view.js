@@ -83,6 +83,9 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'd3utils'], function (r
             return div;
         }
 
+        //make Draggable
+
+
     });
 
     return toolView;

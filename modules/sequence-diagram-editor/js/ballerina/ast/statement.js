@@ -22,6 +22,7 @@ define(['lodash', './node'], function (_, ASTNode) {
      * @constructor
      */
     var Statement = function () {
+        ASTNode.call(this);
     };
 
     Statement.prototype = Object.create(ASTNode.prototype);
