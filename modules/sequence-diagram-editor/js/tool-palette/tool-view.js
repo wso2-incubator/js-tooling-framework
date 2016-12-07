@@ -16,7 +16,7 @@
  * under the License.
  */
 
-define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'd3utils'], function (require, $, d3, Backbone, _, D3Utils) {
+define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'ballerina'], function (require, $, d3, Backbone, _, Ballerina) {
 
     var toolView = Backbone.View.extend({
 
@@ -75,12 +75,18 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'd3utils'], function (r
         },
 
         createContainerForDraggable: function(){
-            var body = d3.select("body");
+            /*var body = d3.select("body");
             var div = body.append("div").attr("id", "draggingToolClone");
             //For validation feedback
             div.append('span').attr("id","validator");
             div =  D3Utils.decorate(div);
-            return div;
+            return div;*/
+
+            //Test if-else statements
+            var ballerinaASTFactory = new Ballerina.ast.BallerinaASTFactory();
+            var ifStatement = ballerinaASTFactory.createIfStatement()
+            var ifStatementView = new Ballerina.views.IfStatementView({model : ifStatement});
+            ifStatementView.render();
         }
 
         //make Draggable

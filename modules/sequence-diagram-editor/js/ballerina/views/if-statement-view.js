@@ -25,7 +25,7 @@ define(['lodash', 'log', 'event_channel', './../ast/if-statement', 'd3utils'], f
      * @constructor
      */
     var IfStatementView = function (model, container, viewOptions) {
-        if (!_.isNil(model) && model instanceof ReplyStatement && !_.isNil(container)) {
+        if (!_.isNil(model) && model instanceof IfStatement && !_.isNil(container)) {
             this._model = model;
             this._container = container;
             this._viewOptions = viewOptions;
@@ -73,7 +73,7 @@ define(['lodash', 'log', 'event_channel', './../ast/if-statement', 'd3utils'], f
     IfStatementView.prototype.render = function () {
         var group = D3Utils.draw.group(this._container);
         var rect = D3Utils.draw.rect(10, 10, 100, 100, 0, 0, group, "#FFFFFF");
-        window.console.log("Rendering the Reply Statement.");
+        window.console.log("Rendering the If Statement.");
         group.rect = rect;
         return group;
     };
