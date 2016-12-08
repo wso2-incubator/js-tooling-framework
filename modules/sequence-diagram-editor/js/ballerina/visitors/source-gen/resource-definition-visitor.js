@@ -18,8 +18,12 @@
 define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor'],
     function(_, log, EventChannel, AbstractSourceGenVisitor) {
 
-        var ResourceDefinitionVisitor = function() {
-            AbstractSourceGenVisitor.call(this);
+        /**
+         * @param parent
+         * @constructor
+         */
+        var ResourceDefinitionVisitor = function (parent) {
+            AbstractSourceGenVisitor.call(this, parent);
         };
 
         ResourceDefinitionVisitor.prototype = Object.create(AbstractSourceGenVisitor.prototype);
@@ -30,6 +34,12 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor'],
         };
 
         ResourceDefinitionVisitor.prototype.beginVisitResourceDefinition = function(resourceDefinition){
+            /**
+             * set the configuration start for the resource definition language construct
+             * If we need to add additional parameters which are dynamically added to the configuration start
+             * that particular source generation has to be constructed here
+             */
+            this.appendSource(resourceDefinition.getConfigStart());
             log.info('Begin Visit ResourceDefinition');
         };
 
@@ -37,9 +47,25 @@ define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor'],
             log.info('Visit ResourceDefinition');
         };
 
-        ResourceDefinitionVisitor.prototype.endVisitBallerinaASTRoot = function(resourceDefinition){
+        ResourceDefinitionVisitor.prototype.endVisitResourceDefinition = function(resourceDefinition){
+            this.appendSource(resourceDefinition.getConfigEnd() + "\n");
+            this.getParent().appendSource(this.getGeneratedSource());
             log.info('End Visit ResourceDefinition');
         };
 
+        ResourceDefinitionVisitor.prototype.visitStatement = function(statementDefinition){
+            var statementDefinitionVisitor;
+            //routing to correct statement type
+            if(statementDefinition instanceof IfStatement){
+                statementDefinitionVisitor = new IfStatementVisitor();
+            } else if(statementDefinition instanceof WhileStatement){
+                statementDefinitionVisitor = new IterateStatementVisitor();
+            } else if(statementDefinition instanceof TryCatchStatement){
+                statementDefinitionVisitor = new TryCatchStatementVisitor();
+            } else if(statementDefinition instanceof ReplyStatement){
+                statementDefinitionVisitor = new ReplyStatementVisitor();
+            }
+            statementDefinition.accept(statementDefinitionVisitor);
+        };
         return ResourceDefinitionVisitor;
     });
