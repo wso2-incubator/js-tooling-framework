@@ -32,8 +32,10 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
             return this.canVisitServiceDefinition(node);
         } else if(node instanceof AST.ResourceDefinition){
             return this.canVisitResourceDefinition(node);
-        } else if(node instanceof AST.FunctionDefinition){
+        } else if(node instanceof AST.FunctionDefinition) {
             return this.canVisitFunctionDefinition(node);
+        } else if (node instanceof AST.Statement) {
+            return this.canVisitStatement(node);
         }
     };
 
@@ -49,6 +51,8 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
             return this.beginVisitResourceDefinition(node);
         } else if(node instanceof AST.FunctionDefinition){
             return this.beginVisitFunctionDefinition(node);
+        } else if (node instanceof AST.Statement) {
+            return this.beginVisitStatement(node);
         }
     };
 
@@ -66,6 +70,8 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
             return this.visitStatementDefinition(node);
         } else if(node instanceof AST.FunctionDefinition){
             return this.visitFunctionDefinition(node);
+        } else if (node instanceof AST.Statement) {
+            return this.visitStatement(node);
         }
     };
 
@@ -81,6 +87,8 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
             return this.endVisitResourceDefinition(node);
         } else if(node instanceof AST.FunctionDefinition){
             return this.endVisitFunctionDefinition(node);
+        } else if(node instanceof AST.Statement){
+            return this.endVisitStatement(node);
         }
     };
 
@@ -142,6 +150,18 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
     ASTVisitor.prototype.visitFunctionDefinition = function(resourceDefinition){
     };
     ASTVisitor.prototype.endVisitFunctionDefinition = function(resourceDefinition){
+    };
+
+    ASTVisitor.prototype.canVisitStatement = function(statement){
+        return false;
+    };
+    ASTVisitor.prototype.beginVisitStatement = function(statement){
+
+    };
+    ASTVisitor.prototype.visitStatement = function(statement){
+
+    };
+    ASTVisitor.prototype.endVisitStatement = function(statement){
     };
 
     return ASTVisitor;

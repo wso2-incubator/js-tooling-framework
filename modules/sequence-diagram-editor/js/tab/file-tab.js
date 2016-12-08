@@ -77,6 +77,11 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             ballerinaAstRoot.addChild(functionDefinition1);
             ballerinaAstRoot.setFunctionDefinitions(functionDefinitions);
 
+            var ifStatements = [];
+            var ifStatement = ballerinaASTFactory.createIfStatement();
+            ifStatements.push(ifStatement);
+            resourceDefinition1.addChild(ifStatement);
+
             var fileEditor = new  Ballerina.views.BallerinaFileEditor({model: ballerinaAstRoot, viewOptions: ballerinaEditorOptions});
 
             /**
@@ -84,7 +89,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
              *
              */
             var sourceGenVisitor = new Ballerina.visitors.SourceGen.BallerinaASTRootVisitor();
-            ballerinaAstRoot.accept(sourceGenVisitor);
+            //ballerinaAstRoot.accept(sourceGenVisitor);
             ballerinaAstRoot.accept(fileEditor);
             log.info(sourceGenVisitor.getGeneratedSource());
         }
