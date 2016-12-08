@@ -134,7 +134,7 @@ define(['lodash', 'log', 'event_channel', './../ast/module'],
     };
 
     ASTVisitor.prototype.canVisitResourceDefinition = function(resourceDefinition){
-        return false;
+        return true;
     };
     ASTVisitor.prototype.beginVisitResourceDefinition = function(resourceDefinition){
     };
