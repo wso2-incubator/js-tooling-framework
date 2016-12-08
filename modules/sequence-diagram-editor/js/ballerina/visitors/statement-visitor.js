@@ -18,7 +18,9 @@
 define(['lodash', 'log', './ast-visitor', '../ast/module'],
     function(_, log, ASTVisitor, AST) {
 
-    var StatementVisitor = function() {};
+    var StatementVisitor = function() {
+        ASTVisitor.call(this);
+    };
 
     StatementVisitor.prototype = Object.create(ASTVisitor.prototype);
     StatementVisitor.prototype.constructor = StatementVisitor;

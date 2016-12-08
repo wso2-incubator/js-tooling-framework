@@ -15,7 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, EventChannel, AST) {
+define(['lodash', 'log', 'event_channel', './../ast/module'],
+    function(_, log, EventChannel, AST) {
 
     var ASTVisitor = function() {};
 
@@ -67,7 +68,7 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
         } else if(node instanceof AST.ResourceDefinition){
             return this.visitResourceDefinition(node);
         } else if(node instanceof AST.Statement){
-            return this.visitStatementDefinition(node);
+            return this.visitStatement(node);
         } else if(node instanceof AST.FunctionDefinition){
             return this.visitFunctionDefinition(node);
         } else if (node instanceof AST.Statement) {
@@ -159,7 +160,6 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
 
     };
     ASTVisitor.prototype.visitStatement = function(statement){
-
     };
     ASTVisitor.prototype.endVisitStatement = function(statement){
     };
