@@ -68,12 +68,13 @@ define(['lodash', 'log', 'event_channel', './../ast/if-statement', './../visitor
     IfStatementView.prototype.getViewOptions = function () {
         return this._viewOptions;
     };
-    
-    IfStatementView.prototype.visitIfStatement = function () {
-        
-    }
+
+    IfStatementView.prototype.canVisitIfStatement = function (statement) {
+        return true;
+    };
 
     IfStatementView.prototype.render = function () {
+        this.getModel().accept(this);
         var group = D3Utils.draw.group(this._container);
         var rect = D3Utils.draw.rect(10, 10, 100, 100, 0, 0, group, "#FFFFFF");
         window.console.log("Rendering the If Statement.");

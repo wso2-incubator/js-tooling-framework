@@ -66,7 +66,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             resourceDefinition1.resourceParent(serviceDefinition1);
             resourceDefinition2.resourceParent(serviceDefinition2);
 
-            // Create Sample try-catch statement
+            /*// Create Sample try-catch statement
             var tryCatchStatement1 = ballerinaASTFactory.createTryCatchStatement();
             var tryStatement = ballerinaASTFactory.createTryStatement();
             var catchStatement = ballerinaASTFactory.createCatchStatement();
@@ -79,7 +79,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
             tryCatchStatement1.addChild(tryStatement);
             tryCatchStatement1.addChild(catchStatement);
 
-            resourceDefinition1.addChild(tryCatchStatement1);
+            resourceDefinition1.addChild(tryCatchStatement1);*/
 
             // Create Sample if statement
             var ifStatement1 = ballerinaASTFactory.createIfStatement();
@@ -138,8 +138,6 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
              *
              */
             var sourceGenVisitor = new Ballerina.visitors.SourceGen.BallerinaASTRootVisitor();
-
-            //ballerinaAstRoot.accept(fileEditor);
             ballerinaAstRoot.accept(sourceGenVisitor);
             log.info(sourceGenVisitor.getGeneratedSource());
         },

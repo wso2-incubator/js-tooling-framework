@@ -94,7 +94,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             return this._viewOptions;
         };
 
-        /*ResourceDefinitionView.prototype.setChildContainer = function(svg){
+        ResourceDefinitionView.prototype.setChildContainer = function(svg){
             if (!_.isNil(svg)) {
                 this._childContainer = svg;
             }
@@ -102,16 +102,24 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
         ResourceDefinitionView.prototype.getChildContainer = function(){
             return this._childContainer ;
 
-        };*/
+        };
 
         ResourceDefinitionView.prototype.setBoundingBox = function(width,height,x,y){
            if(!_.isNil(width) || !_.isNil(height) || !_.isNil(x) || !_.isNil(y) )
             this._boundingBox = {"width": width, "height":height, "x":x, "y":y};
-        }
+        };
 
         ResourceDefinitionView.prototype.getBoundingBox = function(){
             return this._boundingBox;
-        }
+        };
+
+        ResourceDefinitionView.prototype.canVisitResourceDefinition = function(resourceDefinition){
+            return true;
+        };
+
+        ResourceDefinitionView.prototype.canVisitStatement = function(statement){
+            return true;
+        };
 
         ResourceDefinitionView.prototype.render = function () {
             // Render resource view
@@ -227,10 +235,10 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             };
             var defaultWorker = new LifeLine(contentGroup, defaultWorkerOptions);
             defaultWorker.render();
-            /*this.setChildContainer(_.first($(this._container).children().children()));
-            this._model.accept(this);*/
+            this.setChildContainer(_.first($(this._container).children().children()));
 
             log.debug("Rendering Resource View");
+            this._model.accept(this)
         };
 
         ResourceDefinitionView.prototype.visitStatement = function(statement){
@@ -240,8 +248,6 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             var statementViewFactory = new StatementViewFactory();
             var view = statementViewFactory.createStatementView({model: statement, container: resourceContainer});
             view.render();
-
-            //view.getModel().accept(view);
 
         };
 

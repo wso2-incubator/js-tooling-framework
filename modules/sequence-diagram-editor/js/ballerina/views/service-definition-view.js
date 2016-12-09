@@ -90,6 +90,10 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
             return this._viewOptions;
         };
 
+        ServiceDefinitionView.canVisitResourceDefinition = function(resourceDefinition){
+            return true;
+        };
+
         ServiceDefinitionView.prototype.render = function () {
             this.drawAccordionCanvas(this._container, this._options, this._model.id, 'service');
             var divId = this._model.id;

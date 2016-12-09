@@ -147,7 +147,7 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
     };
 
     ASTVisitor.prototype.canVisitResourceDefinition = function(resourceDefinition){
-        return true;
+        return false;
     };
     ASTVisitor.prototype.beginVisitResourceDefinition = function(resourceDefinition){
     };
@@ -187,7 +187,7 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
     };
 
     ASTVisitor.prototype.canVisitStatement = function(statement){
-        return true;
+        return false;
     };
     ASTVisitor.prototype.beginVisitStatement = function(statement){
     };
