@@ -152,6 +152,20 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace']
            tryCatchStatement.addChild(tryStatement);
            tryCatchStatement.addChild(catchStatement);
            resource_passthrough.addChild(tryCatchStatement);
+            // Create sample Worker Declaration
+            var workerDeclaration1 = ballerinaASTFactory.createWorkerDeclaration();
+            var workerDeclaration2 = ballerinaASTFactory.createWorkerDeclaration();
+
+            // Create Sample Function Definitions
+            var functionDefinitions = [];
+            var functionDefinitions1 = [];
+
+            var functionDefinition1 = ballerinaASTFactory.createFunctionDefinition();
+            functionDefinition1.addChild(workerDeclaration1);
+            functionDefinition1.addChild(workerDeclaration2);
+            functionDefinitions.push(functionDefinition1);
+            ballerinaAstRoot.addChild(functionDefinition1);
+            ballerinaAstRoot.setFunctionDefinitions(functionDefinitions);
 
            serviceDefinitions.push(serviceDefinition_passthroughService);
            ballerinaAstRoot1.setServiceDefinitions(serviceDefinitions);
