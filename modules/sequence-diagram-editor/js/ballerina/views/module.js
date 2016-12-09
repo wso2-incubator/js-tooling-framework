@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -16,9 +17,11 @@
  * under the License.
  */
 define(['./action-definition-view', './ballerina-file-editor', './canvas', './connection-declaration', './function-definition-view', './reply-statement-view',
-    './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view', './while-statement-view', './worker-declaration', './if-statement-view' ],
+        './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view', './while-statement-view', './worker-declaration',
+        './source-view', './if-statement-view'],
     function (ActionDefinitionView, BallerinaFileEditor, Canvas, ConnectionDeclaration, FunctionDefinitionView, ReplyStatementView,
-              ResourceDefinitionView, ReturnStatementView, ServiceDefinitionView, ThrowStatementView, WhileStatementView, WorkerDeclaration, IfStatementView) {
+              ResourceDefinitionView, ReturnStatementView, ServiceDefinitionView, ThrowStatementView, WhileStatementView, WorkerDeclaration,
+              SourceView, IfStatementView) {
         return  {
             ActionDefinitionView: ActionDefinitionView,
             BallerinaFileEditor: BallerinaFileEditor,
@@ -32,8 +35,7 @@ define(['./action-definition-view', './ballerina-file-editor', './canvas', './co
             ThrowStatementView: ThrowStatementView,
             WhileStatementView: WhileStatementView,
             WorkerDeclaration: WorkerDeclaration,
+            SourceView: SourceView,
             IfStatementView: IfStatementView
-
         }
     });
-

@@ -66,6 +66,7 @@ define(['lodash', 'jquery', 'd3', 'log', 'd3utils', 'app/diagram-core/models/poi
             this._viewOptions.text.class = _.get(options, "text.class", "client lifeline-title");
             this._viewOptions.action = _.get(options, "action", {});
             this._viewOptions.action.value = _.get(options, "action.value", "Action");
+            this._viewOptions.defaultWorker = _.get(options, "worker.value", false);
 
             // Make the lifeline uneditable by default
             if (_.get(options, "editable", false)) {
@@ -147,7 +148,14 @@ define(['lodash', 'jquery', 'd3', 'log', 'd3utils', 'app/diagram-core/models/poi
 
     LifeLine.prototype.render = function () {
         // Creating group for lifeline.
-        this._lifelineGroup = D3Utils.group(d3.select(this._canvas)).classed("client", true);
+        // a group element is passed for default worker
+        if(this._viewOptions.defaultWorker){
+           this._lifelineGroup = D3Utils.group((this._canvas)).classed("client", true);
+        }
+        else{
+            this._lifelineGroup = D3Utils.group(d3.select(this._canvas)).classed("client", true);
+        }
+
 
         if (this._viewOptions.polygon.shape == "diamond") { // Drawing top polygon.
             var polygonYOffset = this._viewOptions.polygon.height / 2;
@@ -266,26 +274,24 @@ define(['lodash', 'jquery', 'd3', 'log', 'd3utils', 'app/diagram-core/models/poi
 
             });
 
-            this._bottomPolygon = D3Utils.centeredRect(new Point(this._viewOptions.centerPoint.x, this._viewOptions.centerPoint.y + this._viewOptions.line.height), this._viewOptions.polygon.width, this._viewOptions.polygon.height, 0, 0, this._lifelineGroup);
+            this._bottomPolygon = D3Utils.centeredRect(new Point(this._viewOptions.centerPoint.x, this._viewOptions.centerPoint.y + this._viewOptions.line.height + 12), this._viewOptions.polygon.width, this._viewOptions.polygon.height , 0, 0, this._lifelineGroup);
             this._bottomPolygon.attr('fill', "#FFFFFF");
             this._bottomPolygon.attr('stroke-width', "1");
             this._bottomPolygon.attr('stroke', "#000000");
-            // this._bottomPolygon.attr('fill', "#FFFFFF");
-            // this._bottomPolygon.attr('stroke-width', "1");
-            // this._bottomPolygon.attr('stroke', "#000000");
-            //
+
+
             // // Add text to bottom polygon.
-            // this._bottomPolygonText = D3Utils.textElement(this._viewOptions.centerPoint.x, centerYPointOfBottomPolygon,
-            //     this._viewOptions.text.value, this._lifelineGroup)
-            //     .classed(this._viewOptions.text.class, true).classed("genericT", true);
+             this._bottomPolygonText = D3Utils.textElement((this._viewOptions.centerPoint.x + 5 - this._viewOptions.polygon.width/2), (this._viewOptions.centerPoint.y + this._viewOptions.line.height +25 -this._viewOptions.polygon.height/2) ,
+                 this._viewOptions.text.value, this._lifelineGroup)
+                 .classed(this._viewOptions.text.class, true).classed("genericT", true);
             //
             // // Centering the text to the middle of the bottom polygon.
-            // this._bottomPolygonText.attr('dominant-baseline', "middle");
+             this._bottomPolygonText.attr('dominant-baseline', "middle");
         }
 
         // Adding property editor buttons.
         if (_.get(this._viewOptions, "editable", false)) {
-            this.addEditableAndDeletable();
+           // this.addEditableAndDeletable();
         }
 
         // TODO : Implement draggable.

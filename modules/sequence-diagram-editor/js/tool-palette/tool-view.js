@@ -16,7 +16,7 @@
  * under the License.
  */
 
-define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'ballerina'], function (require, $, d3, Backbone, _, Ballerina) {
+define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'd3utils'], function (require, $, d3, Backbone, _, D3Utils) {
 
     var toolView = Backbone.View.extend({
 
@@ -30,69 +30,97 @@ define(['require', 'jquery', 'd3', 'backbone', 'lodash', 'ballerina'], function 
             this.toolPalette.dragDropManager.reset();
         },
 
-        createHndleOnDragEvent : function(event,ui){
+        createHndleOnDragEvent: function (event, ui) {
             var helperElm = ui.helper;
             var span = helperElm[0].childNodes;
             var validator = document.getElementById("validator");
 
             //Visual feedback on invalid drop targets
-            if(!this.toolPalette.dragDropManager.isAtValidDropTarget()){
-                validator.innerText="X";
+            if (!this.toolPalette.dragDropManager.isAtValidDropTarget()) {
+                validator.innerText = "X";
                 validator.className = "tool-validator";
-                validator.style.display="block";
+                validator.style.display = "block";
             }
-            else{
-                validator.style.display="none";
+            else {
+                validator.style.display = "none";
             }
         },
 
-        createHandleDragStartEvent : function(){
+        createHandleDragStartEvent: function () {
             var toolView = this;
-            return function(event,ui){
+            return function (event, ui) {
                 toolView.toolPalette.dragDropManager.setTypeBeingDragged(this.model);
             }
         },
 
         render: function (parent) {
-            var createCloneCallback = this.model.get("createCloneCallback");
-            var dragCursorOffset = this.model.get("dragCursorOffset");
+            //var createCloneCallback = this.model.get("createCloneCallback");
+            var dragCursorOffset = this.getDragCursorOffset();
             var self = this;
             this.$el.html(this.toolTemplate(this.model.attributes));
             this.$el.tooltip();
             parent.append(this.$el);
 
             this.$el.draggable({
-                helper: _.isUndefined(createCloneCallback) ?  'clone' : createCloneCallback(self),
+                helper: _.isUndefined(this.createCloneCallback) ? 'clone' : this.createCloneCallback(self),
                 cursor: 'move',
-                cursorAt: _.isUndefined(dragCursorOffset) ?  { left: -2, top: -2 } : dragCursorOffset,
+                cursorAt: _.isUndefined(dragCursorOffset) ? {left: -2, top: -2} : dragCursorOffset,
                 zIndex: 10001,
                 stop: this.createHandleDragStartEvent(),
-                start : this.createHandleDragStartEvent(),
-                drag:this.createHandleDragStartEvent()
+                start: this.createHandleDragStartEvent(),
+                drag: this.createHandleDragStartEvent()
             });
 
             return this;
         },
 
-        createContainerForDraggable: function(){
-            /*var body = d3.select("body");
+        createContainerForDraggable: function () {
+            var body = d3.select("body");
             var div = body.append("div").attr("id", "draggingToolClone");
             //For validation feedback
-            div.append('span').attr("id","validator");
-            div =  D3Utils.decorate(div);
-            return div;*/
+            div.append('span').attr("id", "validator");
+            return div;
+        },
 
-            //Test if-else statements
-            var ballerinaASTFactory = new Ballerina.ast.BallerinaASTFactory();
-            var ifStatement = ballerinaASTFactory.createIfStatement()
-            var ifStatementView = new Ballerina.views.IfStatementView({model : ifStatement});
-            ifStatementView.render();
+        partialRender: function (parent, attributes) {
+            var dragCursorOffset = this.getDragCursorOffset();
+            var self = this;
+            this.$el.html(this.toolTemplate(attributes));
+            this.$el.tooltip();
+            parent.append(this.$el);
+
+            this.$el.draggable({
+                helper: _.isUndefined(this.createCloneCallback) ? 'clone' : this.createCloneCallback(self),
+                cursor: 'move',
+                cursorAt: _.isUndefined(dragCursorOffset) ? {left: -2, top: -2} : dragCursorOffset,
+                zIndex: 10001,
+                stop: this.createHandleDragStartEvent(),
+                start: this.createHandleDragStartEvent(),
+                drag: this.createHandleDragStartEvent()
+            });
+            return this;
+        },
+
+        createCloneCallback: function (view) {
+            function cloneCallBack() {
+                var div = view.createContainerForDraggable();
+                d3.xml("images/tool-icons/lifeline.svg").mimeType("image/svg+xml").get(function (error, xml) {
+                    if (error) throw error;
+                    var svg = xml.getElementsByTagName("svg")[0];
+                    d3.select(svg).attr("width", "100px").attr("height", "100px");
+                    d3.select(svg).attr("width", "100px");
+                    div.node().appendChild(svg);
+                });
+                return div.node();
+            }
+
+            return cloneCallBack;
+        },
+
+        getDragCursorOffset: function () {
+            return {left: 50, top: 50};
         }
 
-        //make Draggable
-
-
     });
-
     return toolView;
 });

@@ -16,47 +16,59 @@
  * under the License.
  */
 define(['lodash', 'log', 'event_channel', './abstract-source-gen-visitor', './statement-visitor-factory'],
-    function(_, log, EventChannel, AbstractSourceGenVisitor, StatementVisitorFactory) {
+    function (_, log, EventChannel, AbstractSourceGenVisitor, StatementVisitorFactory) {
 
+    /**
+     * @param parent
+     * @constructor
+     */
+    var ResourceDefinitionVisitor = function (parent) {
+        AbstractSourceGenVisitor.call(this, parent);
+    };
+
+    ResourceDefinitionVisitor.prototype = Object.create(AbstractSourceGenVisitor.prototype);
+    ResourceDefinitionVisitor.prototype.constructor = ResourceDefinitionVisitor;
+
+    ResourceDefinitionVisitor.prototype.canVisitResourceDefinition = function (resourceDefinition) {
+        return true;
+    };
+
+    ResourceDefinitionVisitor.prototype.beginVisitResourceDefinition = function (resourceDefinition) {
         /**
-         * @param parent
-         * @constructor
+         * set the configuration start for the resource definition language construct
+         * If we need to add additional parameters which are dynamically added to the configuration start
+         * that particular source generation has to be constructed here
          */
-        var ResourceDefinitionVisitor = function (parent) {
-            AbstractSourceGenVisitor.call(this, parent);
-        };
+        var constructedSourceSegment = 'resource ' + resourceDefinition.getResourceName() + '(';
 
-        ResourceDefinitionVisitor.prototype = Object.create(AbstractSourceGenVisitor.prototype);
-        ResourceDefinitionVisitor.prototype.constructor = ResourceDefinitionVisitor;
+        // Append the resource arguments
+        var arguments = resourceDefinition.getResourceArguments();
+        for (var id = 0; id < arguments.length; id ++) {
+            constructedSourceSegment += arguments[id].getType() + ' ' + arguments[id].getIdentifier();
+            if (id !== arguments.length - 1) {
+                constructedSourceSegment += ','
+            } else {
+                constructedSourceSegment += ') {'
+            }
+        }
+        this.appendSource(constructedSourceSegment);
+        log.info('Begin Visit ResourceDefinition');
+    };
 
-        ResourceDefinitionVisitor.prototype.canVisitResourceDefinition = function(resourceDefinition){
-            return true;
-        };
+    ResourceDefinitionVisitor.prototype.visitResourceDefinition = function (resourceDefinition) {
+        log.info('Visit ResourceDefinition');
+    };
 
-        ResourceDefinitionVisitor.prototype.beginVisitResourceDefinition = function(resourceDefinition){
-            /**
-             * set the configuration start for the resource definition language construct
-             * If we need to add additional parameters which are dynamically added to the configuration start
-             * that particular source generation has to be constructed here
-             */
-            this.appendSource(resourceDefinition.getConfigStart());
-            log.info('Begin Visit ResourceDefinition');
-        };
+    ResourceDefinitionVisitor.prototype.endVisitResourceDefinition = function (resourceDefinition) {
+        this.appendSource("}\n");
+        this.getParent().appendSource(this.getGeneratedSource());
+        log.info('End Visit ResourceDefinition');
+    };
 
-        ResourceDefinitionVisitor.prototype.visitResourceDefinition = function(resourceDefinition){
-            log.info('Visit ResourceDefinition');
-        };
-
-        ResourceDefinitionVisitor.prototype.endVisitResourceDefinition = function(resourceDefinition){
-            this.appendSource(resourceDefinition.getConfigEnd() + "\n");
-            this.getParent().appendSource(this.getGeneratedSource());
-            log.info('End Visit ResourceDefinition');
-        };
-
-        ResourceDefinitionVisitor.prototype.visitStatement = function(statement){
-            var statementVisitorFactory = new StatementVisitorFactory();
-            var statementVisitor = statementVisitorFactory.getStatementVisitor(statement);
-            statement.accept(statementVisitor);
-        };
-        return ResourceDefinitionVisitor;
-    });
+    ResourceDefinitionVisitor.prototype.visitStatement = function (statement) {
+        var statementVisitorFactory = new StatementVisitorFactory();
+        var statementVisitor = statementVisitorFactory.getStatementVisitor(statement, this);
+        statement.accept(statementVisitor);
+    };
+    return ResourceDefinitionVisitor;
+});

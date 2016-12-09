@@ -39,7 +39,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
 
                 // View options for height and width of the heading box.
                 this._viewOptions.heading = _.get(args, "viewOptions.heading", {});
-                this._viewOptions.heading.hight = _.get(args, "viewOptions.heading.height", 25);
+                this._viewOptions.heading.height = _.get(args, "viewOptions.heading.height", 25);
                 this._viewOptions.heading.width = _.get(args, "viewOptions.heading.width", 1000);
 
                 // View options for height and width of the resource icon in the heading box.
@@ -49,7 +49,8 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
 
                 this._viewOptions.contentCollapsed = _.get(args, "viewOptions.contentCollapsed", false);
                 this._viewOptions.contentWidth = _.get(args, "viewOptions.contentWidth", 1000);
-                this._viewOptions.contentHeight = _.get(args, "viewOptions.contentHeight", 200);
+                this._viewOptions.contentHeight = _.get(args, "viewOptions.contentHeight", 360);
+                this._viewOptions.collapseIconWidth = _.get(args, "viewOptions.collaspeIconWidth", 1025);
 
 
             } else {
@@ -93,7 +94,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             return this._viewOptions;
         };
 
-        ResourceDefinitionView.prototype.setChildContainer = function(svg){
+        /*ResourceDefinitionView.prototype.setChildContainer = function(svg){
             if (!_.isNil(svg)) {
                 this._childContainer = svg;
             }
@@ -101,66 +102,97 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
         ResourceDefinitionView.prototype.getChildContainer = function(){
             return this._childContainer ;
 
-        };
+        };*/
+
+        ResourceDefinitionView.prototype.setBoundingBox = function(width,height,x,y){
+           if(!_.isNil(width) || !_.isNil(height) || !_.isNil(x) || !_.isNil(y) )
+            this._boundingBox = {"width": width, "height":height, "x":x, "y":y};
+        }
+
+        ResourceDefinitionView.prototype.getBoundingBox = function(){
+            return this._boundingBox;
+        }
 
         ResourceDefinitionView.prototype.render = function () {
             // Render resource view
             var svgContainer = $(this._container).children()[0];
             var headingStart = new Point(this._viewOptions.centerPoint.x, this._viewOptions.centerPoint.y);
-            var contentStart = new Point(this._viewOptions.centerPoint.x, this._viewOptions.centerPoint.y + this._viewOptions.heading.hight);
+            var contentStart = new Point(this._viewOptions.centerPoint.x, this._viewOptions.centerPoint.y + this._viewOptions.heading.height);
+             //Main container for a resource
+            var resourceGroup = D3utils.group(d3.select(svgContainer));
+            resourceGroup.attr("id","resourceGroup");
+            resourceGroup.attr("width",this._viewOptions.heading.width).attr("height",this._viewOptions.heading.height+this._viewOptions.contentHeight);
+            resourceGroup.attr("x",headingStart.x()).attr("y",contentStart.y());
 
-            var headerGroup = D3utils.group(d3.select(svgContainer));
+            this.setBoundingBox(this._viewOptions.heading.width,this._viewOptions.heading.height+this._viewOptions.contentHeight,headingStart.x(),contentStart.y());
 
-            var headingRect = D3utils.rect(headingStart.x(), headingStart.y(), this._viewOptions.heading.width, this._viewOptions.heading.hight, 0, 0, headerGroup);
-            // TODO: Move these styling to css
-            headingRect.attr('fill', "#FFFFFF");
-            headingRect.attr('stroke-width', "1");
-            headingRect.attr('stroke', "#cbcbcb");
+            // Resource related definitions: resourceIcon,collapseIcon
+            var def = resourceGroup.append("defs");
+            var pattern = def.append("pattern").attr("id","toggleIcon").attr("width","100").attr("height","100");
+            var image = pattern.append("image").attr("xlink:href","images/down.svg").attr("x","0").attr("y","0").attr("width","15").attr("height","28");
+            var pattern2 = def.append("pattern").attr("id","resourceIcon").attr("width","100").attr("height","100");
+            var image2 = pattern2.append("image").attr("xlink:href","images/dgm-resource.svg").attr("x","0").attr("y","5").attr("width","20").attr("height","20");
+
+            // Resource header container
+            var headerGroup = D3utils.group(resourceGroup);
+            headerGroup.attr("id","headerGroup");
+
+            var headingRect = D3utils.rect(headingStart.x(), headingStart.y(), this._viewOptions.heading.width, this._viewOptions.heading.height, 0, 0, headerGroup).classed("headingRect",true);
 
             // Drawing resource icon
-            // TODO : FIX
             var headingRectIcon = D3utils.rect(headingStart.x(), headingStart.y(), this._viewOptions.heading.icon.width,
-                this._viewOptions.heading.icon.height, 0, 0, headerGroup).classed("fw fw-dgm-service fw-inverse");
+                this._viewOptions.heading.icon.height, 0, 0, headerGroup).classed("headingRectIcon",true);
+
+             //Resource  heading collapse icon
+            var headingCollapseIcon = D3utils.rect(this._viewOptions.collapseIconWidth, headingStart.y(), this._viewOptions.heading.icon.width,
+                this._viewOptions.heading.icon.height, 0, 0, headerGroup).classed("headingCollapseIcon",true);
 
             // Create rect for the http method text
             var httpMethodRect = D3utils.rect(headingStart.x() + this._viewOptions.heading.icon.width, headingStart.y() + 0.5, this._viewOptions.heading.icon.width + 25,
-                this._viewOptions.heading.icon.height - 1, 0, 0, headerGroup);
-            httpMethodRect.attr('fill', "#f3f3f3");
+                this._viewOptions.heading.icon.height - 1, 0, 0, headerGroup).classed("httpMethodRect",true);
 
             // Set HTTP Method
-            var httpMethodText = D3utils.textElement(headingStart.x() + this._viewOptions.heading.icon.width + 5, headingStart.y() + 4, this._model.getResourceMethod(), headerGroup);
+            var httpMethodText = D3utils.textElement(headingStart.x() + this._viewOptions.heading.icon.width + 5, headingStart.y() + 4, this._model.getResourceMethod(), headerGroup).classed("httpMethodText",true);
             httpMethodText.attr('dominant-baseline', "text-before-edge");
-            httpMethodText.attr("fill", "#777777");
 
             // Setting resource path prefix
-            var resourcePathPrefix = D3utils.textElement(headingStart.x() + this._viewOptions.heading.icon.width + 55, headingStart.y() + 4, "Path: ", headerGroup);
+            var resourcePathPrefix = D3utils.textElement(headingStart.x() + this._viewOptions.heading.icon.width + 55, headingStart.y() + 4, "Path: ", headerGroup).classed("resourcePathPrefix",true);
             resourcePathPrefix.attr('dominant-baseline', "text-before-edge");
-            resourcePathPrefix.attr('stroke-width', 0.5);
-            resourcePathPrefix.attr('stroke', "#000000");
 
             var resourcePath = D3utils.textElement(headingStart.x() + this._viewOptions.heading.icon.width + 90, headingStart.y() + 4, this._model.getResourcePath(), headerGroup);
             resourcePath.attr('dominant-baseline', "text-before-edge");
 
-            var contentRect = D3utils.rect(contentStart.x(), contentStart.y(), this._viewOptions.contentWidth, this._viewOptions.contentHeight, 0, 0, d3.select(svgContainer)).classed("resource-content", true);;
-            // TODO: Move these styling to css
-            //contentRect.attr('fill', "#FFFFFF");
-            contentRect.attr('stroke-width', "1");
-            contentRect.attr('stroke', "#cbcbcb");
-             //TODO: add dynamic properties for arrow
-            var arrowLine = D3utils.line(90,250, 120,250, d3.select(svgContainer));
-            var arrowHead = D3utils.inputTriangle(115,250,d3.select(svgContainer));
+            // Container for resource body
+            var contentGroup = D3utils.group(resourceGroup);
+            contentGroup.attr('id',"contentGroup");
 
-            // Move up the resource content rect before client lifeline so that the client lifeline will go through the
-            // rect.
-            var contentRectNode = $(contentRect.node());
-            $(svgContainer).prepend(contentRectNode);
+            var contentRect = D3utils.rect(contentStart.x(), contentStart.y(), this._viewOptions.contentWidth, this._viewOptions.contentHeight, 0, 0, contentGroup).classed("resource-content", true);
+
+            //TODO: add dynamic properties for arrow
+          //  var arrowLine = D3utils.line(90,250, 120,250, contentGroup);
+           // var arrowHead = D3utils.inputTriangle(115,250,contentGroup);
+
+             // On click of collapse icon hide/show resource body
+            headingCollapseIcon.on("click", function () {
+                //TODO: trigger event when collapsed/opened
+                var visibility = contentGroup.node().getAttribute("display");
+                if(visibility=="none"){
+                    contentGroup.attr("display","inline");
+                }
+                else {
+                    contentGroup.attr("display", "none");
+                    log.debug("Resource collapsed");
+                }
+
+           });
+
 
             // Drawing default worker
             var defaultWorkerOptions = {
                 "editable": true,
                 "centerPoint": {
-                    "x": 180,
-                    "y": 150
+                    "x": contentStart.x() + 130,
+                    "y": contentStart.y() + 25
                 },
                 "class": "lifeline",
                 "polygon": {
@@ -179,7 +211,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
                     "class": "lifeline-droppableRect"
                 },
                 "line": {
-                    "height": 100,
+                    "height": 280,
                     "class": "lifeline-line"
                 },
                 "text": {
@@ -188,12 +220,15 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
                 },
                 "action": {
                     "value": "Start"
+                },
+                "worker": {
+                    "value":true
                 }
             };
-            var defaultWorker = new LifeLine(svgContainer, defaultWorkerOptions);
+            var defaultWorker = new LifeLine(contentGroup, defaultWorkerOptions);
             defaultWorker.render();
-            this.setChildContainer(_.first($(this._container).children().children()));
-            this._model.accept(this);
+            /*this.setChildContainer(_.first($(this._container).children().children()));
+            this._model.accept(this);*/
 
             log.debug("Rendering Resource View");
         };
