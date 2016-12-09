@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', 'event_channel', './../ast/if-statement', 'd3utils'], function (_, log, EventChannel, IfStatement, D3Utils) {
+define(['lodash', 'log', 'event_channel', './../ast/if-statement', './../visitors/statement-visitor', 'd3utils'], function (_, log, EventChannel, IfStatement, StatementVisitor, D3Utils) {
 
     /**
      * The view for the if statement model.
@@ -24,18 +24,17 @@ define(['lodash', 'log', 'event_channel', './../ast/if-statement', 'd3utils'], f
      * @param viewOptions Options to configure the view.
      * @constructor
      */
-    var IfStatementView = function (model, container, viewOptions) {
-        if (!_.isNil(model) && model instanceof IfStatement && !_.isNil(container)) {
-            this._model = model;
-            this._container = container;
-            this._viewOptions = viewOptions;
+    var IfStatementView = function (args) {
+        if (!_.isNil(_.get(args, 'model')) && (_.get(args, 'model')) instanceof IfStatement && !_.isNil(_.get(args, 'container'))) {
+            this._model =  _.get(args, 'model');
+            this._container =  _.get(args, 'container');
+            this._options =  _.get(args, 'viewOptions', {});
         } else {
-            log.error("Invalid args received for creating a if statement view. Model: " + model
-                + ". Container: " + container);
+            log.error("Invalid args received for creating a if statement view.");
         }
     };
 
-    IfStatementView.prototype = Object.create(EventChannel.prototype);
+    IfStatementView.prototype = Object.create(StatementVisitor.prototype);
     IfStatementView.prototype.constructor = IfStatementView;
 
     IfStatementView.prototype.setModel = function (model) {
@@ -69,6 +68,10 @@ define(['lodash', 'log', 'event_channel', './../ast/if-statement', 'd3utils'], f
     IfStatementView.prototype.getViewOptions = function () {
         return this._viewOptions;
     };
+    
+    IfStatementView.prototype.visitIfStatement = function () {
+        
+    }
 
     IfStatementView.prototype.render = function () {
         var group = D3Utils.draw.group(this._container);

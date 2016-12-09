@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/point', './life-line'],
-    function (_, log, d3, $, D3utils, Point, LifeLine) {
+define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/point', './life-line', './../visitors/ast-visitor', './statement-view-factory'],
+    function (_, log, d3, $, D3utils, Point, LifeLine, ASTVisitor, StatementViewFactory) {
 
         /**
          * The view for the resource definition model.
@@ -26,6 +26,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
          * @constructor
          */
         var ResourceDefinitionView = function (args) {
+
             this._model =  _.get(args, 'model', null);
             this._viewOptions =  _.get(args, 'viewOptions', {});
             this._container = _.get(args, 'container', null);
@@ -57,6 +58,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             }
         };
 
+        ResourceDefinitionView.prototype = Object.create(ASTVisitor.prototype);
         ResourceDefinitionView.prototype.constructor = ResourceDefinitionView;
 
         ResourceDefinitionView.prototype.setModel = function (model) {
@@ -89,6 +91,16 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
 
         ResourceDefinitionView.prototype.getViewOptions = function () {
             return this._viewOptions;
+        };
+
+        ResourceDefinitionView.prototype.setChildContainer = function(svg){
+            if (!_.isNil(svg)) {
+                this._childContainer = svg;
+            }
+        };
+        ResourceDefinitionView.prototype.getChildContainer = function(){
+            return this._childContainer ;
+
         };
 
         ResourceDefinitionView.prototype.render = function () {
@@ -180,10 +192,22 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', 'app/diagram-core/models/poi
             };
             var defaultWorker = new LifeLine(svgContainer, defaultWorkerOptions);
             defaultWorker.render();
+            this.setChildContainer(_.first($(this._container).children().children()));
             this._model.accept(this);
 
-
             log.debug("Rendering Resource View");
+        };
+
+        ResourceDefinitionView.prototype.visitStatement = function(statement){
+            log.info("Visiting statement");
+            var resourceContainer  = this.getChildContainer();
+
+            var statementViewFactory = new StatementViewFactory();
+            var view = statementViewFactory.createStatementView({model: statement, container: resourceContainer});
+            view.render();
+
+            //view.getModel().accept(view);
+
         };
 
         return ResourceDefinitionView;

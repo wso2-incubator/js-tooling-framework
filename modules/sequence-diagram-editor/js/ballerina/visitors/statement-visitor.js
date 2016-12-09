@@ -69,24 +69,24 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'],
         }
     };
 
-    ASTVisitor.prototype.canVisitIfStatement = function(statement){
+    StatementVisitor.prototype.canVisitIfStatement = function(statement){
         return false;
     };
-    ASTVisitor.prototype.beginVisitIfStatement = function(statement){
+    StatementVisitor.prototype.beginVisitIfStatement = function(statement){
     };
-    ASTVisitor.prototype.visitIfStatement= function(statement){
+    StatementVisitor.prototype.visitIfStatement= function(statement){
     };
-    ASTVisitor.prototype.endVisitIfStatement = function(statement){
+    StatementVisitor.prototype.endVisitIfStatement = function(statement){
     };
 
-    ASTVisitor.prototype.canVisitTryCatchStatement = function(statement){
+    StatementVisitor.prototype.canVisitTryCatchStatement = function(statement){
         return false;
     };
-    ASTVisitor.prototype.beginVisitTryCatchStatement = function(statement){
+    StatementVisitor.prototype.beginVisitTryCatchStatement = function(statement){
     };
-    ASTVisitor.prototype.visitTryCatchStatement= function(statement){
+    StatementVisitor.prototype.visitTryCatchStatement= function(statement){
     };
-    ASTVisitor.prototype.endVisitTryCatchStatement = function(statement){
+    StatementVisitor.prototype.endVisitTryCatchStatement = function(statement){
     };
 
     return StatementVisitor;

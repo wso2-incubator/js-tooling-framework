@@ -67,8 +67,6 @@ define(['lodash', 'log', 'event_channel', './../ast/module'],
             return this.visitServiceDefinition(node);
         } else if(node instanceof AST.ResourceDefinition){
             return this.visitResourceDefinition(node);
-        } else if(node instanceof AST.Statement){
-            return this.visitStatement(node);
         } else if(node instanceof AST.FunctionDefinition){
             return this.visitFunctionDefinition(node);
         } else if (node instanceof AST.Statement) {
@@ -154,7 +152,7 @@ define(['lodash', 'log', 'event_channel', './../ast/module'],
     };
 
     ASTVisitor.prototype.canVisitStatement = function(statement){
-        return false;
+        return true;
     };
     ASTVisitor.prototype.beginVisitStatement = function(statement){
 
