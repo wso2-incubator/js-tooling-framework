@@ -16,17 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['./action-definition-view', './ballerina-file-editor', './canvas', './connection-declaration', './function-definition-view', './reply-statement-view',
-        './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view', './while-statement-view', './worker-declaration',
-        './source-view', './if-statement-view'],
-    function (ActionDefinitionView, BallerinaFileEditor, Canvas, ConnectionDeclaration, FunctionDefinitionView, ReplyStatementView,
-              ResourceDefinitionView, ReturnStatementView, ServiceDefinitionView, ThrowStatementView, WhileStatementView, WorkerDeclaration,
-              SourceView, IfStatementView) {
+define(['./action-definition-view', './ballerina-file-editor', './ballerina-view', './canvas',
+        './connection-declaration-view', './function-definition-view', './reply-statement-view',
+        './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view',
+        './while-statement-view', './worker-declaration-view', './source-view', './if-statement-view'],
+    function (ActionDefinitionView, BallerinaFileEditor, BallerinaView, Canvas,
+              ConnectionDeclarationView, FunctionDefinitionView, ReplyStatementView,
+              ResourceDefinitionView, ReturnStatementView, ServiceDefinitionView, ThrowStatementView,
+              WhileStatementView, WorkerDeclarationView, SourceView, IfStatementView) {
         return  {
+            BallerinaView: BallerinaView,
             ActionDefinitionView: ActionDefinitionView,
             BallerinaFileEditor: BallerinaFileEditor,
             Canvas: Canvas,
-            ConnectionDeclaration: ConnectionDeclaration,
+            ConnectionDeclarationView: ConnectionDeclarationView,
             FunctionDefinitionView: FunctionDefinitionView,
             ReplyStatementView: ReplyStatementView,
             ResourceDefinitionView: ResourceDefinitionView,
