@@ -45,6 +45,9 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
         } else if (node instanceof AST.Assignment) {
             return this.canVisitStatement(node);
         }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.canVisitGetActionStatement(node);
+        }
     };
 
     /**
@@ -67,6 +70,9 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.beginVisitWhileStatement(node);
         } else if (node instanceof AST.Assignment) {
             return this.beginVisitStatement(node);
+        }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.beginVisitGetActionStatement(node);
         }
     };
 
@@ -91,6 +97,9 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
         } else if (node instanceof AST.Assignment) {
             return this.visitStatement(node);
         }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.visitGetActionStatement(node);
+        }
     };
 
     /**
@@ -113,6 +122,9 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.endVisitWhileStatement(node);
         } else if (node instanceof AST.Assignment) {
             return this.endVisitStatement(node);
+        }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.endVisitGetActionStatement(node);
         }
     };
 
@@ -174,6 +186,16 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
     StatementVisitor.prototype.visitStatement = function (statement) {
     };
     StatementVisitor.prototype.endVisitStatement = function (statement) {
+    };
+
+    StatementVisitor.prototype.canVisitGetActionStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitGetActionStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitGetActionStatement = function (statement) {
+    };
+    StatementVisitor.prototype.endVisitGetActionStatement = function (statement) {
     };
 
     return StatementVisitor;

@@ -16,9 +16,9 @@
  * under the License.
  */
 define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statement-view', './try-statement-view',
-        './catch-statement-view', './if-else-statement-view', './if-statement-view', './else-statement-view', './assignment-view', './function-invocation-view'],
+        './catch-statement-view', './if-else-statement-view', './if-statement-view', './else-statement-view', './assignment-view', './function-invocation-view','./get-action-statement-view'],
     function (_, log, EventChannel, AST, TryCatchStatementView, TryStatementView, CatchStatementView,
-              IfElseStatementView, IfStatementView, ElseStatementView, AssignmentStatementView, FunctionInvocationStatementView) {
+              IfElseStatementView, IfStatementView, ElseStatementView, AssignmentStatementView, FunctionInvocationStatementView, GetActionStatementView) {
 
         var StatementViewFactory = function () {
         };
@@ -42,7 +42,15 @@ define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statemen
             } else if (statement instanceof AST.FunctionInvocation) {
                 return new FunctionInvocationStatementView(args);
             }
+            else if (statement instanceof AST.GetActionStatement) {
+                return new GetActionStatementView(args);
+            }
         };
 
+        StatementViewFactory.prototype.isGetActionStatement = function(statement){
+            if (statement instanceof AST.GetActionStatement){
+                return true;
+            }
+        }
         return StatementViewFactory;
     });
