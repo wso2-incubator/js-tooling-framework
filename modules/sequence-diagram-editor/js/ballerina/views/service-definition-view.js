@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line', './resource-definition-view', 'ballerina/ast/ballerina-ast-factory'],
-    function (_, log, Canvas, ServiceDefinition, LifeLine, ResourceDefinitionView, BallerinaASTFactory) {
+define(['lodash', 'log', 'jquery', './canvas', './../ast/service-definition', './life-line', './resource-definition-view', 'ballerina/ast/ballerina-ast-factory'],
+    function (_, log, $, Canvas, ServiceDefinition, LifeLine, ResourceDefinitionView, BallerinaASTFactory) {
 
         /**
          * The view to represent a service definition which is an AST visitor.
@@ -27,13 +27,12 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
          * @constructor
          */
         var ServiceDefinitionView = function (args) {
-            this._model = _.get(args, "model");
-            this._container = _.get(args, "container");
+            Canvas.call(this, args);
+
             this._resourceViewList = _.get(args, "resourceViewList", []);
-            this._viewOptions = _.get(args, "viewOptions", {});
             this._parentView = _.get(args, "parentView");
             //set initial height for the service container svg
-            this._totalHeight = 150;
+            this._totalHeight = 170;
 
             if (_.isNil(this._model) || !(this._model instanceof ServiceDefinition)) {
                 log.error("Service definition is undefined or is of different type." + this._model);
@@ -44,11 +43,8 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
                 log.error("Container for service definition is undefined." + this._container);
                 throw "Container for service definition is undefined." + this._container;
             }
-
-            Canvas.call(this);
             this.init();
         };
-
 
         ServiceDefinitionView.prototype = Object.create(Canvas.prototype);
         ServiceDefinitionView.prototype.constructor = ServiceDefinitionView;
@@ -60,9 +56,14 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
         };
 
         ServiceDefinitionView.prototype.childVisitedCallback = function (child) {
+            //setting height of the service view
             var childView = this.diagramRenderingContext.getViewModelMap()[child];
-            this._totalHeight = this._totalHeight + childView.getBoundingBox().height;
+            var staticHeights = childView.getGapBetweenResources() + childView.getResourceHeadingHeight();
+            this._totalHeight = this._totalHeight + childView.getBoundingBox().height + staticHeights;
             this.setServiceContainerHeight(this._totalHeight);
+
+            //setting client lifeline's height. Value is calculated by reducing required amount of height from the total height of the service.
+            this.setClientLifelineHeight(this._totalHeight - 150);
 
             this.trigger("childViewAddedEvent", child);
         };
@@ -141,11 +142,26 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
             this._container = currentContainer;
 
             // Creating client lifeline.
-            var clientLifeLine = new LifeLine(_.first($(this._container).children().children()));
+            this._clientLifeLine = new LifeLine(_.first($(this._container).children().children()));
             //Store parent container for child elements of this serviceDefView
             this.setChildContainer(_.first($(this._container).children().children()));
-            clientLifeLine.render();
+            this._clientLifeLine.render();
             this.getModel().accept(this);
+
+            var annotationButton = this._createAnnotationButton(_.first($(this._container).children()));
+
+            // Create property pane for the service.
+            var paneProperties  = {
+                model : this._model,
+                editableProperties: [{
+                    propertyType: "text",
+                    key: "Service Name",
+                    getterMethod: this._model.getServiceName,
+                    setterMethod: this._model.setServiceName
+                }],
+                htmlElement : annotationButton[0]
+            };
+            this.createPropertyPane(paneProperties);
         };
 
         ServiceDefinitionView.prototype.canVisitServiceDefinition = function (serviceDefinition) {
@@ -174,7 +190,7 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
                 var prevResourceY = prevView.getBoundingBox().y;
                 var newCenterPointY = prevResourceHeight + prevResourceY + 10;
                 var viewOpts = { centerPoint: {y:newCenterPointY}};
-                var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer,viewOptions: viewOpts});
+                var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer, viewOptions: viewOpts});
             }
             else{
                 var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer, parentView: this});
@@ -182,6 +198,14 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
             this.diagramRenderingContext.getViewModelMap()[resourceDefinition] = resourceDefinitionView;
             resourceDefinitionView.render(this.diagramRenderingContext);
             this.addResourceViewList(resourceDefinitionView);
+        };
+
+        /**
+         * Sets height of the client lifeline
+         * @param height
+         */
+        ServiceDefinitionView.prototype.setClientLifelineHeight = function (height) {
+            this._clientLifeLine.setLineHeight(height);
         };
 
         /**
@@ -231,6 +255,10 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
          */
         ServiceDefinitionView.prototype.getYPosition = function () {
             // TODO : Implement
+        };
+
+        ServiceDefinitionView.prototype._createAnnotationButton = function(serviceContentDiv) {
+            return $("<div class='service-annotation-button'><div class='view-annotation-btn btn-icon'><i class='fw fw-lg fw-annotation fw-inverse fw-helper fw-helper-circle'></i></div></div>").prependTo(serviceContentDiv);
         };
 
         return ServiceDefinitionView;
