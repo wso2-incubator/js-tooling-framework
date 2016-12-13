@@ -20,13 +20,19 @@
  * A module representing the factory for Ballerina AST
  */
 define(['./ballerina-ast-root', './service-definition', './function-definition', './connector-definition', './resource-definition',
-        './worker-declaration', './statement', './conditional-statement', './connection-declaration', './expression',
-        './if-else-statement', './if-statement', './else-statement', './trycatch-statement', './try-statement', './catch-statement', './reply-statement', './return-statement', './type-converter-definition', './type-definition',
-        './type-element', './variable-declaration', './package-definition', './import-declaration', './resource-arg'],
+        './worker-declaration', './statement', './conditional-statement', './connector-declaration', './expression',
+        './if-else-statement', './if-statement', './else-statement', './trycatch-statement', './try-statement',
+        './catch-statement', './reply-statement', './while-statement', './return-statement',
+        './type-converter-definition', './type-definition', './type-element', './variable-declaration',
+        './package-definition', './import-declaration', './resource-arg', './assignment', './function-invocation',
+        './action-invocation-statement','./get-action-statement', './arithmetic-expression', './logical-expression'],
     function (ballerinaAstRoot, serviceDefinition, functionDefinition, connectorDefinition, resourceDefinition,
-              workerDeclaration, statement, conditionalStatement, connectionDeclaration, expression,
-              ifElseStatement, ifStatement, elseStatement, tryCatchStatement, tryStatement, catchStatement, replyStatement, returnStatement, typeConverterDefinition, typeDefinition,
-              typeElement, variableDeclaration, packageDefinition, importDeclaration, resourceArgument) {
+              workerDeclaration, statement, conditionalStatement, connectorDeclaration, expression,
+              ifElseStatement, ifStatement, elseStatement, tryCatchStatement, tryStatement, catchStatement, replyStatement,
+              whileStatement, returnStatement, typeConverterDefinition, typeDefinition, typeElement, variableDeclaration,
+              packageDefinition, importDeclaration, resourceArgument, assignmentStatement, functionInvocation,
+              actionInvocationStatement, getActionStatement, arithmeticExpression, logicalExpression) {
+
 
         /**
          * Constructs BallerinaASTFactory
@@ -126,11 +132,11 @@ define(['./ballerina-ast-root', './service-definition', './function-definition',
         };
 
         /**
-         * create ConnectionDeclaration
+         * create ConnectorDeclaration
          * @param args
          */
-        BallerinaASTFactory.prototype.createConnectionDeclaration = function (args) {
-            return new connectionDeclaration(args);
+        BallerinaASTFactory.prototype.createConnectorDeclaration = function (args) {
+            return new connectorDeclaration(args);
         };
 
         /**
@@ -140,6 +146,10 @@ define(['./ballerina-ast-root', './service-definition', './function-definition',
         BallerinaASTFactory.prototype.createExpression = function (args) {
             return new expression(args);
         };
+
+        BallerinaASTFactory.prototype.createGetActionStatement = function(args){
+            return new getActionStatement(args);
+        }
 
         /**
          * creates If-Else Statement
@@ -190,6 +200,14 @@ define(['./ballerina-ast-root', './service-definition', './function-definition',
         };
 
         /**
+         * creates AssignmentStatement
+         * @param args
+         */
+        BallerinaASTFactory.prototype.createAssignmentStatement = function (args) {
+            return new assignmentStatement(args);
+        };
+
+        /**
          * creates ReplyStatement
          * @param args
          */
@@ -198,11 +216,43 @@ define(['./ballerina-ast-root', './service-definition', './function-definition',
         };
 
         /**
+         * creates FunctionInvocationStatement
+         * @param args
+         */
+        BallerinaASTFactory.prototype.createFunctionInvocationStatement = function (args) {
+            return new functionInvocation(args);
+        };
+
+        /**
+         * creates ArithmeticExpression
+         * @param args
+         */
+        BallerinaASTFactory.prototype.createArithmeticExpression = function (args) {
+            return new arithmeticExpression(args);
+        };
+
+        /**
+         * creates LogicalExpression
+         * @param args
+         */
+        BallerinaASTFactory.prototype.createLogicalExpression = function (args) {
+            return new logicalExpression(args);
+        };
+
+        /**
          * creates ReturnStatement
          * @param args
          */
         BallerinaASTFactory.prototype.createReturnStatement = function (args) {
             return new returnStatement(args);
+        };
+
+        /**
+        * creates WhileStatement
+        * @param args
+        */
+        BallerinaASTFactory.prototype.createWhileStatement = function (args) {
+            return new whileStatement(args);
         };
 
         /**
@@ -242,31 +292,219 @@ define(['./ballerina-ast-root', './service-definition', './function-definition',
 
         /**
          * instanceof check for ServiceDefinition
-         * @param child
-         * @returns {boolean}
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
          */
         BallerinaASTFactory.prototype.isServiceDefinition = function (child) {
-            return child instanceof serviceDefinition ? true : false;
+            return child instanceof serviceDefinition;
         };
 
         /**
          * instanceof check for FunctionDefinition
-         * @param child
-         * @returns {boolean}
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
          */
         BallerinaASTFactory.prototype.isFunctionDefinition = function (child) {
-            return child instanceof functionDefinition ? true : false;
+            return child instanceof functionDefinition;
         };
 
         /**
          * instanceof check for ConnectorDefinition
-         * @param child
-         * @returns {boolean}
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
          */
         BallerinaASTFactory.prototype.isConnectorDefinition = function (child) {
-            return child instanceof connectorDefinition ? true : false;
+            return child instanceof connectorDefinition;
         };
 
+        /**
+         * instanceof check for WorkerDeclaration
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isWorkerDeclaration = function (child) {
+            return child instanceof workerDeclaration;
+        };
+
+        /**
+         * instanceof check for Statement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isStatement = function (child) {
+            return child instanceof statement;
+        };
+
+        /**
+         * instanceof check for TypeConverterDefinition
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isTypeConverterDefinition = function (child) {
+            return child instanceof typeConverterDefinition;
+        };
+
+        /**
+         * instanceof check for TypeDefinition
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isTypeDefinition = function (child) {
+            return child instanceof typeDefinition;
+        };
+
+        /**
+         * instanceof check for TypeElement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isTypeElement = function (child) {
+            return child instanceof typeElement;
+        };
+
+        /**
+         * is VariableDeclaration
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isVariableDeclaration = function (child) {
+            return child instanceof variableDeclaration;
+        };
+        /**
+         * is ConditionalStatement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isConditionalStatement = function (child) {
+            return child instanceof conditionalStatement;
+        };
+
+        /**
+         * is ConnectionDeclaration
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isConnectionDeclaration = function (child) {
+            return child instanceof connectionDeclaration;
+        };
+
+        /**
+         * instanceof check for Expression
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isExpression = function (child) {
+            return child instanceof expression;
+        };
+
+        /**
+         * instanceof check for If-Else Statement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isIfElseStatement = function (child) {
+            return child instanceof ifElseStatement;
+        };
+
+        /**
+         * instanceof check for If Statement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isIfStatement = function (child) {
+            return child instanceof ifStatement;
+        };
+
+        /**
+         * instanceof check for Else Statement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isElseStatement = function (child) {
+            return child instanceof elseStatement;
+        };
+
+        /**
+         * instanceof check for TryCatchStatement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isTryCatchStatement = function (child) {
+            return child instanceof tryCatchStatement;
+        };
+
+        /**
+         * instanceof check for TryStatement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isTryStatement = function (child) {
+            return child instanceof tryStatement;
+        };
+
+        /**
+         * instanceof check for CatchStatement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isCatchStatement = function (child) {
+            return child instanceof catchStatement;
+        };
+
+        /**
+         * instanceof check for ReplyStatement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isReplyStatement = function (child) {
+            return child instanceof replyStatement;
+        };
+
+        /**
+         * instanceof check for ReturnStatement
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isReturnStatement = function (child) {
+            return child instanceof returnStatement;
+        };
+
+        /**
+         * instanceof check for ResourceDefinition
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isResourceDefinition = function (child) {
+            return child instanceof resourceDefinition;
+        };
+
+        /**
+         * instanceof check for PackageDefinition
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isPackageDefinition = function (child) {
+            return child instanceof packageDefinition;
+        };
+
+        /**
+         * instanceof check for ImportDeclaration
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isImportDeclaration = function (child) {
+            return child instanceof importDeclaration;
+        };
+
+        /**
+         * instanceof check for ResourceArgument
+         * @param child - Object for instanceof check
+         * @returns {boolean} - true if same type, else false
+         */
+        BallerinaASTFactory.prototype.isResourceArgument = function (child) {
+            return child instanceof resourceArgument;
+        };
+        
         return BallerinaASTFactory;
 
     });

@@ -21,7 +21,8 @@ define(['lodash', 'log', './../visitors/ast-visitor'], function (_, log, ASTVisi
      * A common class which consists functions of moving or resizing views.
      * @constructor
      */
-    var BallerinaView = function () {
+    var BallerinaView = function (parent) {
+        this._parent = parent;
         ASTVisitor.call(this);
     };
 
@@ -43,6 +44,12 @@ define(['lodash', 'log', './../visitors/ast-visitor'], function (_, log, ASTVisi
     BallerinaView.prototype.getXPosition = function () {
     };
     BallerinaView.prototype.getYPosition = function () {
+    };
+    BallerinaView.prototype.setParent = function (parent) {
+        this._parent = parent;
+    };
+    BallerinaView.prototype.getParent = function () {
+        return this._parent;
     };
 
     return BallerinaView;

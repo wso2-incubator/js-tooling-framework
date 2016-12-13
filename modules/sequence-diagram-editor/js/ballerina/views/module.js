@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -17,19 +16,19 @@
  * under the License.
  */
 define(['./action-definition-view', './ballerina-file-editor', './ballerina-view', './canvas',
-        './connection-declaration-view', './function-definition-view', './reply-statement-view',
+        './connector-declaration-view', './function-definition-view', './reply-statement-view',
         './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view',
-        './while-statement-view', './worker-declaration-view', './source-view', './if-statement-view'],
+        './while-statement-view', './worker-declaration-view', './source-view','./get-action-statement-view' ],
     function (ActionDefinitionView, BallerinaFileEditor, BallerinaView, Canvas,
-              ConnectionDeclarationView, FunctionDefinitionView, ReplyStatementView,
+              ConnectorDeclarationView, FunctionDefinitionView, ReplyStatementView,
               ResourceDefinitionView, ReturnStatementView, ServiceDefinitionView, ThrowStatementView,
-              WhileStatementView, WorkerDeclarationView, SourceView, IfStatementView) {
+              WhileStatementView, WorkerDeclarationView, SourceView,GetActionStatementView) {
         return  {
             BallerinaView: BallerinaView,
             ActionDefinitionView: ActionDefinitionView,
             BallerinaFileEditor: BallerinaFileEditor,
             Canvas: Canvas,
-            ConnectionDeclarationView: ConnectionDeclarationView,
+            ConnectionDeclarationView: ConnectorDeclarationView,
             FunctionDefinitionView: FunctionDefinitionView,
             ReplyStatementView: ReplyStatementView,
             ResourceDefinitionView: ResourceDefinitionView,
@@ -37,8 +36,8 @@ define(['./action-definition-view', './ballerina-file-editor', './ballerina-view
             ServiceDefinitionView: ServiceDefinitionView,
             ThrowStatementView: ThrowStatementView,
             WhileStatementView: WhileStatementView,
-            WorkerDeclaration: WorkerDeclaration,
+            WorkerDeclarationView: WorkerDeclarationView,
             SourceView: SourceView,
-            IfStatementView: IfStatementView
+            GetActionStatementView: GetActionStatementView
         }
     });

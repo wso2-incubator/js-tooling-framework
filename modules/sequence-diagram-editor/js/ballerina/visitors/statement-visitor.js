@@ -40,6 +40,13 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.canVisitTryStatement(node);
         } else if (node instanceof AST.CatchStatement) {
             return this.canVisitCatchStatement(node);
+        } else if (node instanceof AST.WhileStatement) {
+            return this.canVisitWhileStatement(node);
+        } else if (node instanceof AST.Assignment) {
+            return this.canVisitStatement(node);
+        }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.canVisitGetActionStatement(node);
         }
     };
 
@@ -47,14 +54,25 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
      * @param node {ASTNode}
      */
     StatementVisitor.prototype.beginVisit = function (node) {
-        if (node instanceof AST.IfStatement) {
+        if (node instanceof AST.IfElseStatement) {
+            return this.beginVisitStatement(node);
+        } else if (node instanceof AST.IfStatement) {
             return this.beginVisitIfStatement(node);
+        } else if (node instanceof AST.ElseStatement) {
+            return this.beginVisitElseStatement(node);
         } else if (node instanceof AST.TryCatchStatement) {
             return this.beginVisitStatement(node);
         } else if (node instanceof AST.TryStatement) {
             return this.beginVisitTryStatement(node);
         } else if (node instanceof AST.CatchStatement) {
             return this.beginVisitCatchStatement(node);
+        } else if (node instanceof AST.WhileStatement) {
+            return this.beginVisitWhileStatement(node);
+        } else if (node instanceof AST.Assignment) {
+            return this.beginVisitStatement(node);
+        }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.beginVisitGetActionStatement(node);
         }
     };
 
@@ -74,6 +92,13 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
             return this.visitTryStatement(node);
         } else if (node instanceof AST.CatchStatement) {
             return this.visitCatchStatement(node);
+        } else if (node instanceof AST.WhileStatement) {
+            return this.visitWhileStatement(node);
+        } else if (node instanceof AST.Assignment) {
+            return this.visitStatement(node);
+        }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.visitGetActionStatement(node);
         }
     };
 
@@ -81,21 +106,29 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
      * @param node {ASTNode}
      */
     StatementVisitor.prototype.endVisit = function (node) {
-        if (node instanceof AST.IfStatement) {
+        if (node instanceof AST.IfElseStatement) {
+            return this.endVisitStatement(node);
+        } else if (node instanceof AST.IfStatement) {
             return this.endVisitIfStatement(node);
+        } else if (node instanceof AST.ElseStatement) {
+            return this.endVisitElseStatement(node);
         } else if (node instanceof AST.TryCatchStatement) {
             return this.endVisitStatement(node);
         } else if (node instanceof AST.TryStatement) {
             return this.endVisitTryStatement(node);
         } else if (node instanceof AST.CatchStatement) {
             return this.endVisitCatchStatement(node);
+        } else if (node instanceof AST.WhileStatement) {
+            return this.endVisitWhileStatement(node);
+        } else if (node instanceof AST.Assignment) {
+            return this.endVisitStatement(node);
+        }
+        else if (node instanceof AST.GetActionStatement) {
+            return this.endVisitGetActionStatement(node);
         }
     };
 
     StatementVisitor.prototype.canVisitIfStatement = function (statement) {
-        return false;
-    };
-    StatementVisitor.prototype.canVisitElseStatement = function (statement) {
         return false;
     };
     StatementVisitor.prototype.beginVisitIfStatement = function (statement) {
@@ -105,14 +138,14 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
     StatementVisitor.prototype.endVisitIfStatement = function (statement) {
     };
 
-    StatementVisitor.prototype.canVisitTryCatchStatement = function (statement) {
+    StatementVisitor.prototype.canVisitElseStatement = function (statement) {
         return false;
     };
-    StatementVisitor.prototype.beginVisitTryCatchStatement = function (statement) {
+    StatementVisitor.prototype.beginVisitElseStatement = function (statement) {
     };
-    StatementVisitor.prototype.visitTryCatchStatement = function (statement) {
+    StatementVisitor.prototype.visitIfStatement = function (statement) {
     };
-    StatementVisitor.prototype.endVisitTryCatchStatement = function (statement) {
+    StatementVisitor.prototype.endVisitElseStatement = function (statement) {
     };
 
     StatementVisitor.prototype.canVisitTryStatement = function (statement) {
@@ -135,6 +168,16 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
     StatementVisitor.prototype.endVisitCatchStatement = function (statement) {
     };
 
+    StatementVisitor.prototype.canVisitWhileStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitWhileStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitWhileStatement = function (statement) {
+    };
+    StatementVisitor.prototype.endVisitWhileStatement = function (statement) {
+    };
+
     StatementVisitor.prototype.canVisitStatement = function (statement) {
         return false;
     };
@@ -143,6 +186,16 @@ define(['lodash', 'log', './ast-visitor', '../ast/module'], function (_, log, AS
     StatementVisitor.prototype.visitStatement = function (statement) {
     };
     StatementVisitor.prototype.endVisitStatement = function (statement) {
+    };
+
+    StatementVisitor.prototype.canVisitGetActionStatement = function (statement) {
+        return false;
+    };
+    StatementVisitor.prototype.beginVisitGetActionStatement = function (statement) {
+    };
+    StatementVisitor.prototype.visitGetActionStatement = function (statement) {
+    };
+    StatementVisitor.prototype.endVisitGetActionStatement = function (statement) {
     };
 
     return StatementVisitor;

@@ -17,9 +17,8 @@
  */
 define(['lodash', './node'], function(_, ASTNode){
 
-    var Expression = function(expression) {
-        this._expression = expression;
-        ASTNode.call(this);
+    var Expression = function(args) {
+        this._expression = _.get(args, 'expression', 'defaultExp');
     };
 
     Expression.prototype = Object.create(ASTNode.prototype);
@@ -37,3 +36,5 @@ define(['lodash', './node'], function(_, ASTNode){
 
     return Expression;
 });
+
+

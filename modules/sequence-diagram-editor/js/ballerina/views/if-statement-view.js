@@ -15,72 +15,110 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', 'event_channel', './../ast/if-statement', './../visitors/statement-visitor', 'd3utils'], function (_, log, EventChannel, IfStatement, StatementVisitor, D3Utils) {
+define(['require', 'lodash', 'jquery', 'log', './ballerina-statement-view', './../ast/if-statement', 'd3utils', 'd3', './point'],
+    function (require, _, $, log, BallerinaStatementView, IfStatement, D3Utils, d3, Point) {
 
-    /**
-     * The view for the if statement model.
-     * @param model If statement model.
-     * @param container The SVG element.
-     * @param viewOptions Options to configure the view.
-     * @constructor
-     */
-    var IfStatementView = function (args) {
-        if (!_.isNil(_.get(args, 'model')) && (_.get(args, 'model')) instanceof IfStatement && !_.isNil(_.get(args, 'container'))) {
-            this._model =  _.get(args, 'model');
-            this._container =  _.get(args, 'container');
-            this._options =  _.get(args, 'viewOptions', {});
-        } else {
-            log.error("Invalid args received for creating a if statement view.");
-        }
-    };
+        /**
+         * The view to represent a If statement which is an AST visitor.
+         * @param {Object} args - Arguments for creating the view.
+         * @param {IfStatement} args.model - The If statement model.
+         * @param {Object} args.container - The HTML container to which the view should be added to.
+         * @param {Object} args.parent - Parent Statement View, which in this case the if-else statement
+         * @param {Object} [args.viewOptions={}] - Configuration values for the view.
+         * @constructor
+         */
+        var IfStatementView = function (args) {
+            this._model = _.get(args, "model");
+            this._container = _.get(args, "container");
+            this._viewOptions = _.get(args, "viewOptions", {});
 
-    IfStatementView.prototype = Object.create(StatementVisitor.prototype);
-    IfStatementView.prototype.constructor = IfStatementView;
+            BallerinaStatementView.call(this, _.get(args, "parent"));
+        };
 
-    IfStatementView.prototype.setModel = function (model) {
-        if (!_.isNil(model)) {
-            this._model = model;
-        } else {
-            log.error("Unknown definition received for if statement.");
-        }
-    };
+        IfStatementView.prototype = Object.create(BallerinaStatementView.prototype);
+        IfStatementView.prototype.constructor = IfStatementView;
 
-    IfStatementView.prototype.setContainer = function (container) {
-        if (!_.isNil(container)) {
-            this._container = container;
-        } else {
-            log.error("SVG container for the if statement is null or empty.");
-        }
-    };
+        IfStatementView.prototype.canVisitStatement = function(){
+            return true;
+        };
 
-    IfStatementView.prototype.setViewOptions = function (viewOptions) {
-        this._viewOptions = viewOptions;
-    };
+        IfStatementView.prototype.canVisitIfStatement = function(){
+            return true;
+        };
 
-    IfStatementView.prototype.getModel = function () {
-        return this._model;
-    };
+        /**
+         * Render the if statement
+         */
+        IfStatementView.prototype.render = function () {
+            var ifGroup = D3Utils.group(this._container);
+            var x = this.getParent().getXPosition();
+            var y = this.getParent().getYPosition();
+            var width = 120;
+            var height = 60;
+            var outer_rect = D3Utils.rect(x, y, 120, 60, 0, 0, ifGroup).classed('statement-rect', true);
+            var title_rect = D3Utils.rect(x, y, 40, 20, 0, 0, ifGroup).classed('statement-rect', true);
+            var title_text = D3Utils.textElement(x + 20, y + 10, 'If', ifGroup).classed('statement-text', true);
 
-    IfStatementView.prototype.getContainer = function () {
-        return this._container;
-    };
+            // Set the parent's(IfElseView) width, height, x, y
+            this.getParent().setWidth(width);
+            this.getParent().setHeight(height);
+            this.getParent().setXPosition(x);
+            this.getParent().setYPosition(y);
 
-    IfStatementView.prototype.getViewOptions = function () {
-        return this._viewOptions;
-    };
+            // Set x, y, height, width of the current view
+            this.setWidth(width);
+            this.setHeight(height);
+            this.setXPosition(x);
+            this.setYPosition(y);
 
-    IfStatementView.prototype.canVisitIfStatement = function (statement) {
-        return true;
-    };
+            ifGroup.outerRect = outer_rect;
+            ifGroup.titleRect = title_rect;
+            ifGroup.titleText = title_text;
+            this.setStatementGroup(ifGroup);
+            this._model.accept(this);
+        };
 
-    IfStatementView.prototype.render = function () {
-        this.getModel().accept(this);
-        var group = D3Utils.draw.group(this._container);
-        var rect = D3Utils.draw.rect(10, 10, 100, 100, 0, 0, group, "#FFFFFF");
-        window.console.log("Rendering the If Statement.");
-        group.rect = rect;
-        return group;
-    };
+        /**
+         * Set the if statement model
+         * @param {IfStatement} model
+         */
+        IfStatementView.prototype.setModel = function (model) {
+            if (!_.isNil(model) && model instanceof IfStatement) {
+                this._model = model;
+            } else {
+                log.error("If Else statement definition is undefined or is of different type." + model);
+                throw "If Else statement definition is undefined or is of different type." + model;
+            }
+        };
 
-    return IfStatementView;
-});
+        /**
+         * Set the container to draw the if statement
+         * @param container
+         */
+        IfStatementView.prototype.setContainer = function (container) {
+            if (!_.isNil(container)) {
+                this._container = container;
+            } else {
+                log.error("Container for If Else statement is undefined." + container);
+                throw "Container for If Else statement is undefined." + container;
+            }
+        };
+
+        IfStatementView.prototype.setViewOptions = function (viewOptions) {
+            this._viewOptions = viewOptions;
+        };
+
+        IfStatementView.prototype.getModel = function () {
+            return this._model;
+        };
+
+        IfStatementView.prototype.getContainer = function () {
+            return this._container;
+        };
+
+        IfStatementView.prototype.getViewOptions = function () {
+            return this._viewOptions;
+        };
+
+        return IfStatementView;
+    });

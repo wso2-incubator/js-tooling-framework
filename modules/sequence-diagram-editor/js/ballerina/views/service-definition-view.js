@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line', './resource-definition-view'],
-    function (_, log, Canvas, ServiceDefinition, LifeLine, ResourceDefinitionView) {
+define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line', './resource-definition-view', 'ballerina/ast/ballerina-ast-factory'],
+    function (_, log, Canvas, ServiceDefinition, LifeLine, ResourceDefinitionView, Ballerina) {
 
         /**
          * The view to represent a service definition which is an AST visitor.
@@ -31,6 +31,9 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
             this._container = _.get(args, "container");
             this._resourceViewList = _.get(args, "resourceViewList", []);
             this._viewOptions = _.get(args, "viewOptions", {});
+            this._parentView = _.get(args, "parentView");
+            //set initial height for the service container svg
+            this._totalHeight = 150;
 
             if (_.isNil(this._model) || !(this._model instanceof ServiceDefinition)) {
                 log.error("Service definition is undefined or is of different type." + this._model);
@@ -43,10 +46,35 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
             }
 
             Canvas.call(this);
+            this.init();
         };
+
 
         ServiceDefinitionView.prototype = Object.create(Canvas.prototype);
         ServiceDefinitionView.prototype.constructor = ServiceDefinitionView;
+
+        ServiceDefinitionView.prototype.init = function(){
+            //Registering event listeners
+            this.listenTo(this._model, 'childVisitedEvent', this.childVisitedCallback);
+            this.listenTo(this._parentView, 'childViewAddedEvent', this.childViewAddedCallback);
+        };
+
+        ServiceDefinitionView.prototype.childVisitedCallback = function (child) {
+            var childView = this.diagramRenderingContext.getViewModelMap()[child];
+            this._totalHeight = this._totalHeight + childView.getBoundingBox().height;
+            this.setServiceContainerHeight(this._totalHeight);
+
+            this.trigger("childViewAddedEvent", child);
+        };
+
+        ServiceDefinitionView.prototype.childViewAddedCallback = function (child) {
+            var ballerinaASTFactory = new Ballerina();
+            if (ballerinaASTFactory.isServiceDefinition(child)) {
+                if (child !== this._model) {
+                    log.info("[Eventing] Service view added : ");
+                }
+            }
+        };
 
         ServiceDefinitionView.prototype.setModel = function (model) {
             if (!_.isNil(model) && model instanceof ServiceDefinition) {
@@ -106,7 +134,8 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
          * Rendering the view of the service definition.
          * @returns {Object} - The svg group which the service definition view resides in.
          */
-        ServiceDefinitionView.prototype.render = function () {
+        ServiceDefinitionView.prototype.render = function (diagramRenderingContext) {
+            this.diagramRenderingContext = diagramRenderingContext;
             this.drawAccordionCanvas(this._container, this._viewOptions, this._model.id, 'service');
             var divId = this._model.id;
             var currentContainer = $('#' + divId);
@@ -129,7 +158,7 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
         };
 
         ServiceDefinitionView.prototype.canVisitResourceDefinition = function (resourceDefinition) {
-            return true;
+            return false;
         };
 
         /**
@@ -147,12 +176,12 @@ define(['lodash', 'log', './canvas', './../ast/service-definition', './life-line
                 var newCenterPointY = prevResourceHeight + prevResourceY + 10;
                 var viewOpts = { centerPoint: {y:newCenterPointY}};
                 var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer,viewOptions: viewOpts});
-
             }
             else{
-                var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer});
+                var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer, parentView: this});
             }
-            resourceDefinitionView.render();
+            this.diagramRenderingContext.getViewModelMap()[resourceDefinition] = resourceDefinitionView;
+            resourceDefinitionView.render(this.diagramRenderingContext);
             this.addResourceViewList(resourceDefinitionView);
         };
 

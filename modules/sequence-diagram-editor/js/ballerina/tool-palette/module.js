@@ -15,25 +15,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-define(['require', 'backbone'], function (require, Backbone) {
-
-    var tool = Backbone.Model.extend({
-        initialize: function (args) {
-            this._name = _.get(args, 'name', null),
-            this._icon = _.get(args, 'icon', null),
-            this._astNode = _.get(args, 'node', null)
-        },
-
-        modelName: "Tool",
-
-        defaults: {
-            id: "",
-            title: "",
-            icon: ""
+define(['./tool', './tool-view', './tool-group',
+        './tool-group-view', './tool-palette', './drag-drop-manager'],
+    function (tool, toolView, toolGroup, toolGroupView, toolPaletteModel, toolPalette, DragDropManager) {
+        return  {
+            Models: {
+                Tool: tool,
+                ToolGroup: toolGroup
+            },
+            Views: {
+                ToolView: toolView,
+                ToolGroupView: toolGroupView,
+                ToolPalette: toolPalette
+            },
+            DragDropManager: DragDropManager
         }
     });
-
-    return tool;
-});
 

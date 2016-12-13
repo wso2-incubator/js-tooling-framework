@@ -15,24 +15,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+define(['lodash', 'log', 'event_channel', '../ast/module', './try-catch-statement-view', './try-statement-view',
+        './catch-statement-view', './if-else-statement-view', './if-statement-view', './else-statement-view', './assignment-view', './function-invocation-view','./get-action-statement-view'],
+    function (_, log, EventChannel, AST, TryCatchStatementView, TryStatementView, CatchStatementView,
+              IfElseStatementView, IfStatementView, ElseStatementView, AssignmentStatementView, FunctionInvocationStatementView, GetActionStatementView) {
 
-/**
- * A module representing the factory for Statement Views.
- */
-
-define(['lodash', './if-statement-view', '../ast/if-statement'],
-    function (_, IfStatementView, IfStatement) {
-
-        var StatementViewFactory = function() {
+        var StatementViewFactory = function () {
         };
 
-        StatementViewFactory.prototype.constructor = StatementViewFactory;
-
-        StatementViewFactory.prototype.createStatementView = function(args) {
-            if((_.get(args, 'model')) instanceof IfStatement) {
+        StatementViewFactory.prototype.getStatementView = function (args) {
+            var statement  = _.get(args, "model");
+            if (statement instanceof AST.TryCatchStatement) {
+                return new TryCatchStatementView(args);
+            } else if (statement instanceof AST.TryStatement) {
+                return new TryStatementView(args);
+            } else if (statement instanceof AST.CatchStatement) {
+                return new CatchStatementView(args);
+            } else if (statement instanceof AST.IfElseStatement) {
+                return new IfElseStatementView(args);
+            } else if (statement instanceof AST.IfStatement) {
                 return new IfStatementView(args);
+            } else if (statement instanceof AST.ElseStatement) {
+                return new ElseStatementView(args);
+            } else if (statement instanceof AST.Assignment) {
+                return new AssignmentStatementView(args);
+            } else if (statement instanceof AST.FunctionInvocation) {
+                return new FunctionInvocationStatementView(args);
+            }
+            else if (statement instanceof AST.GetActionStatement) {
+                return new GetActionStatementView(args);
             }
         };
 
+        StatementViewFactory.prototype.isGetActionStatement = function(statement){
+            if (statement instanceof AST.GetActionStatement){
+                return true;
+            }
+        }
         return StatementViewFactory;
     });
