@@ -206,7 +206,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             // catchStatement.setExceptionType("ArithmeticException ex");
             catchStatement1.setExceptionType("ArithmeticException ex");
 
-            //Create get action statement for connector
+           //Create get action statement for connector
             var getActionStatement1 = BallerinaASTFactory.createGetActionStatement(connector_declaration1);
             ifElseStatement.addChild(ifStatement);
             ifElseStatement.addChild(elseStatement);
