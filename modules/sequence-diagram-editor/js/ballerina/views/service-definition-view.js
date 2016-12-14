@@ -153,6 +153,7 @@ define(['lodash', 'log', 'jquery', './canvas', './../ast/service-definition', '.
             // Create property pane for the service.
             var paneProperties  = {
                 model : this._model,
+                view : ServiceDefinitionView,
                 editableProperties: [{
                     propertyType: "text",
                     key: "Service Name",
