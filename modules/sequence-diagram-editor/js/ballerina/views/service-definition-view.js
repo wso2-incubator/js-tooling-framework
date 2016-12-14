@@ -163,6 +163,11 @@ define(['lodash', 'log', 'jquery', './canvas', './../ast/service-definition', '.
                 htmlElement : annotationButton[0]
             };
             this.createPropertyPane(paneProperties);
+            var self = this;
+            this._model.on('child-added', function(child){
+                self.visit(child);
+                self._model.trigger("childVisitedEvent", child);
+            });
         };
 
         ServiceDefinitionView.prototype.canVisitServiceDefinition = function (serviceDefinition) {
