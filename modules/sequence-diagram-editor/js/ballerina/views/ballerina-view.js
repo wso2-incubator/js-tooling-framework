@@ -278,26 +278,9 @@ define(['lodash', 'log', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
 
                 // Adding on click event for delete button.
                 $(deleteButtonRect.node()).click(function () {
-                    log.info("initializing delete" +model);
-                    // Get the parent of the model and delete it from the parent
-                    /*var parentModelChildren = model.parent.children;
-                    for (var itr = 0; itr < parentModelChildren.length; itr ++) {
-                        if (parentModelChildren[itr].id === model.id) {
-                            parentModelChildren.splice(itr, 1);
-                            break;
-                        }
-                    }*/
-
-                    //Test delete assignment statement
-                    var assignmentModel = model.children[0].children[2];
-                    var parent = assignmentModel.parent;
-                    var parentModelChildren = parent.children;
-                    for (var itr = 0; itr < parentModelChildren.length; itr ++) {
-                        if (parentModelChildren[itr].id === assignmentModel.id) {
-                            parentModelChildren.splice(itr, 1);
-                            break;
-                        }
-                    }
+                    log.info("initializing delete");
+                    var parent = model.parent;
+                    parent.removeChild(model);
                 });
 
             });

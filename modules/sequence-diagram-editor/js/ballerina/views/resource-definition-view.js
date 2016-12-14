@@ -79,6 +79,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
             //Registering event listeners
             this.listenTo(this._model, 'childVisitedEvent', this.childVisitedCallback);
             this.listenTo(this._parentView, 'childViewAddedEvent', this.childViewAddedCallback);
+            this.listenTo(this._model, 'childRemovedEvent', this.childRemovedCallback);
         };
 
         ResourceDefinitionView.prototype.canVisitResourceDefinition = function (resourceDefinition) {
@@ -95,6 +96,11 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
                     log.info("[Eventing] Resource view added : ");
                 }
             }
+        };
+
+        ResourceDefinitionView.prototype.childRemovedCallback = function (child) {
+            log.info("[Eventing] Child element removed. ");
+            (d3.select(this._container)).selectAll('#_' +child.id).remove();
         };
 
         ResourceDefinitionView.prototype.setModel = function (model) {
