@@ -207,6 +207,15 @@ ol#breadcrumbList {
     display:block;
 }
 
+.service-variable-pane {
+    top: 26px;
+    right: 91px;
+    display: inline;
+    background-color: #eaeaea;
+    height: 38px;
+    padding: 5px 25px 5px 16px;
+}
+
 .service-variable-typebutton {
 
     float: right;
@@ -269,6 +278,7 @@ ol#breadcrumbList {
 .property-pane-form-body-property-wrapper {
     padding: 7px 7px 0px;
 }
+
 
 /** Service container related styles | -> End **/
 /*//////////////////////////////////////////////////*/
