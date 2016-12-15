@@ -15,11 +15,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['log', 'lodash','d3','./point', 'backbone'], function (log, _, d3,Point, Backbone) {
+define(['log', 'lodash','d3','./point', 'backbone','event_channel'], function (log, _, d3,Point, Backbone,EventChannel) {
 
     var MessageManager = function() {
     log.info("Initialising Message Manager");
     };
+
+    MessageManager.prototype = Object.create(EventChannel.prototype);
+    MessageManager.prototype.constructor = MessageManager;
+
      MessageManager.prototype.setMessageSource = function(source){
          if (!_.isUndefined(source)) {
              this.messageSource = source;
@@ -38,10 +42,94 @@ define(['log', 'lodash','d3','./point', 'backbone'], function (log, _, d3,Point,
         return this.messageTarget;
     };
 
+    MessageManager.prototype.setActivatedDropTarget = function (dropTarget) {
+        if (!_.isUndefined(dropTarget)) {
+            this.activatedDropTarget = dropTarget;
+        }
+    };
+
+    MessageManager.prototype.getActivatedDropTarget = function () {
+        return this.activatedDropTarget;
+    };
+    MessageManager.prototype.setValidateCallBack = function (callBackMethod) {
+        if (!_.isUndefined(callBackMethod)) {
+            this.validateCallBack = callBackMethod;
+        }
+    };
+
+    MessageManager.prototype.getValidateCallBack = function () {
+        return this.validateCallBack;
+    };
+
+    MessageManager.prototype.setActivatedDropTarget = function (activatedDropTarget,validateCallBack) {
+        if (!_.isUndefined(activatedDropTarget)) {
+            if (!_.isEqual(activatedDropTarget, this.getActivatedDropTarget())){
+                /**
+                 * @eventMessageManager#drop-target-changed
+                 * @type ASTNode
+                 */
+               // this.trigger('drop-target-changed', activatedDropTarget);
+            }
+            this.setActivatedDropTarget(activatedDropTarget);
+        }
+        if (!_.isUndefined(validateCallBack)) {
+            this.setValidateCallBack(validateCallBack);
+        }
+    };
+
+    MessageManager.prototype.isOnDrag = function(){
+        return !_.isNil(this.getMessageSource());
+    };
+
+    MessageManager.prototype.isAtValidDropTarget = function(){
+        var allowedBySource = true,
+            allowedByTarget = true,
+            allowedBySourceValidateCallBack = true,
+            allowedByTargetValidateCallBack = true;
+
+        if(!_.isUndefined(this.getActivatedDropTarget())){
+
+            allowedBySource = this.getMessageSource.canBeActionOf(this.getActivatedDropTarget());
+            allowedByTarget = this.getActivatedDropTarget().canBeConnectorOf(this.getMessageSource());
+
+            //var validateDropTargetCallback = this.getValidateCallBack();
+            //if(!_.isUndefined(validateDropTargetCallback)){
+            //    if(_.isFunction(validateDropTargetCallback)){
+            //        allowedByTargetValidateCallBack = validateDropTargetCallback(this.getActivatedDropTarget());
+            //    }
+            //}
+            //
+            //var validateDropSourceCallback = this.get('validateDropSourceCallback');
+            //if(!_.isUndefined(validateDropSourceCallback)){
+            //    if(_.isFunction(validateDropSourceCallback)){
+            //        allowedBySourceValidateCallBack = validateDropSourceCallback(this.getTypeBeingDragged());
+            //    }
+            //}
+
+            return allowedBySource && allowedByTarget
+                && allowedBySourceValidateCallBack
+                && allowedByTargetValidateCallBack;
+        }
+        return false;
+    };
+
+    MessageManager.prototype.reset = function(){
+        /**
+         * @event MessageManager#drag-stop
+         * @type {ASTNode}
+         */
+        //this.trigger('drag-stop', this.get('typeBeingDragged'));
+       // this.trigger('drop-target-changed', undefined);
+        this.setMessageSource(undefined);
+        this.setValidateCallBack( undefined);
+        this.setActivatedDropTarget(undefined);
+
+    },
+
     MessageManager.prototype.startDrawMessage = function(source,sourcePoint,parent){
         this.setMessageSource(source);
+        var self = this;
 
-       // this.trigger("message-draw-start",source);
 
         var tempLine =  parent.append("line")
             .attr("x1", sourcePoint.x() )
@@ -54,7 +142,7 @@ define(['log', 'lodash','d3','./point', 'backbone'], function (log, _, d3,Point,
             .attr("points", points);
 
         parent.on("mousemove", function () {
-            log.info("in mousemove");
+            log.info("in mousemove of start-draw-message");
             var m = d3.mouse(this);
             tempLine.attr("x2", m[0]);
             tempLine.attr("y2", m[1]);
@@ -66,17 +154,25 @@ define(['log', 'lodash','d3','./point', 'backbone'], function (log, _, d3,Point,
             // unbind current listeners
            parent.on("mousemove", null);
             parent.on("mouseup", null);
-
             var startPoint = new Point(tempLine.attr("x1"),tempLine.attr("y1"));
-            var endpoint = new Point(tempLine.attr("x2"),tempLine.attr("y2"));
+            var endPoint = new Point(tempLine.attr("x2"),tempLine.attr("y2"));
 
-            // line.remove();
-            // arrowPoint.remove();
+              if(self.isAtValidDropTarget()){
+
+                  var connectorReference = self.getActivatedDropTarget();
+                  self.getMessageSource().setConnector(connectorReference);
+                  self.getMessageSource().trigger("drawConnectionForAction",startPoint,parent);
+              }
+            tempLine.remove();
+            arrowPoint.remove();
+           self.getMessageSource().trigger("drawConnectionForAction",startPoint,parent);
+            self.reset();
+
         });
 
 
     };
-   MessageManager.prototype.constructor = MessageManager;
+
 
     return MessageManager;
 

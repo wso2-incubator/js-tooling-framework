@@ -39,5 +39,9 @@ define(['lodash', 'log', './action-invocation-statement'], function (_, log, act
         return this._connector;
     };
 
+    getActionStatement.prototype.canBeActionOf = function(node){
+
+    }
+
     return getActionStatement;
 });

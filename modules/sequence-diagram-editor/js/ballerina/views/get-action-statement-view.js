@@ -31,11 +31,43 @@ define(['lodash', 'd3','log', './ballerina-statement-view', './../ast/get-action
                 log.error("Container for action statement is undefined." + this._container);
                 throw "Container for action statement is undefined." + this._container;
             }
+            this.init();
+
 
         };
 
         GetActionStatementView.prototype = Object.create(BallerinaStatementView.prototype);
         GetActionStatementView.prototype.constructor = GetActionStatementView;
+
+        GetActionStatementView.prototype.init = function(){
+            this.getModel().on("drawConnectionForAction",this.drawActionConnections,this);
+        };
+        GetActionStatementView.prototype.setDiagramRenderingContext = function(context){
+            this._diagramRenderingContext = context;
+        };
+        GetActionStatementView.prototype.getDiagramRenderingContext = function(){
+            return this._diagramRenderingContext;
+        };
+
+        GetActionStatementView.prototype.drawActionConnections = function(startPoint,parent){
+            log.info("Drawing connections for http connector actions");
+
+            if(!_.isNil(this.getModel().getConnector())) {
+                var connectorViewOpts = this.getDiagramRenderingContext().getViewModelMap()[this.getModel().getConnector().id].getViewOptions();
+                var connectorCenterPointX = connectorViewOpts.connectorCenterPointX;
+                var connectorCenterPointY = connectorViewOpts.connectorCenterPointY;
+                var startX = Math.round(startPoint.x());
+               // var arrowX = Math.round(endPoint.x()) - 5;
+               // var arrowY = Math.round(endPoint.y());
+                var processorConnector = D3Utils.line(Math.round(startPoint.x()), Math.round(startPoint.y()), Math.round(connectorCenterPointX),
+                    Math.round(startPoint.y()), parent).classed("action-line", true);
+                var arrowHead = D3Utils.inputTriangle(Math.round(connectorCenterPointX) - 5, Math.round(startPoint.y()), parent).classed("action-arrow", true);
+                var processorConnector2 = D3Utils.line(Math.round(startPoint.x()), Math.round(startPoint.y()) + 8, Math.round(connectorCenterPointX),
+                    Math.round(startPoint.y()) + 8, parent).classed("action-dash-line", true);
+                D3Utils.outputTriangle(Math.round(startPoint.x()), Math.round(startPoint.y()) + 8, parent).classed("action-arrow", true);
+            }
+
+        };
 
         GetActionStatementView.prototype.setModel = function (model) {
             if (!_.isNil(model) && model instanceof GetActionStatement) {
@@ -82,7 +114,8 @@ define(['lodash', 'd3','log', './ballerina-statement-view', './../ast/get-action
          * Rendering the view for get-Action statement.
          * @returns {group} The svg group which contains the elements of the action statement view.
          */
-        GetActionStatementView.prototype.render = function () {
+        GetActionStatementView.prototype.render = function (renderingContext) {
+            this.setDiagramRenderingContext(renderingContext);
           var parentGroup = $(this._container)[0].getElementById("contentGroup");
             var actionStatementGroup = D3Utils.group(d3.select(parentGroup));
             actionStatementGroup.attr("id","actionStatementGroup");
@@ -96,38 +129,41 @@ define(['lodash', 'd3','log', './ballerina-statement-view', './../ast/get-action
            var processorCenterPointY = this.getYPosition();
             var processorWidth = 120;
             var processorHeight = 30;
-            if(!_.isNil(this.getConnectorView())) {
-                var sourcePointX = processorCenterPointX + 60;
-                var sourcePointY = processorCenterPointY;
-                var destinationPointX = this.getConnectorView().getViewOptions().connectorCenterPointX;
-                var arrowX = destinationPointX - 5;
-                var arrowY = processorCenterPointY;
-            }
-            if(!this.getModel().isUserDropped){
-                 processorViewOpts = {
-                    parent: actionStatementGroup,
-                    root: parentGroup,
-                    processorWidth: processorWidth,
-                    processorHeight: processorHeight,
-                    centerPoint: {
-                        x: processorCenterPointX,
-                        y: processorCenterPointY
-                    },
-                    sourcePoint: {
-                        x: sourcePointX,
-                        y: sourcePointY
-                    },
-                    destinationPoint: {
-                        x: destinationPointX,
-                        y: sourcePointY
-                    },
-                    action: "Invoke",
-                    inArrow: true,
-                    outArrow: true,
-                    arrowX: arrowX,
-                    arrowY: arrowY
+            var sourcePointX = processorCenterPointX + 60;
+             var sourcePointY = processorCenterPointY;
 
-                };
+            //if(!_.isNil(this.getConnectorView())) {
+            //    var sourcePointX = processorCenterPointX + 60;
+            //    var sourcePointY = processorCenterPointY;
+            //    var destinationPointX = this.getConnectorView().getViewOptions().connectorCenterPointX;
+            //    var arrowX = destinationPointX - 5;
+            //    var arrowY = processorCenterPointY;
+            //}
+            if(!this.getModel().isUserDropped){
+                // processorViewOpts = {
+                //    parent: actionStatementGroup,
+                //    root: parentGroup,
+                //    processorWidth: processorWidth,
+                //    processorHeight: processorHeight,
+                //    centerPoint: {
+                //        x: processorCenterPointX,
+                //        y: processorCenterPointY
+                //    },
+                //    sourcePoint: {
+                //        x: sourcePointX,
+                //        y: sourcePointY
+                //    },
+                //    destinationPoint: {
+                //        x: destinationPointX,
+                //        y: sourcePointY
+                //    },
+                //    action: "Invoke",
+                //    inArrow: true,
+                //    outArrow: true,
+                //    arrowX: arrowX,
+                //    arrowY: arrowY
+                //
+                //};
             }
             else{
                 processorViewOpts = {
@@ -164,7 +200,8 @@ define(['lodash', 'd3','log', './ballerina-statement-view', './../ast/get-action
             this.processorConnectPoint = processorConnectorPoint;
             this.sourcePoint = new Point(sourcePointX, sourcePointY);
             this.parentContainer = d3.select(parentGroup);
-              var self = this;
+            var self = this;
+
             this.processorConnectPoint.on("mousedown",function(){
                 d3.event.preventDefault();
                 d3.event.stopPropagation();
