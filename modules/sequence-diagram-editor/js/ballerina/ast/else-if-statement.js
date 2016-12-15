@@ -19,11 +19,9 @@ define(['lodash', 'log', './conditional-statement'], function (_, log, Condition
 
     /**
      * Class for if conditions in ballerina. Extended from Conditional-Statement
-     * @param elseStatements The 'else' statements of an IF condition.
-     * @param elseIfStatements The 'else if' statements of an IF condition.
      * @constructor
      */
-    var IfStatement = function (condition,statements) {
+    var ElseIfStatement = function (condition,statements) {
         if(!_.isNil(condition)){
             this._condition = condition;
         }
@@ -31,18 +29,18 @@ define(['lodash', 'log', './conditional-statement'], function (_, log, Condition
         ConditionalStatement.call(this);
     };
 
-    IfStatement.prototype = Object.create(ConditionalStatement.prototype);
-    IfStatement.prototype.constructor = IfStatement;
+    ElseIfStatement.prototype = Object.create(ConditionalStatement.prototype);
+    ElseIfStatement.prototype.constructor = ElseIfStatement;
 
-    IfStatement.prototype.setCondition = function(condition){
+    ElseIfStatement.prototype.setCondition = function(condition){
         if(!_.isNil(condition)){
             this._condition = condition;
         }
     };
 
-    IfStatement.prototype.getCondition = function() {
+    ElseIfStatement.prototype.getCondition = function(){
         return this._condition;
     };
 
-    return IfStatement;
+    return ElseIfStatement;
 });

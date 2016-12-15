@@ -7,6 +7,8 @@
     top: 0px;
     background-color: #ffffff;
     height: 100%;
+    /*border-left: 2px solid #c7c7c7;
+    margin-top: 2px;*/
 }
 
 .tool-group{
@@ -93,10 +95,29 @@
     font-style: italic;
     padding:5px;
     border: 1px solid #d9d9d9;
+    /*width: 100%;*/
 }
 .searchIcon{
     position: absolute;
     left: 158px;
     top: 20px;
     color: darkgray;
+    /*right: 17px;
+    top: 18px;
+    color: #7b7b7b;*/
+}
+
+.tool-drag-container{
+    position: relative;
+}
+
+.tool-disabled-icon{
+    color: red;
+}
+
+.disabled-icon-container{
+    display: none;
+    position: absolute;
+    right: 0px;
+    top: 0px;
 }
