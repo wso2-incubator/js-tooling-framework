@@ -15,10 +15,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor', './ballerina-view','./message-manager'], function(log, _, $, d3, D3Utils, AstVisitor, BallerinaView,MessageManager){
+define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor', './ballerina-view'], function(log, _, $, d3, D3Utils, AstVisitor, BallerinaView){
 
     var Canvas = function(args) {
-        args.messageManager = new MessageManager();
         BallerinaView.call(this, args);
     };
 
@@ -33,8 +32,8 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
         return this._mainSVGGroup;
     };
 
-    Canvas.prototype.drawAccordionCanvas = function (parent, options, id, name, title) {
-        var serviceContainer = $('<div><svg class="service-container"></svg></div>');
+    Canvas.prototype.drawAccordionCanvas = function (parent, options, id, name) {
+        var serviceContainer = $('<div style="position:relative; top:0; right:0;"><svg class="service-container"></svg></div>');
         serviceContainer.attr('id', id);
         serviceContainer.attr('name', name);
         serviceContainer.addClass(_.get(options, 'cssClass.outer_box'));
@@ -60,9 +59,6 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
         }
         panelTitle.append(panelIcon);
         var titleLink = $('<a>' + canvas[0].getAttribute('name') + '</a>');
-        if(title !== undefined) {
-            titleLink.append("&nbsp;" + title);
-        }
         titleLink.addClass(_.get(options, 'cssClass.title_link'));
         //TODO: update href,aria-controls
         titleLink.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
