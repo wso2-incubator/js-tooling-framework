@@ -34,7 +34,7 @@ define(['lodash', 'log', 'event_channel', './../ast/module'], function(_, log, E
             return this.canVisitServiceDefinition(node);
         } else if(node instanceof AST.ResourceDefinition){
             return this.canVisitResourceDefinition(node);
-        } else if(node instanceof AST.FunctionDefinition){
+        } else if(node instanceof AST.FunctionDefinition) {
             return this.canVisitFunctionDefinition(node);
         } else if (node instanceof AST.Statement) {
             return this.canVisitStatement(node);

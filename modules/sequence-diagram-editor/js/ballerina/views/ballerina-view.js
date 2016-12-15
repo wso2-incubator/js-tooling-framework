@@ -310,7 +310,9 @@ define(['lodash', 'log', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
 
                 // Adding on click event for delete button.
                 $(deleteButtonRect.node()).click(function () {
-                    // TODO : Implement
+                    log.info("initializing delete");
+                    var parent = model.parent;
+                    parent.removeChild(model);
                 });
 
             });

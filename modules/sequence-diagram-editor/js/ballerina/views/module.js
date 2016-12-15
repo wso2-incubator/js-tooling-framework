@@ -43,4 +43,3 @@ define(['./action-definition-view', './ballerina-file-editor', './ballerina-view
 
         }
     });
-

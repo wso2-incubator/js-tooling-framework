@@ -155,7 +155,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             sList.push(connector_declaration);
             sList.push(connector_declaration1);
             resource_passthrough.setConnections(sList);
-           // resource_passthrough.setConnections([connector_declaration1]);
+            // resource_passthrough.setConnections([connector_declaration1]);
             resource_passthrough.addChild(connector_declaration);
             resource_passthrough.addChild(connector_declaration1);
 
@@ -180,7 +180,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             //resourceDefinitions.push(resource_passthrough);
             //resourceDefinitions.push(custom_resource);
 
-            serviceDefinition_passthroughService.addChild(resource_passthrough);
+            serviceDefinition_passthroughService.addChild(resource_passthrough)
 
             //Create Smaple If-else
             // var ifElseStatement1 = ballerinaASTFactory.createIfElseStatement();
@@ -233,7 +233,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var arithmeticExp = BallerinaASTFactory.createArithmeticExpression();
             arithmeticExp.setExpression('a = resp + 123');
             //TODO:Commented to view get action statement
-           // resource_passthrough.addChild(arithmeticExp);
+            // resource_passthrough.addChild(arithmeticExp);
 
             // Create Sample try-catch statement
             var ifElseStatement = BallerinaASTFactory.createIfElseStatement();
@@ -255,7 +255,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             tryCatchStatement1.addChild(tryStatement1);
             tryCatchStatement1.addChild(catchStatement1);
             //TODO:Commented to view get action statement
-           // resource_passthrough.addChild(ifElseStatement);
+            // resource_passthrough.addChild(ifElseStatement);
             //TODO:Commented to view get action statement
             //resource_passthrough.addChild(tryCatchStatement1);
             resource_passthrough.addChild(getActionStatement1);
@@ -298,3 +298,4 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
 
     return FileTab;
 });
+
