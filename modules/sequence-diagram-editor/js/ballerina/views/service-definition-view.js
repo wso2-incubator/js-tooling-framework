@@ -201,35 +201,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 throw "Unable to render property pane as the html element is undefined." + activatorElement;
             }
 
-//           renderVariables = function(variableDeclarationsList){
-//                var variableSetWrapper = $('<div id="variableSet"/>').appendTo($(variablePaneWrapper));
-//                for(variableCount = 0; variableCount < variableDeclarationsList.length; variableCount++){
-//                    var variableSelect = $("<p><label for=" + variableDeclarationsList[variableCount].getIdentifier() + ">" +
-//                        variableDeclarationsList[variableCount].getType()  +":" + variableDeclarationsList[variableCount].getIdentifier() +"</label></p>").
-//                        appendTo(variableSetWrapper);
-//                }
-//            };
-
             ServiceDefinitionView.prototype.renderVariables = function(variableDeclarationsList){
-                var variableSetWrapper = $('<div id="variableSet"/>').appendTo($(variablePaneWrapper));
-                for(variableCount = 0; variableCount < variableDeclarationsList.length; variableCount++){
-                    var variableSelect = $("<p><label for=" + variableDeclarationsList[variableCount].getIdentifier() + ">" +
-                        variableDeclarationsList[variableCount].getType()  +":" + variableDeclarationsList[variableCount].getIdentifier() +"</label></p>").
-                        appendTo(variableSetWrapper);
-                }
-                return variableSetWrapper;
-            };
-
-            var variablePaneWrapper = $('<div id="variableSection" style="position:absolute;top:32px;right:109px;display:none"/>').appendTo($(paneElement));
-            var variableForm = $('<form></form>').appendTo(variablePaneWrapper);
-            var variableText = $("<input id='inputbox'/>").appendTo(variableForm);
-            var variableSelect = $("<select id='customSelect/'>").appendTo(variableForm);
-            for(typeCount = 0;typeCount < variableTypes.length; typeCount ++){
-                var selectOption = $("<option value="+variableTypes[typeCount]+">"+variableTypes[typeCount]+"</option>").appendTo($(variableSelect));
-            }
-            var addVariable = $("<button type='button'>Add</button>").appendTo(variableForm);
-            if(variableList.length > 0){
-                var variableSetWrapper = $('<div id="variableSet"/>').appendTo($(variablePaneWrapper));
+                var variableSetWrapper = $('<div/>').appendTo($(variablePaneWrapper));
                 var variableTable = $('<table/>').appendTo(variableSetWrapper);
                 for(variableCount = 0; variableCount < variableList.length; variableCount++){
                     var currentRaw;
@@ -237,8 +210,33 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variables = $("<p><label style='padding-right:10px' for=" + variableList[variableCount].getIdentifier() + ">" +
-                        variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"</label></p>").
+                    var variables = $("<label style='padding-right:10px' for=" + variableList[variableCount].getIdentifier() + ">" +
+                    variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"   "+"</label>").
+                        appendTo(currentCell);
+                }
+                return variableSetWrapper;
+            };
+
+            var variablePaneWrapper = $('<div id="variableSection" class="service-variable-pane"/>').appendTo($(paneElement));
+            var variableForm = $('<form></form>').appendTo(variablePaneWrapper);
+            var variableText = $("<input/>").appendTo(variableForm);
+            var variableSelect = $("<select/>").appendTo(variableForm);
+            for(typeCount = 0;typeCount < variableTypes.length; typeCount ++){
+                var selectOption = $("<option value="+ variableTypes[typeCount]+">"+variableTypes[typeCount] +
+                    "</option>").appendTo($(variableSelect));
+            }
+            var addVariable = $("<button type='button'>Add</button>").appendTo(variableForm);
+            if(variableList.length > 0){
+                var variableSetWrapper = $('<div/>').appendTo($(variablePaneWrapper));
+                var variableTable = $('<table/>').appendTo(variableSetWrapper);
+                for(variableCount = 0; variableCount < variableList.length; variableCount++){
+                    var currentRaw;
+                    if(variableCount % 3 == 0){
+                        currentRaw = $('<tr/>').appendTo(variableTable);
+                    }
+                    var currentCell = $('<td/>').appendTo(currentRaw);
+                    var variables = $("<label style='padding-right:10px' for=" + variableList[variableCount].getIdentifier() + ">" +
+                        variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"   "+"</label>").
                         appendTo(currentCell);
                 }
             }
@@ -263,14 +261,14 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variables = $("<p><label for=" + variableList[variableCount].getIdentifier() + ">" +
-                        variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"</label></p>").
+                    var variables = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
+                        variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"</label>").
                         appendTo(currentCell);
                 }
             });
 
             $(activatorElement).click(serviceModel, function (serviceModel) {
-                if(paneElement.children[1].style.display=="none"){
+                if(paneElement.children[1].style.display== "none" || paneElement.children[1].style.display == ""){
                     paneElement.children[1].style.display = "inline";
                 } else {
                     paneElement.children[1].style.display = "none";

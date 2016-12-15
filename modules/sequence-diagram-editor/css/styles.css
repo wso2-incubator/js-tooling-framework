@@ -208,12 +208,10 @@ ol#breadcrumbList {
 }
 
 .service-variable-pane {
-    top: 26px;
-    right: 91px;
-    display: inline;
-    background-color: #eaeaea;
-    height: 38px;
-    padding: 5px 25px 5px 16px;
+    position:absolute;
+    top:32px;
+    right:109px;
+    display:none;
 }
 
 .service-variable-typebutton {
