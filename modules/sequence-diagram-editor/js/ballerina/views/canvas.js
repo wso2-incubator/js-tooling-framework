@@ -32,7 +32,7 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
         return this._mainSVGGroup;
     };
 
-    Canvas.prototype.drawAccordionCanvas = function (parent, options, id, name) {
+    Canvas.prototype.drawAccordionCanvas = function (parent, options, id, name, title) {
         var serviceContainer = $('<div style="position:relative; top:0; right:0;"><svg class="service-container"></svg></div>');
         serviceContainer.attr('id', id);
         serviceContainer.attr('name', name);
@@ -42,10 +42,11 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
 
         //draw a collapse accordion
         var outerDiv = $('<div></div>');
-
+        outerDiv.attr('id', '_'+canvas[0].id);//to support HTML4
         outerDiv.addClass(_.get(options, 'cssClass.outer_div'));
         var panelHeading = $('<div></div>');
         panelHeading.attr('id', canvas[0].id + 3).attr('role', 'tab');
+        panelHeading.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
         var panelTitle = $('<h4></h4>');
         panelTitle.addClass(_.get(options, 'cssClass.panel_title'));
         var panelIcon = $('<i></i>');
@@ -59,9 +60,11 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
         }
         panelTitle.append(panelIcon);
         var titleLink = $('<a>' + canvas[0].getAttribute('name') + '</a>');
+        if (title !== undefined) {
+            titleLink.append("&nbsp;" + title);
+        }
         titleLink.addClass(_.get(options, 'cssClass.title_link'));
         //TODO: update href,aria-controls
-        titleLink.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
         panelTitle.append(titleLink);
 
         var panelRightIcon = $('<i></i>');

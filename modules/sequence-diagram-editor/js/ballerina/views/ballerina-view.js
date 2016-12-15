@@ -16,7 +16,7 @@
  * under the License.
  */
 define(['lodash', 'log', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor', './../ast/node', 'app/diagram-core/models/point'],
-    function (_, log, $, d3, D3Utils, ASTVisitor, ASTNode, Point) {
+    function (_, log, $, d3, D3Utils, ASTVisitor) {
 
         /**
          * A common class which consists functions of moving or resizing views.
@@ -74,6 +74,7 @@ define(['lodash', 'log', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
          * @param {Point} args.viewOptions.position - The position at which the property pane to be created.
          */
         BallerinaView.prototype.createPropertyPane = function (args) {
+            var model = _.get(args, "model");
             var activatorElement = _.get(args, "activatorElement");
             var paneAppendElement = _.get(args, "paneAppendElement");
             var editableProperties = _.get(args, "editableProperties", []);
@@ -310,10 +311,19 @@ define(['lodash', 'log', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
 
                 // Adding on click event for delete button.
                 $(deleteButtonRect.node()).click(function () {
-                    // TODO : Implement
+                    log.info("initializing delete");
+                    //TODO: get each element as child
+                    var child = model;
+                    var parent = child.parent;
+                    parent.removeChild(child);
                 });
 
             });
+        };
+
+        BallerinaView.prototype.childViewRemovedCallback = function (child) {
+            log.info("[Eventing] Child element view removed. ");
+            //TODO: logic to remove each element from each container
         };
 
         return BallerinaView;
