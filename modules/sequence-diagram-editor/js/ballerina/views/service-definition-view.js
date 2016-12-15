@@ -48,6 +48,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
 
         ServiceDefinitionView.prototype = Object.create(Canvas.prototype);
         ServiceDefinitionView.prototype.constructor = ServiceDefinitionView;
+        // TODO move variable types into constant class
+        var variableTypes = ['message','connection','string','int','exception'];
 
         ServiceDefinitionView.prototype.init = function(){
             //Registering event listeners
@@ -221,7 +223,10 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             var variablePaneWrapper = $('<div id="variableSection" style="position:absolute;top:32px;right:109px;display:none"/>').appendTo($(paneElement));
             var variableForm = $('<form></form>').appendTo(variablePaneWrapper);
             var variableText = $("<input id='inputbox'/>").appendTo(variableForm);
-            var variableSelect = $("<select id='customSelect'><option value='message'>message</option><option value='exception'>exception</option><option value='int'>int</option></select>").appendTo(variableForm);
+            var variableSelect = $("<select id='customSelect/'>").appendTo(variableForm);
+            for(typeCount = 0;typeCount < variableTypes.length; typeCount ++){
+                var selectOption = $("<option value="+variableTypes[typeCount]+">"+variableTypes[typeCount]+"</option>").appendTo($(variableSelect));
+            }
             var addVariable = $("<button type='button'>Add</button>").appendTo(variableForm);
             if(variableList.length > 0){
                 var variableSetWrapper = $('<div id="variableSet"/>').appendTo($(variablePaneWrapper));
