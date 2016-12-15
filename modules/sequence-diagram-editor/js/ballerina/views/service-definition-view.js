@@ -433,6 +433,10 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 }
             );
 
+            $(annotationIconRect.node()).click(function () {
+                $(annotationIconBackgroundCircle.node()).trigger("click");
+            });
+
             return annotationIconBackgroundCircle;
         };
 
@@ -488,6 +492,10 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     $(variableIconBackgroundCircle.node()).removeAttr("style");
                 }
             );
+
+            $(variableIconRect.node()).click(function () {
+                $(variableIconBackgroundCircle.node()).trigger("click");
+            });
 
             return variableIconBackgroundCircle;
         };
