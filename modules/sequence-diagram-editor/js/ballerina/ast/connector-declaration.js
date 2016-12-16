@@ -31,6 +31,7 @@ define(['lodash', './node'], function(_, ASTNode){
 
     ConnectorDeclaration.prototype.canBeConnectorOf = function(action){
         var BallerinaASTFactory = this.getFactory();
+        return BallerinaASTFactory.isActionInvocationStatement(action);
 
     };
     // Auto generated Id for service definitions (to identify connector view based model )

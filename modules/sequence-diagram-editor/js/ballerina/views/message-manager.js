@@ -33,15 +33,6 @@ define(['log', 'lodash','d3','./point', 'backbone','event_channel'], function (l
        return this.messageSource;
     };
 
-    MessageManager.prototype.setMessageTarget = function(destination){
-        if (!_.isUndefined(destination)) {
-            this.messageTarget = destination;
-        }
-    };
-    MessageManager.prototype.getMessageTarget = function(){
-        return this.messageTarget;
-    };
-
     MessageManager.prototype.setActivatedDropTarget = function (dropTarget) {
         if (!_.isUndefined(dropTarget)) {
             this.activatedDropTarget = dropTarget;

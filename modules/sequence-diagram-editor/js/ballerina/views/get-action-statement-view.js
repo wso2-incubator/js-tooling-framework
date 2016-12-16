@@ -53,18 +53,21 @@ define(['lodash', 'd3','log', './ballerina-statement-view', './../ast/get-action
             log.info("Drawing connections for http connector actions");
 
             if(!_.isNil(this.getModel().getConnector())) {
+                // Get referred connector view's view options for centerPoint
                 var connectorViewOpts = this.getDiagramRenderingContext().getViewModelMap()[this.getModel().getConnector().id].getViewOptions();
+
                 var connectorCenterPointX = connectorViewOpts.connectorCenterPointX;
-                var connectorCenterPointY = connectorViewOpts.connectorCenterPointY;
                 var startX = Math.round(startPoint.x());
-               // var arrowX = Math.round(endPoint.x()) - 5;
-               // var arrowY = Math.round(endPoint.y());
-                var processorConnector = D3Utils.line(Math.round(startPoint.x()), Math.round(startPoint.y()), Math.round(connectorCenterPointX),
-                    Math.round(startPoint.y()), parent).classed("action-line", true);
-                var arrowHead = D3Utils.inputTriangle(Math.round(connectorCenterPointX) - 5, Math.round(startPoint.y()), parent).classed("action-arrow", true);
-                var processorConnector2 = D3Utils.line(Math.round(startPoint.x()), Math.round(startPoint.y()) + 8, Math.round(connectorCenterPointX),
-                    Math.round(startPoint.y()) + 8, parent).classed("action-dash-line", true);
-                D3Utils.outputTriangle(Math.round(startPoint.x()), Math.round(startPoint.y()) + 8, parent).classed("action-arrow", true);
+                var startY = Math.round(startPoint.y());
+                var arrowGap = 5;
+                var lineGap = 8;
+                // Drawing http connector action invocation/reply arrows
+                 var invokeLine = D3Utils.line(startX, startY, Math.round(connectorCenterPointX),
+                   startY, parent).classed("action-line", true);
+                var leftArrowHead =  D3Utils.inputTriangle(Math.round(connectorCenterPointX) - arrowGap,startY, parent).classed("action-arrow", true);
+                var replyLine =  D3Utils.line(startX,startY + lineGap, Math.round(connectorCenterPointX),
+                   startY + lineGap, parent).classed("action-dash-line", true);
+               var rightArrowHead =  D3Utils.outputTriangle(startX, startY + lineGap, parent).classed("action-arrow", true);
             }
 
         };
