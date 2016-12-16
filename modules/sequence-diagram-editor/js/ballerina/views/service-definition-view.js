@@ -202,11 +202,23 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     if(variableCount % 3 == 0){
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
+                    var labelClass = "";
+                    if (variableDeclarationsList[variableCount].getType() === "message") {
+                        labelClass = "variable-type-message";
+                    } else if (variableDeclarationsList[variableCount].getType() === "connection") {
+                        labelClass = "variable-type-connection";
+                    } else if (variableDeclarationsList[variableCount].getType() === "string") {
+                        labelClass = "variable-type-string";
+                    } else if (variableDeclarationsList[variableCount].getType() === "int") {
+                        labelClass = "variable-type-int";
+                    } else {
+                        labelClass = "variable-type-exception";
+                    }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variable = $("<label for=" + variableDeclarationsList[variableCount].getIdentifier() + ">" +
+                    var variable = $("<label for=" + variableDeclarationsList[variableCount].getIdentifier() + " class=" + labelClass + ">" +
                         variableDeclarationsList[variableCount].getType()  + "</label>" + "<input readonly maxlength='7' size='7' value=" +
-                        variableDeclarationsList[variableCount].getIdentifier() +">").appendTo(currentCell);
-                    var removeBtn = $('<button>x</button>').appendTo(currentCell);
+                        variableDeclarationsList[variableCount].getIdentifier() +" class=" + labelClass + ">").appendTo(currentCell);
+                    var removeBtn = $('<button class="variable-list">x</button>').appendTo(currentCell);
 
                     // variable delete onclick
                     var self = this;
@@ -262,7 +274,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 var selectOption = $("<option value="+ variableTypes[typeCount]+">"+variableTypes[typeCount] +
                     "</option>").appendTo($(variableSelect));
             }
-            var addVariable = $("<button type='button'>Add</button>").appendTo(variableForm);
+            var addVariable = $("<button type='button'>+</button>").appendTo(variableForm);
 
             this.renderVariables(variableList,variablePaneWrapper,serviceModel);
             var self = this;
