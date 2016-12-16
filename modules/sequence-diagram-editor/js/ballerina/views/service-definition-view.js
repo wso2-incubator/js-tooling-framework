@@ -211,7 +211,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variables = $("<label style='padding-right:10px' for=" + variableList[variableCount].getIdentifier() + ">" +
+                    var variables = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
                     variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"   "+"</label>").
                         appendTo(currentCell);
                 }
@@ -220,8 +220,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
 
             var variablePaneWrapper = $('<div id="variableSection" class="service-variable-pane"/>').appendTo($(paneElement));
             var variableForm = $('<form></form>').appendTo(variablePaneWrapper);
-            var variableText = $("<input/>").appendTo(variableForm);
             var variableSelect = $("<select/>").appendTo(variableForm);
+            var variableText = $("<input/>").appendTo(variableForm);
             for(typeCount = 0;typeCount < variableTypes.length; typeCount ++){
                 var selectOption = $("<option value="+ variableTypes[typeCount]+">"+variableTypes[typeCount] +
                     "</option>").appendTo($(variableSelect));
@@ -236,9 +236,13 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variables = $("<label style='padding-right:10px' for=" + variableList[variableCount].getIdentifier() + ">" +
+                    var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
                         variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"   "+"</label>").
                         appendTo(currentCell);
+                    var removeBtn = $('<button>x</button>').appendTo(currentCell);
+                    $(removeBtn).click(serviceModel, function(serviceModel){
+                        log.info($(variableSelect).val());
+                    });
                 }
             }
 
@@ -262,9 +266,14 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variables = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
+                    var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
                         variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"</label>").
                         appendTo(currentCell);
+                    var removeBtn = $('<button>x</button>').appendTo(currentCell);
+                    $(removeBtn).click(serviceModel, function(serviceModel){
+                        log.info($(variableSelect).val());
+
+                    });
                 }
             });
 
