@@ -211,8 +211,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         currentRaw = $('<tr/>').appendTo(variableTable);
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variables = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
-                    variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"   "+"</label>").
+                    var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
+                        variableList[variableCount].getType()  + "</label>" + "<input readonly maxlength='7' size='7' value=" + variableList[variableCount].getIdentifier() +">").
                         appendTo(currentCell);
                 }
                 return variableSetWrapper;
@@ -237,7 +237,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
                     var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
-                        variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"   "+"</label>").
+                        variableList[variableCount].getType()  + "</label>" + "<input readonly maxlength='7' size='7' value=" + variableList[variableCount].getIdentifier() +">").
                         appendTo(currentCell);
                     var removeBtn = $('<button>x</button>').appendTo(currentCell);
                     $(removeBtn).click(serviceModel, function(serviceModel){
@@ -250,8 +250,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 var variableList = serviceModel.data.getVariableDeclarations();
                 var variable = BallerinaASTFactory.createVariableDeclaration();
                 //pushing new variable declaration
-                variable.setType($(variableText).val());
-                variable.setIdentifier($(variableSelect).val());
+                variable.setType($(variableSelect).val());
+                variable.setIdentifier($(variableText).val());
                 serviceModel.data.getVariableDeclarations().push(variable);
 
                 //remove current variable list
@@ -267,12 +267,18 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     }
                     var currentCell = $('<td/>').appendTo(currentRaw);
                     var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
-                        variableList[variableCount].getType()  +":" + variableList[variableCount].getIdentifier() +"</label>").
-                        appendTo(currentCell);
+                            variableList[variableCount].getType()  + "</label>" + "<input readonly maxlength='5' size='5' value=" + variableList[variableCount].getIdentifier() +">").
+                            appendTo(currentCell);
+
+                    // variable edit
+                    $(variable).click(serviceModel, function(serviceModel){
+                        log.info('Variable edit');
+                    });
+
+                    // variable delete
                     var removeBtn = $('<button>x</button>').appendTo(currentCell);
                     $(removeBtn).click(serviceModel, function(serviceModel){
                         log.info($(variableSelect).val());
-
                     });
                 }
             });
@@ -452,7 +458,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     }
                 }).height(paneHeadingHeight).appendTo(annotationEditorWrapper);
 
-                var annotationTypeDropDown = $("<select />").appendTo(headerWrapper);
+                var annotationTypeDropDown = $("<select/>").appendTo(headerWrapper);
                 _.forEach(data, function (annotation) {
                     $("<option />", {
                         value: annotation.annotationType,
