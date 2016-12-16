@@ -342,6 +342,12 @@ define(['lodash', 'jquery', 'log', './ballerina-view', './service-definition-vie
             // TODO : Implement
         };
 
+        BallerinaFileEditor.prototype.childViewRemovedCallback = function (child) {
+            log.info("[Eventing] Child element view removed. ");
+            //TODO: remove from view map
+            $(this._container.querySelectorAll("#_" +child.id)).remove();
+        };
+
         return BallerinaFileEditor;
     });
 

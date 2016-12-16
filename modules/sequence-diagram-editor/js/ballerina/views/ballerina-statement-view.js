@@ -164,9 +164,6 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
         viewOptions.propertyForm.body.addStatement.text = _.get(args, "propertyForm.body.addStatement.text", "Add");
         viewOptions.propertyForm.body.addStatement.class = _.get(args, "propertyForm.body.addStatement.class", "property-pane-form-body-add-button");
 
-        // Adding a css class for 'if else' group.
-        statementGroup.classed("if-else-svg-group", true);
-
         // Adding click event for 'statement' group.
         $(statementGroup.node()).click(function (statementView, event) {
 

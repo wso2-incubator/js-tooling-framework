@@ -44,6 +44,7 @@ define(['require', 'lodash', 'jquery', 'log', './ballerina-statement-view', './.
         IfStatementView.prototype.render = function (diagramRenderingContext) {
             this._diagramRenderingContext = diagramRenderingContext;
             var ifGroup = D3Utils.group(this._container);
+            ifGroup.attr("id","_" +this._model.id);
             var x = this.getParent().getBoundingBox().x;
             var y = this.getParent().getBoundingBox().y;
             var width = 120;

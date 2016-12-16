@@ -124,6 +124,7 @@ define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statemen
         IfElseStatementView.prototype.render = function (diagramRenderingContext) {
             this._diagramRenderingContext = diagramRenderingContext;
             var ifElseGroup = D3Utils.group(d3.select(this._container));
+            ifElseGroup.attr("id","_" +this._model.id);
             this.setStatementGroup(ifElseGroup);
             this._model.accept(this);
 
