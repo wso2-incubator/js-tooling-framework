@@ -39,5 +39,10 @@ define(['lodash', 'log', './action-invocation-statement'], function (_, log, act
         return this._connector;
     };
 
+    getActionStatement.prototype.canBeActionOf = function(node){
+        var BallerinaASTFactory = this.getFactory();
+        return BallerinaASTFactory.isConnectorDeclaration(node);
+    }
+
     return getActionStatement;
 });

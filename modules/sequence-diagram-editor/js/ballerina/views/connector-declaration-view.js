@@ -103,6 +103,7 @@ define(['lodash','d3', 'jquery', './ballerina-view', './../ast/connector-declara
             var centerPointX = this._viewOptions.connectorCenterPointX;
             var centerPointY = this._viewOptions.connectorCenterPointY;
             var defaultConnectorOptions = {
+                model: this.getModel(),
                 editable: true,
                 centerPoint: {
                     x: centerPointX,

@@ -168,7 +168,20 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
         ResourceDefinitionView.prototype.visitStatement = function (statement) {
             var statementViewFactory = new StatementViewFactory();
             var args = {model: statement, container: this._container, viewOptions: undefined, toolPalette: this.toolPalette,messageManager: this.messageManager, parent:this};
-            var statementView = statementViewFactory.getStatementView(args);
+            if(_.isNil(this.diagramRenderingContext.getViewModelMap()[statement.id])) {
+                var statementView = statementViewFactory.getStatementView(args);
+            }
+            else{
+                var statementView = this.diagramRenderingContext.getViewModelMap()[statement.id];
+                var self = this;
+                _.each(this._statementExpressionViewList,function(view){
+                  if(view.getModel().id == statement.id){
+                     var index =  self._statementExpressionViewList.indexOf(view);
+                      self._statementExpressionViewList.splice(index,1);
+                      return;
+                  }
+                });
+            }
             this.diagramRenderingContext.getViewModelMap()[statement.id] = statementView;
             statementView.setParent(this);
             var x = 0;
@@ -180,12 +193,6 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
                         statementView.setConnectorView(view);
                     }
                 });
-                //_.each(this.getConnectorViewList(), function (view) {
-                //  var matchFound =  _.isEqual(statement.getConnector(),view.getModel());
-                //    if(matchFound) {
-                //        statementView.setConnectorView(view);
-                //    }
-                //});
             }
 
             // TODO: we need to keep this value as a configurable value and read from constants
@@ -193,13 +200,13 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
             var statementsWidth = 120;
             if (this._statementExpressionViewList.length > 0) {
                 var lastStatement = this._statementExpressionViewList[this._statementExpressionViewList.length - 1];
-                x = lastStatement.getXPosition();
-                y = lastStatement.getYPosition() + lastStatement.getHeight() + statementsGap;
-            } else {
+                x = lastStatement.getBoundingBox().x + lastStatement.getBoundingBox().width/2 - statementsWidth/2;
+                y = lastStatement.getBoundingBox().y + lastStatement.getBoundingBox().height + statementsGap;
+            }
+            else {
                 x = parseInt(this._defaultResourceLifeLine.getMiddleLine().attr('x1')) - parseInt(statementsWidth/2);
-                // First statement is drawn wrt to the position of the default action processor
+// First statement is drawn wrt to the position of the default action processor
                 y = this._defaultActionProcessor.getHeight() + this._defaultActionProcessor.getYPosition() + statementsGap;
-                statementView.setXPosition(x);
             }
             this.diagramRenderingContext.getViewModelMap()[statement.id] = statementView;
             this._statementExpressionViewList.push(statementView);

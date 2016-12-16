@@ -117,6 +117,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var elseIf1 = BallerinaASTFactory.createElseIfStatement();
             var elseIf2 = BallerinaASTFactory.createElseIfStatement();
             ifelse1.addChild(if1);
+            ifelse1.addChild(else1);
             //ifelse1.addChild(elseIf1);
             //ifelse1.addChild(elseIf2);
             //ifelse1.addChild(else1);
@@ -132,8 +133,8 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var else3 = BallerinaASTFactory.createElseStatement();
             ifelse3.addChild(if3);
             ifelse3.addChild(else3);
-            if1.addChild(ifelse2);
-            elseIf1.addChild(ifelse3);
+           // if1.addChild(ifelse2);
+           // elseIf1.addChild(ifelse3);
             // else1.addChild(ifelse3);
             var ifelse4 = BallerinaASTFactory.createIfElseStatement();
             var if4 = BallerinaASTFactory.createIfStatement();
@@ -267,7 +268,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             catchStatement1.setExceptionType("ArithmeticException ex");
 
            //Create get action statement for connector
-            var actionOpts = {connector:connector_declaration1, isUserDropped:false};
+            var actionOpts = {connector:connector_declaration, isUserDropped:false};
             var getActionStatement1 = BallerinaASTFactory.createGetActionStatement(actionOpts);
            // var actionOpts2 = {connector:connector_declaration, isUserDropped:false};
            // var getActionStatement2 = BallerinaASTFactory.createGetActionStatement(actionOpts2);

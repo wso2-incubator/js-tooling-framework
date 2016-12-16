@@ -165,10 +165,11 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
         // Adding a css class for 'if else' group.
         statementGroup.classed("if-else-svg-group", true);
-
+        var self = this;
         // Adding click event for 'statement' group.
         $(statementGroup.node()).click(function (statementView, event) {
 
+           var diagramRenderingContext = self.getDiagramRenderingContext();
             log.debug("Clicked statement group");
 
             event.stopPropagation();
@@ -324,8 +325,8 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
                 }).appendTo(buttonPane);
 
-                $(addButton).click(function(){
-                    // TODO : Write add implementation.
+                $(addButton).click(function (event) {
+                    statementView.getModel().trigger("add-new-statement");
                 });
 
                 // Close the popups of property pane body.
