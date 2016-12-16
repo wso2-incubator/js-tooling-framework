@@ -191,6 +191,58 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             this._createAnnotationButtonPane(annotationButton);
         };
 
+        ServiceDefinitionView.prototype.renderVariables = function(variableDeclarationsList, variablePaneWrapper, serviceModel){
+
+            if(variableDeclarationsList.length > 0){
+                var variableSetWrapper = $('<div/>').appendTo($(variablePaneWrapper));
+                var variableTable = $('<table/>').appendTo(variableSetWrapper);
+
+                for(variableCount = 0; variableCount < variableDeclarationsList.length; variableCount++){
+                    var currentRaw;
+                    if(variableCount % 3 == 0){
+                        currentRaw = $('<tr/>').appendTo(variableTable);
+                    }
+                    var currentCell = $('<td/>').appendTo(currentRaw);
+                    var variable = $("<label for=" + variableDeclarationsList[variableCount].getIdentifier() + ">" +
+                        variableDeclarationsList[variableCount].getType()  + "</label>" + "<input readonly maxlength='7' size='7' value=" +
+                        variableDeclarationsList[variableCount].getIdentifier() +">").appendTo(currentCell);
+                    var removeBtn = $('<button>x</button>').appendTo(currentCell);
+
+                    // variable delete onclick
+                    var self = this;
+                    $(removeBtn).click(serviceModel, function(serviceModel){
+                        var varList = serviceModel.data.data.getVariableDeclarations();
+                        var varType = $($(variable)[0]).text();
+                        var varIdentifier = $($(variable)[1]).val();
+                        var index = -1;
+                        for(varIndex = 0; varIndex < varList.length; varIndex ++){
+                            if(varList[varIndex].getType() == varType && varList[varIndex].getIdentifier() == varIdentifier){
+                                index = varIndex;
+                                break;
+                            }
+                        }
+
+                        if(index != -1){
+                            serviceModel.data.data.getVariableDeclarations().splice(index,1);
+                        }
+
+                        log.info($(variable).val());
+
+                        if(variablePaneWrapper.children().length > 1){
+                            variablePaneWrapper.children()[variablePaneWrapper.children().length - 1].remove()
+                        }
+                        self.renderVariables(variableDeclarationsList, variablePaneWrapper, serviceModel);
+                    });
+
+                    // variable edit onclick
+                    $(variable).click(serviceModel, function(serviceModel){
+                        log.info('Variable edit');
+                        // ToDo : Render variables here
+                    });
+                 }
+            }
+        };
+
         ServiceDefinitionView.prototype.createVariablePane = function (args) {
             var activatorElement = _.get(args, "activatorElement");
             var serviceModel = _.get(args, "model");
@@ -202,22 +254,6 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 throw "Unable to render property pane as the html element is undefined." + activatorElement;
             }
 
-            ServiceDefinitionView.prototype.renderVariables = function(variableDeclarationsList){
-                var variableSetWrapper = $('<div/>').appendTo($(variablePaneWrapper));
-                var variableTable = $('<table/>').appendTo(variableSetWrapper);
-                for(variableCount = 0; variableCount < variableList.length; variableCount++){
-                    var currentRaw;
-                    if(variableCount % 3 == 0){
-                        currentRaw = $('<tr/>').appendTo(variableTable);
-                    }
-                    var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
-                        variableList[variableCount].getType()  + "</label>" + "<input readonly maxlength='7' size='7' value=" + variableList[variableCount].getIdentifier() +">").
-                        appendTo(currentCell);
-                }
-                return variableSetWrapper;
-            };
-
             var variablePaneWrapper = $('<div id="variableSection" class="service-variable-pane"/>').appendTo($(paneElement));
             var variableForm = $('<form></form>').appendTo(variablePaneWrapper);
             var variableSelect = $("<select/>").appendTo(variableForm);
@@ -227,24 +263,9 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     "</option>").appendTo($(variableSelect));
             }
             var addVariable = $("<button type='button'>Add</button>").appendTo(variableForm);
-            if(variableList.length > 0){
-                var variableSetWrapper = $('<div/>').appendTo($(variablePaneWrapper));
-                var variableTable = $('<table/>').appendTo(variableSetWrapper);
-                for(variableCount = 0; variableCount < variableList.length; variableCount++){
-                    var currentRaw;
-                    if(variableCount % 3 == 0){
-                        currentRaw = $('<tr/>').appendTo(variableTable);
-                    }
-                    var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
-                        variableList[variableCount].getType()  + "</label>" + "<input readonly maxlength='7' size='7' value=" + variableList[variableCount].getIdentifier() +">").
-                        appendTo(currentCell);
-                    var removeBtn = $('<button>x</button>').appendTo(currentCell);
-                    $(removeBtn).click(serviceModel, function(serviceModel){
-                        log.info($(variableSelect).val());
-                    });
-                }
-            }
+
+            this.renderVariables(variableList,variablePaneWrapper,serviceModel);
+            var self = this;
 
             $(addVariable).click(serviceModel, function (serviceModel){
                 var variableList = serviceModel.data.getVariableDeclarations();
@@ -258,29 +279,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 if(variablePaneWrapper.children().length > 1){
                     variablePaneWrapper.children()[variablePaneWrapper.children().length - 1].remove()
                 }
-                var variableSetWrapper = $('<div id="variableSet"/>').appendTo($(variablePaneWrapper));
-                var variableTable = $('<table/>').appendTo(variableSetWrapper);
-                for(variableCount = 0; variableCount < variableList.length; variableCount++){
-                    var currentRaw;
-                    if(variableCount % 3 == 0){
-                        currentRaw = $('<tr/>').appendTo(variableTable);
-                    }
-                    var currentCell = $('<td/>').appendTo(currentRaw);
-                    var variable = $("<label for=" + variableList[variableCount].getIdentifier() + ">" +
-                            variableList[variableCount].getType()  + "</label>" + "<input readonly maxlength='5' size='5' value=" + variableList[variableCount].getIdentifier() +">").
-                            appendTo(currentCell);
-
-                    // variable edit
-                    $(variable).click(serviceModel, function(serviceModel){
-                        log.info('Variable edit');
-                    });
-
-                    // variable delete
-                    var removeBtn = $('<button>x</button>').appendTo(currentCell);
-                    $(removeBtn).click(serviceModel, function(serviceModel){
-                        log.info($(variableSelect).val());
-                    });
-                }
+                self.renderVariables(variableList,variablePaneWrapper,serviceModel);
             });
 
             $(activatorElement).click(serviceModel, function (serviceModel) {
