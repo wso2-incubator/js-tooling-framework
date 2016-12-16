@@ -145,8 +145,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             this._container = currentContainer;
 
             // Creating client lifeline.
-
             this._clientLifeLine = new LifeLine(_.first($(this._container).children().children()));
+
             //Store parent container for child elements of this serviceDefView
             this.setChildContainer(_.first($(this._container).children().children()));
             this._clientLifeLine.render();
@@ -226,13 +226,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         var varList = serviceModel.data.getVariableDeclarations();
                         var varType = $($(this.parentNode.getElementsByTagName('label'))[0]).text();
                         var varIdentifier = $($(this.parentNode.getElementsByTagName('input'))[0]).val();
-                        var index = -1;
-                        for(varIndex = 0; varIndex < varList.length; varIndex ++){
-                            if(varList[varIndex].getType() == varType && varList[varIndex].getIdentifier() == varIdentifier){
-                                index = varIndex;
-                                break;
-                            }
-                        }
+                        var index = self.checkExistingVariables(varList, varType, varIdentifier);
 
                         if(index != -1){
                             serviceModel.data.getVariableDeclarations().splice(index,1);
@@ -253,6 +247,18 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     });
                  }
             }
+        };
+
+        ServiceDefinitionView.prototype.checkExistingVariables = function (variableList, variableType, variableIdentifier){
+            var index = -1;
+            for(varIndex = 0; varIndex < variableList.length; varIndex ++){
+                if(variableList[varIndex].getType() == variableType &&
+                        variableList[varIndex].getIdentifier() == variableIdentifier){
+                    index = varIndex;
+                    break;
+                }
+            }
+            return index;
         };
 
         ServiceDefinitionView.prototype.createVariablePane = function (args) {
@@ -280,18 +286,27 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             var self = this;
 
             $(addVariable).click(serviceModel, function (serviceModel){
-                var variableList = serviceModel.data.getVariableDeclarations();
-                var variable = BallerinaASTFactory.createVariableDeclaration();
-                //pushing new variable declaration
-                variable.setType($(variableSelect).val());
-                variable.setIdentifier($(variableText).val());
-                serviceModel.data.getVariableDeclarations().push(variable);
 
-                //remove current variable list
-                if(variablePaneWrapper.children().length > 1){
-                    variablePaneWrapper.children()[variablePaneWrapper.children().length - 1].remove()
+            // ToDo add variable name validation
+                var variableList = serviceModel.data.getVariableDeclarations();
+
+                //filtering empty variable identifier and existing variables
+                if($(variableText).val() != "" &&
+                        self.checkExistingVariables(variableList, $(variableSelect).val(), $(variableText).val()) == -1){
+
+                    var variable = BallerinaASTFactory.createVariableDeclaration();
+
+                    //pushing new variable declaration
+                    variable.setType($(variableSelect).val());
+                    variable.setIdentifier($(variableText).val());
+                    serviceModel.data.getVariableDeclarations().push(variable);
+
+                    //remove current variable list
+                    if(variablePaneWrapper.children().length > 1){
+                        variablePaneWrapper.children()[variablePaneWrapper.children().length - 1].remove()
+                    }
+                    self.renderVariables(variableList,variablePaneWrapper,serviceModel);
                 }
-                self.renderVariables(variableList,variablePaneWrapper,serviceModel);
             });
 
             $(activatorElement).click(serviceModel, function (serviceModel) {
