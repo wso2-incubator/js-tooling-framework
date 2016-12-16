@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3utils', 'property_pane_utils'], function (require, _, log, StatementVisitor, d3, D3Utils, PropertyPaneUtils) {
+define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3utils', 'property_pane_utils','./../ast/ballerina-ast-factory'], function (require, _, log, StatementVisitor, d3, D3Utils, PropertyPaneUtils,Factory) {
 
     /**
      * A common class which consists functions of moving or resizing views.
@@ -165,10 +165,11 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
         // Adding a css class for 'if else' group.
         statementGroup.classed("if-else-svg-group", true);
-
+        var self = this;
         // Adding click event for 'statement' group.
         $(statementGroup.node()).click(function (statementView, event) {
 
+           var diagramRenderingContext = self.getDiagramRenderingContext();
             log.debug("Clicked statement group");
 
             event.stopPropagation();
@@ -324,8 +325,22 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
                 }).appendTo(buttonPane);
 
-                $(addButton).click(function(){
-                    // TODO : Write add implementation.
+                $(addButton).click(function () {
+                    var rootIfElseStatement = statementView.getModel();
+                    var ifElseStatement = Factory.createElseIfStatement();
+                    ifElseStatement.setParent(rootIfElseStatement);
+                    var rootIfElseStatement = statementView.getModel();
+                    var lastChild = rootIfElseStatement.children[rootIfElseStatement.children.length - 1];
+                    //If last element is 'else' then add before it.
+                    if (Factory.isElseStatement(lastChild)) {
+                        var elseIndex = rootIfElseStatement.children.indexOf(lastChild);
+                        rootIfElseStatement.addChild(ifElseStatement, elseIndex);
+                    }
+                    else {
+                        rootIfElseStatement.addChild(ifElseStatement);
+                    }
+                    var resourceView = diagramRenderingContext.getViewModelMap()[rootIfElseStatement.getParent().id];
+                    resourceView.visitStatement(rootIfElseStatement);
                 });
 
                 // Close the popups of property pane body.

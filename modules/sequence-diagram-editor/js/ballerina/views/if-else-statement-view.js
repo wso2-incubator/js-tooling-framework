@@ -123,6 +123,8 @@ define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statemen
          */
         IfElseStatementView.prototype.render = function (diagramRenderingContext) {
             this._diagramRenderingContext = diagramRenderingContext;
+            //For multiple else if views
+             d3.select(this._container).selectAll(".if-else-svg-group").remove();
             var ifElseGroup = D3Utils.group(d3.select(this._container));
             this.setStatementGroup(ifElseGroup);
             this._model.accept(this);
