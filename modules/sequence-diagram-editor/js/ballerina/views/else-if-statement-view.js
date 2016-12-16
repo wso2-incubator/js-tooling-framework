@@ -44,7 +44,7 @@ define(['require', 'lodash', 'jquery', 'log', './ballerina-statement-view', './.
         ElseIfStatementView.prototype.render = function (diagramRenderingContext) {
             this._diagramRenderingContext = diagramRenderingContext;
             var elseIfGroup = D3Utils.group(this._container);
-
+            elseIfGroup.attr("id","_" +this._model.id);
             var x = 0;
             var y = 0;
 

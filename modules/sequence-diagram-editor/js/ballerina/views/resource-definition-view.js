@@ -68,6 +68,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
             this._viewOptions.contentWidth = _.get(args, "viewOptions.contentWidth", 1000);
             this._viewOptions.contentHeight = _.get(args, "viewOptions.contentHeight", 360);
             this._viewOptions.collapseIconWidth = _.get(args, "viewOptions.collaspeIconWidth", 1025);
+            this._viewOptions.deleteIconWidth = _.get(args, "viewOptions.deleteIconWidth", 1005);
 
             this._viewOptions.totalHeightGap = 50;
             this._viewOptions.hoverClass = _.get(args, "viewOptions.cssClass.hover_svg", 'design-view-hover-svg');
@@ -242,6 +243,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
          * @returns {group} The svg group which contains the elements of the resource definition view.
          */
         ResourceDefinitionView.prototype.render = function (diagramRenderingContext) {
+
             this.diagramRenderingContext = diagramRenderingContext;
             // Render resource view
             var svgContainer = $(this._container)[0];
@@ -251,7 +253,7 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
             //Main container for a resource
             var resourceGroup = D3utils.group(d3.select(svgContainer));
             this._resourceGroup = resourceGroup;
-            resourceGroup.attr("id", "resourceGroup_" +this._model.id);
+            resourceGroup.attr("id", "_" +this._model.id);
             resourceGroup.attr("width", this._viewOptions.heading.width).attr("height", this._viewOptions.heading.height + this._viewOptions.contentHeight);
             resourceGroup.attr("x", headingStart.x()).attr("y", contentStart.y());
 
@@ -263,6 +265,8 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
             var image = pattern.append("image").attr("xlink:href", "images/down.svg").attr("x", "0").attr("y", "5").attr("width", "14").attr("height", "14");
             var pattern2 = def.append("pattern").attr("id", "resourceIcon").attr("width", "100%").attr("height", "100");
             var image2 = pattern2.append("image").attr("xlink:href", "images/dmg-resource.svg").attr("x", "5").attr("y", "5").attr("width", "14").attr("height", "14");
+            var pattern3 = def.append("pattern").attr("id", "deleteIcon").attr("width", "100%").attr("height", "100");
+            var image3 = pattern3.append("image").attr("xlink:href", "images/delete.svg").attr("x", "0").attr("y", "5").attr("width", "14").attr("height", "14");
 
             // Resource header container
             var headerGroup = D3utils.group(resourceGroup);
@@ -281,6 +285,10 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
             //Resource  heading collapse icon
             var headingCollapseIcon = D3utils.rect(this._viewOptions.collapseIconWidth, headingStart.y(), this._viewOptions.heading.icon.width,
                 this._viewOptions.heading.icon.height, 0, 0, headerGroup).classed("headingCollapseIcon", true);
+
+            //Resource  heading delete icon
+            var headingDeleteIcon = D3utils.rect(this._viewOptions.deleteIconWidth, headingStart.y(), this._viewOptions.heading.icon.width,
+                this._viewOptions.heading.icon.height, 0, 0, headerGroup).classed("headingDeleteIcon", true);
 
             // Create rect for the http method text
             var httpMethodRect = D3utils.rect(headingStart.x() + this._viewOptions.heading.icon.width, headingStart.y() + 0.5, this._viewOptions.heading.icon.width + 25,
@@ -317,6 +325,14 @@ define(['lodash', 'log', 'd3', 'jquery', 'd3utils', './ballerina-view', './../as
                     log.debug("Resource collapsed");
                 }
 
+            });
+
+            // On click of delete icon
+            headingDeleteIcon.on("click", function () {
+                log.info("Clicked delete button");
+                var child = self._model;
+                var parent = child.parent;
+                parent.removeChild(child);
             });
 
 

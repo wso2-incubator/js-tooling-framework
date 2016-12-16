@@ -147,6 +147,7 @@ define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statemen
             //For multiple else if views
              d3.select(this._container).selectAll(".if-else-svg-group").remove();
             var ifElseGroup = D3Utils.group(d3.select(this._container));
+            ifElseGroup.attr("id","_" +this._model.id);
             this.setStatementGroup(ifElseGroup);
             this._model.accept(this);
 
@@ -177,6 +178,7 @@ define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statemen
             });
             // Creating property pane
             this._createPropertyPane({
+                model:this._model,
                 statementGroup:ifElseGroup,
                 editableProperties: editableProperties
             });

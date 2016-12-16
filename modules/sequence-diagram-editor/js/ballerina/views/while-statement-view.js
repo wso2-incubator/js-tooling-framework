@@ -88,6 +88,7 @@ define(['lodash', 'log', './ballerina-statement-view', './../ast/while-statement
         WhileStatementView.prototype.render = function (diagramRenderingContext) {
             this._diagramRenderingContext = diagramRenderingContext;
             var whileGroup = D3Utils.group(d3.select(this._container));
+            whileGroup.attr("id","_" +this._model.id);
             var x = this.getXPosition();
             var y = this.getYPosition();
             var width = 120;
@@ -120,6 +121,7 @@ define(['lodash', 'log', './ballerina-statement-view', './../ast/while-statement
             };
             editableProperties.push(editableProperty);
             this._createPropertyPane({
+                model: this._model,
                 statementGroup:whileGroup,
                 editableProperties: editableProperties
             });
