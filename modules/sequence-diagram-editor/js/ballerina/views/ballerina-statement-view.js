@@ -131,6 +131,7 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
 
     BallerinaStatementView.prototype._createPropertyPane = function (args) {
+        var model = _.get(args, "model", {});
         var viewOptions = _.get(args, "viewOptions", {});
         var statementGroup = _.get(args, "statementGroup", null);
         var editableProperties = _.get(args, "editableProperties", []);
@@ -340,9 +341,16 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
             });
 
-            $(deleteButtonRect.node()).click(function(){
-                log.info("initializing delete");
-                var child = statementView;
+            $(deleteButtonRect.node()).click(function(event){
+                log.info("Clicked delete button");
+
+                event.stopPropagation();
+
+                // Hiding property button pane.
+                $(propertyButtonPaneGroup.node()).remove();
+                $(smallArrow.node()).remove();
+
+                var child = model;
                 var parent = child.parent;
                 parent.removeChild(child);
             });

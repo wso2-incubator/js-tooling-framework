@@ -154,6 +154,7 @@ define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statemen
             });
             // Creating property pane
             this._createPropertyPane({
+                model:this._model,
                 statementGroup:ifElseGroup,
                 editableProperties: editableProperties
             });
