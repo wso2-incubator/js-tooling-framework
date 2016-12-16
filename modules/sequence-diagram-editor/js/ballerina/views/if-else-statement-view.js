@@ -15,8 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statement-view', './../ast/if-else-statement', 'd3utils', 'd3', 'jquery', './../ast/if-statement', './../ast/if-else-statement'],
-    function (require, _, log, PropertyPaneUtils, BallerinaStatementView, IfElseStatement, D3Utils, d3, $, IfStatement, IfElseStatement) {
+define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statement-view', './../ast/if-else-statement', 'd3utils', 'd3', 'jquery', './../ast/if-statement', './../ast/if-else-statement','./../ast/ballerina-ast-factory'],
+    function (require, _, log, PropertyPaneUtils, BallerinaStatementView, IfElseStatement, D3Utils, d3, $, IfStatement, IfElseStatement,Factory) {
 
         /**
          * The view to represent a If Else statement which is an AST visitor.
@@ -59,8 +59,29 @@ define(['require', 'lodash', 'log', 'property_pane_utils', './ballerina-statemen
 
         IfElseStatementView.prototype.init = function () {
             //Registering event listeners
+            //TODO fix: currently this is initialised twice
+            this.getModel().on("add-new-statement",this.addNewStatement,this);
             // this.listenTo(this._parentView, 'childViewAddedEvent', this.childViewAddedCallback);
         };
+
+
+        IfElseStatementView.prototype.addNewStatement = function() {
+            var rootIfElseStatement = this.getModel();
+            var ifElseStatement = Factory.createElseIfStatement();
+            ifElseStatement.setParent(rootIfElseStatement);
+            var lastChild = rootIfElseStatement.children[rootIfElseStatement.children.length - 1];
+            //If last element is 'else' then add before it.
+            if (Factory.isElseStatement(lastChild)) {
+                var elseIndex = rootIfElseStatement.children.indexOf(lastChild);
+                rootIfElseStatement.addChild(ifElseStatement, elseIndex);
+            }
+            else {
+                rootIfElseStatement.addChild(ifElseStatement);
+            }
+            var resourceView =  this._diagramRenderingContext.getViewModelMap()[rootIfElseStatement.getParent().id];
+            resourceView.visitStatement(rootIfElseStatement);
+
+        }
 
         /**
          * Visit If Statement

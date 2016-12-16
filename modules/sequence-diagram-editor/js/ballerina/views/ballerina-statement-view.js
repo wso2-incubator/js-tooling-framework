@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3utils', 'property_pane_utils','./../ast/ballerina-ast-factory'], function (require, _, log, StatementVisitor, d3, D3Utils, PropertyPaneUtils,Factory) {
+define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3utils', 'property_pane_utils'], function (require, _, log, StatementVisitor, d3, D3Utils, PropertyPaneUtils) {
 
     /**
      * A common class which consists functions of moving or resizing views.
@@ -325,22 +325,8 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
                 }).appendTo(buttonPane);
 
-                $(addButton).click(function () {
-                    var rootIfElseStatement = statementView.getModel();
-                    var ifElseStatement = Factory.createElseIfStatement();
-                    ifElseStatement.setParent(rootIfElseStatement);
-                    var rootIfElseStatement = statementView.getModel();
-                    var lastChild = rootIfElseStatement.children[rootIfElseStatement.children.length - 1];
-                    //If last element is 'else' then add before it.
-                    if (Factory.isElseStatement(lastChild)) {
-                        var elseIndex = rootIfElseStatement.children.indexOf(lastChild);
-                        rootIfElseStatement.addChild(ifElseStatement, elseIndex);
-                    }
-                    else {
-                        rootIfElseStatement.addChild(ifElseStatement);
-                    }
-                    var resourceView = diagramRenderingContext.getViewModelMap()[rootIfElseStatement.getParent().id];
-                    resourceView.visitStatement(rootIfElseStatement);
+                $(addButton).click(function (event) {
+                    statementView.getModel().trigger("add-new-statement");
                 });
 
                 // Close the popups of property pane body.
