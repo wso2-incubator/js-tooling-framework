@@ -69,6 +69,8 @@ define(['lodash', 'jquery', 'd3', 'log', 'd3utils', 'app/diagram-core/models/poi
             this._viewOptions.child = _.get(options, "child.value", false);
             this._middleLine = undefined;
 
+            this._viewOptions.model = _.get(options, "model");
+
             // Make the lifeline uneditable by default
             if (_.get(options, "editable", false)) {
                 // TODO : Implement for welcome page.
@@ -253,6 +255,12 @@ define(['lodash', 'jquery', 'd3', 'log', 'd3utils', 'app/diagram-core/models/poi
             // this._droppableMiddleRect.attr('stroke-width', "1");
             // this._droppableMiddleRect.attr('stroke', "#000000");
             this._droppableMiddleRect.on('mouseover', function () {
+                //TODO:
+                //if(self.messageManager.isOnDrag){
+                //    var validateMethod = "validateMethod";
+                //    self.messageManager.setActivatedDropTarget( this._viewOptions.model,validateMethod);
+                //}
+                //
                 d3.select(this).attr('fill', "green");
                 d3.select(this).attr('fill-opacity', 0.1);
             }).on('mouseout', function () {

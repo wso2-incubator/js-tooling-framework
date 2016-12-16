@@ -152,6 +152,10 @@ define(['./ballerina-ast-root', './service-definition', './function-definition',
             return new getActionStatement(args);
         };
 
+        BallerinaASTFactory.isActionInvocationStatement = function(child){
+            return child instanceof actionInvocationStatement;
+        };
+
         BallerinaASTFactory.createActionInvocationStatement = function(args) {
             return new actionInvocationStatement(args);
         };

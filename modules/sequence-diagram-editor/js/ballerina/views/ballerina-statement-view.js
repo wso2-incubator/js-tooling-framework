@@ -164,9 +164,11 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
         viewOptions.propertyForm.body.addStatement.text = _.get(args, "propertyForm.body.addStatement.text", "Add");
         viewOptions.propertyForm.body.addStatement.class = _.get(args, "propertyForm.body.addStatement.class", "property-pane-form-body-add-button");
 
+        var self = this;
         // Adding click event for 'statement' group.
         $(statementGroup.node()).click(function (statementView, event) {
 
+           var diagramRenderingContext = self.getDiagramRenderingContext();
             log.debug("Clicked statement group");
 
             event.stopPropagation();
@@ -322,8 +324,8 @@ define(['require', 'lodash', 'log', './../visitors/statement-visitor', 'd3', 'd3
 
                 }).appendTo(buttonPane);
 
-                $(addButton).click(function(){
-                    // TODO : Write add implementation.
+                $(addButton).click(function (event) {
+                    statementView.getModel().trigger("add-new-statement");
                 });
 
                 // Close the popups of property pane body.
