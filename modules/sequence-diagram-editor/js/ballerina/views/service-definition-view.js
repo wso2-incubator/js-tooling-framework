@@ -222,8 +222,8 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
 
                     // variable delete onclick
                     var self = this;
-                    $(removeBtn).click(serviceModel, function(serviceModel){
-                        var varList = serviceModel.data.data.getVariableDeclarations();
+                    $(removeBtn).click(serviceModel, function(){
+                        var varList = serviceModel.data.getVariableDeclarations();
                         var varType = $($(this.parentNode.getElementsByTagName('label'))[0]).text();
                         var varIdentifier = $($(this.parentNode.getElementsByTagName('input'))[0]).val();
                         var index = -1;
@@ -235,7 +235,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         }
 
                         if(index != -1){
-                            serviceModel.data.data.getVariableDeclarations().splice(index,1);
+                            serviceModel.data.getVariableDeclarations().splice(index,1);
                         }
 
                         log.info($(variable).val());
