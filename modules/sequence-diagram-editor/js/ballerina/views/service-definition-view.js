@@ -53,6 +53,7 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             //Registering event listeners
             this.listenTo(this._model, 'childVisitedEvent', this.childVisitedCallback);
             this.listenTo(this._parentView, 'childViewAddedEvent', this.childViewAddedCallback);
+            this.listenTo(this._model, 'childRemovedEvent', this.childViewRemovedCallback);
         };
 
         ServiceDefinitionView.prototype.childVisitedCallback = function (child) {
@@ -149,10 +150,16 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             this._clientLifeLine.render();
             this.getModel().accept(this);
 
-             //  var annotationButton = this._createAnnotationButton(this.getChildContainer());
-             var variableButton = this._createVariableButton(this.getChildContainer());
+            var self = this;
+            this._model.on('child-added', function (child) {
+                self.visit(child);
+                self._model.trigger("childVisitedEvent", child);
+            });
 
-             var variableProperties = {
+            var annotationButton = this._createAnnotationButton(this.getChildContainer());
+            var variableButton = this._createVariableButton(this.getChildContainer());
+
+            var variableProperties = {
                 model: this._model,
                 editableProperties: [{
                     propertyType: "text",
@@ -161,13 +168,13 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                     getterMethod: this._model.getServiceName,
                     setterMethod: this._model.setServiceName
                 },
-                {
-                    propertyType: "text",
-                    key: "Base Path",
-                    model: this._model,
-                    getterMethod: this._model.getBasePath,
-                    setterMethod: this._model.setBasePath
-                }],
+                    {
+                        propertyType: "text",
+                        key: "Base Path",
+                        model: this._model,
+                        getterMethod: this._model.getBasePath,
+                        setterMethod: this._model.setBasePath
+                    }],
                 activatorElement: variableButton.node(),
                 paneAppendElement: _.first($(this._container).children()),
                 viewOptions: {
@@ -176,19 +183,14 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                         y: parseFloat(variableButton.attr("cy")) + parseFloat(variableButton.attr("r"))
                     }
                 }
-             };
+            };
 
             this.createVariablePane(variableProperties);
-
-            var self = this;
-            this._model.on('child-added', function(child){
-                self.visit(child);
-                self._model.trigger("childVisitedEvent", child);
-            });
+            this._createAnnotationButtonPane(annotationButton);
         };
 
         ServiceDefinitionView.prototype.createVariablePane = function (args) {
-            var activatorElement = _.get(args, "activatorElement");;
+            var activatorElement = _.get(args, "activatorElement");
             var serviceModel = _.get(args, "model");
             var paneElement = _.get(args, "paneAppendElement");
 
@@ -203,25 +205,24 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             var variableSelect = $("<select id='customSelect'><option value='message'>message</option><option value='exception'>exception</option><option value='int'>int</option></select>").appendTo(variableForm);
             var addVariable = $("<button type='button'>Add</button>").appendTo(variableForm);
 
-            $(addVariable).click(serviceModel, function (serviceModel){
+            $(addVariable).click(serviceModel, function (serviceModel) {
                 var variableList = serviceModel.data.getVariableDeclarations();
                 var variable2 = BallerinaASTFactory.createVariableDeclaration();
                 variable2.setType('int');
                 variable2.setIdentifier('2');
-                serviceModel.data.getVariableDeclarations().push(variable2)
+                serviceModel.data.getVariableDeclarations().push(variable2);
                 log.info($(variableText).val());
             });
 
             var variableList = serviceModel.getVariableDeclarations();
 
-            for(variableCount = 0; variableCount < variableList.length; variableCount++){
+            for (variableCount = 0; variableCount < variableList.length; variableCount++) {
                 var variableSelect = $("<p><label for=" + variableList[variableCount].getIdentifier() + ">" +
-                    variableList[variableCount].getType()  +":" +variableList[variableCount].getIdentifier() +"</label></p>").
-                    appendTo(variablePaneWrapper);
+                    variableList[variableCount].getType() + ":" + variableList[variableCount].getIdentifier() + "</label></p>").appendTo(variablePaneWrapper);
             }
 
             $(activatorElement).click(serviceModel, function (serviceModel) {
-                if(paneElement.children[1].style.display=="none"){
+                if (paneElement.children[1].style.display == "none") {
                     paneElement.children[1].style.display = "inline";
                 } else {
                     paneElement.children[1].style.display = "none";
@@ -247,20 +248,24 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
          */
         ServiceDefinitionView.prototype.visitResourceDefinition = function (resourceDefinition) {
             log.info("Visiting resource definition");
-            var resourceContainer  = this.getChildContainer();
+            var resourceContainer = this.getChildContainer();
             // If more than 1 resource
-            if(this.getResourceViewList().length > 0 ){
-                var prevView = this.getResourceViewList().pop(this.getResourceViewList().length-1);
+            if (this.getResourceViewList().length > 0) {
+                var prevView = this.getResourceViewList().pop(this.getResourceViewList().length - 1);
                 var prevResourceHeight = prevView.getBoundingBox().height;
                 var prevResourceY = prevView.getBoundingBox().y;
                 var newCenterPointY = prevResourceHeight + prevResourceY + 10;
-                var viewOpts = { centerPoint: {y:newCenterPointY}};
-                var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer,
-                    toolPalette: this.toolPalette, messageManager: this.messageManager, viewOptions: viewOpts});
+                var viewOpts = {centerPoint: {y: newCenterPointY}};
+                var resourceDefinitionView = new ResourceDefinitionView({
+                    model: resourceDefinition, container: resourceContainer,
+                    toolPalette: this.toolPalette, messageManager: this.messageManager, viewOptions: viewOpts
+                });
             }
-            else{
-                var resourceDefinitionView = new ResourceDefinitionView({model: resourceDefinition,container: resourceContainer,
-                    toolPalette: this.toolPalette,messageManager: this.messageManager, parentView: this});
+            else {
+                var resourceDefinitionView = new ResourceDefinitionView({
+                    model: resourceDefinition, container: resourceContainer,
+                    toolPalette: this.toolPalette, messageManager: this.messageManager, parentView: this
+                });
             }
             this.diagramRenderingContext.getViewModelMap()[resourceDefinition.id] = resourceDefinitionView;
             resourceDefinitionView.render(this.diagramRenderingContext);
@@ -324,8 +329,168 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
             // TODO : Implement
         };
 
-        // TODO : Move this to SVG
-        ServiceDefinitionView.prototype._createAnnotationButton = function(serviceContentSvg) {
+        ServiceDefinitionView.prototype._createAnnotationButtonPane = function (annotationButton) {
+            var paneWidth = 400;
+            var paneHeadingHeight = annotationButton.attr("r") * 2;
+            var paneContentHeight = 300;
+            var wrapperDivClass = "service-annotation-wrapper";
+            var headerWrapperDivClass = "service-annotation-header-wrapper";
+            var contentWrapperDivClass = "service-annotation-content-wrapper";
+            var headerTickDivClass = "service-annotation-header-tick";
+
+            var data = [
+                {
+                    annotationType: "BasePath",
+                    annotationValue: this._model.getBasePath(),
+                    setterMethod: this._model.setBasePath
+                },
+                {
+                    annotationType: "ServiceName",
+                    annotationValue: this._model.getServiceName(),
+                    setterMethod: this._model.setServiceName
+                },
+                {
+                    annotationType: "Source:interface",
+                    annotationValue: this._model.getSource().interface,
+                    setterMethod: this._model.setSource
+                }
+            ];
+            $(annotationButton.node()).click({model: this._model}, function (event) {
+
+                if (_.isNil($(annotationButton.node()).data("showing")) || $(annotationButton.node()).data("showing") == "false") {
+                    $(annotationButton.node()).data("showing", true);
+                } else {
+                    return;
+                }
+
+                var model = event.data.model;
+                event.stopPropagation();
+
+                var annotationButtonRectHoverEvent = $(annotationButton.node()).next().hover;
+                $($(annotationButton.node()).next()).unbind("hover");
+
+                annotationButton.style("opacity", 1);
+
+                var divSvgWrapper = annotationButton.node().ownerSVGElement.parentElement;
+
+                var paneStartingX = annotationButton.attr("cx") - paneWidth;
+                var paneStartingY = annotationButton.attr("cy") - annotationButton.attr("r");
+
+                // Heading background.
+                var headingBackground = d3.select(annotationButton.node().parentElement).insert("rect", ":first-child")
+                    .attr("x", paneStartingX)
+                    .attr("y", paneStartingY)
+                    .attr("width", paneWidth)
+                    .attr("height", paneHeadingHeight)
+                    .classed("service-annotation-header-pane", true);
+
+                var annotationEditorWrapper = $("<div/>", {
+                    class: wrapperDivClass
+                }).width(paneWidth).offset({top: 72.325, left: 1174.33}).appendTo(divSvgWrapper);
+
+                // Creating header content.
+                var headerWrapper = $("<div/>", {
+                    class: headerWrapperDivClass,
+                    click: function (event) {
+                        event.stopPropagation();
+                    }
+                }).height(paneHeadingHeight).appendTo(annotationEditorWrapper);
+
+                var annotationTypeDropDown = $("<select />").appendTo(headerWrapper);
+                _.forEach(data, function (annotation) {
+                    $("<option />", {
+                        value: annotation.annotationType,
+                        text: annotation.annotationType
+                    }).appendTo(annotationTypeDropDown);
+                });
+
+                var annotationValueInput = $("<input type='text' value='" + data[0].annotationValue + "'>").appendTo(headerWrapper);
+                $(annotationTypeDropDown).change(function () {
+                    var selectedAnnotationType = $(this).val();
+                    var selectedAnnotation = _.filter(data, function (annotation) {
+                        return annotation.annotationType == selectedAnnotationType;
+                    });
+                    annotationValueInput.val(_.first(selectedAnnotation).annotationValue);
+                });
+
+                // Add/Done button
+                var tickSpan = $("<span/>", {
+                    class: headerTickDivClass + " fw-stack fw-lg"
+                }).appendTo(headerWrapper);
+
+                var tickSquare = $("<i/>", {
+                    class: "fw fw-square fw-stack-2x",
+                    css: {
+                        opacity: 0.4
+                    }
+                }).appendTo(tickSpan);
+
+                var tickCheck = $("<i/>", {
+                    class: "fw fw-check fw-stack-1x fw-inverse"
+                }).appendTo(tickSpan);
+
+                $(tickCheck).hover(
+                    function () {
+                        $(tickSquare).css("opacity", 1);
+                    },
+                    function () {
+                        $(tickSquare).css("opacity", 0.4);
+                    }
+                );
+
+
+                $(tickSpan).click(function () {
+                    var selectedDropdownAnnotationType = $(annotationTypeDropDown).val();
+                    var newAnnotationValue = $(annotationValueInput).val();
+                    var annotationToUpdate = _.first(_.filter(data, function (annotation) {
+                        return annotation.annotationType == selectedDropdownAnnotationType;
+                    }));
+                    annotationToUpdate.setterMethod.call(model, newAnnotationValue);
+                });
+
+                $(window).click(function () {
+                    $(headingBackground.node()).remove();
+                    $(annotationEditorWrapper).remove();
+                    $(annotationButton.node()).data("showing", "false");
+
+                    $(this).unbind("click");
+                });
+
+                // Creating content.
+                var contentWrapper = $("<div/>", {
+                    class: contentWrapperDivClass
+                }).width(paneWidth).height(paneHeadingHeight).offset({
+                    top: 72.325 + paneHeadingHeight,
+                    left: 1174.33
+                }).appendTo(annotationEditorWrapper);
+
+                // using JSON.stringify pretty print capability:
+                var editorJson = "{";
+                _.forEach(data, function (annotation, index) {
+                    editorJson += "\"" + annotation.annotationType + "\":\"" + annotation.annotationValue + "\"";
+                    if (index != data.length - 1) {
+                        editorJson += ",";
+                    }
+                });
+                editorJson += "}";
+
+                log.debug(editorJson);
+                var str = JSON.stringify(JSON.parse(editorJson), undefined, 4);
+
+                $("<textarea/>", {
+                    val: str,
+                    css: {
+                        width: paneWidth,
+                        "max-height": paneContentHeight
+                    }
+                }).appendTo(contentWrapper);
+
+                // TODO : Correctly implement
+                $(contentWrapper).remove();
+            });
+        };
+
+        ServiceDefinitionView.prototype._createAnnotationButton = function (serviceContentSvg) {
             var svgDefinitions = d3.select(serviceContentSvg).append("defs");
 
             var annotationButtonPattern = svgDefinitions.append("pattern")
@@ -340,18 +505,56 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 .attr("width", 18.67)
                 .attr("height", 18.67);
 
+            var outerBoxPadding = parseInt($(serviceContentSvg.parentElement).css("padding"), 10);
+            // xPosition = Width of the outer div - padding of outer box - radius of the annotation button - 20(additional value).
+            var xPosition = $(serviceContentSvg.parentElement.parentElement).prev().width() - outerBoxPadding - 18.675 - 20;
+            // yPosition = (2 X radius of annotation button) + additional distance.
+            var yPosition = 75;
+
             var annotationIconGroup = D3utils.group(d3.select(serviceContentSvg));
 
-            var annotationIconBackgroundCircle = D3utils.circle(1435, 30, 18.675, annotationIconGroup)
+            var annotationIconBackgroundCircle = D3utils.circle(xPosition, yPosition, 18.675, annotationIconGroup)
                 .classed("annotation-icon-background-circle", true);
 
-            var annotationIconRect = D3utils.centeredRect(new Point(1435, 30), 18.67, 18.67, 0, 0, annotationIconGroup)
+            var annotationIconRect = D3utils.centeredRect(new Point(xPosition, yPosition), 18.67, 18.67, 0, 0, annotationIconGroup)
                 .classed("annotation-icon-rect", true);
+
+            // Positioning the icon when window is zoomed out or in.
+            $(window).resize(function () {
+                var outerBoxPadding = parseInt($(serviceContentSvg.parentElement).css("padding"), 10);
+
+                // xPosition = Width of the outer div - padding of outer box - radius of the annotation button - 20(additional value).
+                var xPosition = $(serviceContentSvg.parentElement.parentElement).prev().width() - outerBoxPadding - 18.675 - 20;
+
+                $(annotationIconBackgroundCircle.node()).remove();
+                $(annotationIconRect.node()).remove();
+
+                annotationIconBackgroundCircle = D3utils.circle(xPosition, yPosition, 18.675, annotationIconGroup)
+                    .classed("annotation-icon-background-circle", true);
+
+                annotationIconRect = D3utils.centeredRect(new Point(xPosition, yPosition), 18.67, 18.67, 0, 0, annotationIconGroup)
+                    .classed("annotation-icon-rect", true);
+            });
+
+            // Get the hover effect of the circle on the icon hover.
+            $(annotationIconRect.node()).hover(
+                function () {
+                    annotationIconBackgroundCircle.style("opacity", 1);
+                },
+                function () {
+                    $(annotationIconBackgroundCircle.node()).removeAttr("style");
+                }
+            );
+
+            $(annotationIconRect.node()).click(function (event) {
+                $(annotationIconBackgroundCircle.node()).trigger("click");
+                event.stopPropagation();
+            });
 
             return annotationIconBackgroundCircle;
         };
 
-        ServiceDefinitionView.prototype._createVariableButton = function(serviceContentSvg) {
+        ServiceDefinitionView.prototype._createVariableButton = function (serviceContentSvg) {
             var svgDefinitions = d3.select(serviceContentSvg).append("defs");
 
             var variableButtonPattern = svgDefinitions.append("pattern")
@@ -366,13 +569,47 @@ define(['lodash', 'log', 'd3', 'd3utils', 'jquery', './canvas', './point', './..
                 .attr("width", 18.67)
                 .attr("height", 18.67);
 
+            var outerBoxPadding = parseInt($(serviceContentSvg.parentElement).css("padding"), 10);
+            // xPosition = Width of the outer div - padding of outer box - radius of the annotation button - 20(additional value).
+            var xPosition = $(serviceContentSvg.parentElement.parentElement).prev().width() - outerBoxPadding - 18.675 - 20;
+
             var variableIconGroup = D3utils.group(d3.select(serviceContentSvg));
 
-            var variableIconBackgroundCircle = D3utils.circle(1435, 30, 18.675, variableIconGroup)
+            var variableIconBackgroundCircle = D3utils.circle(xPosition, 30, 18.675, variableIconGroup)
                 .classed("variable-icon-background-circle", true);
 
-            var variableIconRect = D3utils.centeredRect(new Point(1435, 30), 18.67, 18.67, 0, 0, variableIconGroup)
+            var variableIconRect = D3utils.centeredRect(new Point(xPosition, 30), 18.67, 18.67, 0, 0, variableIconGroup)
                 .classed("variable-icon-rect", true);
+
+            // Positioning the icon when window is zoomed out or in.
+            $(window).resize(function () {
+                var outerBoxPadding = parseInt($(serviceContentSvg.parentElement).css("padding"), 10);
+                // xPosition = Width of the outer div - padding of outer box - radius of the annotation button - 20(additional value).
+                var xPosition = $(serviceContentSvg.parentElement.parentElement).prev().width() - outerBoxPadding - 18.675 - 20;
+
+                $(variableIconBackgroundCircle.node()).remove();
+                $(variableIconRect.node()).remove();
+
+                variableIconBackgroundCircle = D3utils.circle(xPosition, 30, 18.675, variableIconGroup)
+                    .classed("variable-icon-background-circle", true);
+
+                variableIconRect = D3utils.centeredRect(new Point(xPosition, 30), 18.67, 18.67, 0, 0, variableIconGroup)
+                    .classed("variable-icon-rect", true);
+            });
+
+            // Get the hover effect of the circle on the icon hover.
+            $(variableIconRect.node()).hover(
+                function () {
+                    variableIconBackgroundCircle.style("opacity", 1);
+                },
+                function () {
+                    $(variableIconBackgroundCircle.node()).removeAttr("style");
+                }
+            );
+
+            $(variableIconRect.node()).click(function () {
+                $(variableIconBackgroundCircle.node()).trigger("click");
+            });
 
             return variableIconBackgroundCircle;
         };

@@ -99,6 +99,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var serviceDefinition_passthroughService = BallerinaASTFactory.createServiceDefinition();
             serviceDefinition_passthroughService.setServiceName("PassthroughService");
             serviceDefinition_passthroughService.setBasePath("/account");
+            serviceDefinition_passthroughService.setSource({})
 
             //service definition
             var serviceDefinition_passthroughService2 = BallerinaASTFactory.createServiceDefinition();
@@ -117,7 +118,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var elseIf2 = BallerinaASTFactory.createElseIfStatement();
             ifelse1.addChild(if1);
             ifelse1.addChild(elseIf1);
-            ifelse1.addChild(elseIf2);
+            // ifelse1.addChild(elseIf2);
             ifelse1.addChild(else1);
 
             var ifelse2 = BallerinaASTFactory.createIfElseStatement();
@@ -131,14 +132,15 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var else3 = BallerinaASTFactory.createElseStatement();
             ifelse3.addChild(if3);
             ifelse3.addChild(else3);
-            // if1.addChild(ifelse2);
+            if1.addChild(ifelse2);
+            elseIf1.addChild(ifelse3);
             // else1.addChild(ifelse3);
             var ifelse4 = BallerinaASTFactory.createIfElseStatement();
             var if4 = BallerinaASTFactory.createIfStatement();
             var else4 = BallerinaASTFactory.createElseStatement();
             ifelse4.addChild(if4);
             ifelse4.addChild(else4);
-            // if1.addChild(ifelse4);
+            // if2.addChild(ifelse4);
             //
             // if2.addChild(ifelse3);
             resource_passthrough2.addChild(ifelse1);
@@ -212,7 +214,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var whileStatement1 = BallerinaASTFactory.createWhileStatement();
             whileStatement1.setCondition("Condition2");
 
-            // resource_passthrough.addChild(whileStatement1);
+            // resource_passthrough2.addChild(whileStatement1);
 
             /**
              * Create the sample assignment statement
@@ -290,7 +292,7 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
             var functionDefinition1 = BallerinaASTFactory.createFunctionDefinition();
             functionDefinition1.addChild(workerDeclaration1);
             functionDefinition1.addChild(workerDeclaration2);
-            functionDefinition1.addChild(ifelse1);
+            // functionDefinition1.addChild(ifelse1);
             functionDefinitions.push(functionDefinition1);
             ballerinaAstRoot1.addChild(functionDefinition1);
             ballerinaAstRoot1.setFunctionDefinitions(functionDefinitions);
@@ -310,7 +312,12 @@ define(['require', 'log', 'jquery', 'lodash', './tab', 'ballerina', 'workspace',
                 container: this.$el.get(0),
                 viewOptions: ballerinaEditorOptions
             });
+            this._fileEditor = fileEditor;
             fileEditor.render(diagramRenderingContext);
+        },
+
+        getBallerinaFileEditor: function () {
+            return this._fileEditor;
         }
 
     });

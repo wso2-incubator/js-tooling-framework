@@ -43,10 +43,11 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
 
         //draw a collapse accordion
         var outerDiv = $('<div></div>');
-
+        outerDiv.attr('id', '_'+canvas[0].id);//to support HTML4
         outerDiv.addClass(_.get(options, 'cssClass.outer_div'));
         var panelHeading = $('<div></div>');
         panelHeading.attr('id', canvas[0].id + 3).attr('role', 'tab');
+        panelHeading.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
         var panelTitle = $('<h4></h4>');
         panelTitle.addClass(_.get(options, 'cssClass.panel_title'));
         var panelIcon = $('<i></i>');
@@ -65,22 +66,16 @@ define(['log', 'lodash', 'jquery', 'd3', 'd3utils', './../visitors/ast-visitor',
         }
         titleLink.addClass(_.get(options, 'cssClass.title_link'));
         //TODO: update href,aria-controls
-        titleLink.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
         panelTitle.append(titleLink);
 
         var panelRightIcon = $('<i></i>');
         panelRightIcon.addClass(_.get(options, 'cssClass.panel_right_icon'));
-        panelRightIcon.attr('role', 'button').attr('data-toggle', 'collapse').attr('data-parent', "#accordion").attr('href', '#' + canvas[0].id).attr('aria-expanded', 'false').attr('aria-controls', canvas[0].id);
         panelTitle.append(panelRightIcon);
 
         panelHeading.append(panelTitle);
 
-        titleLink.click(function () {
-            $(this).parent().find('i.right-icon-clickable').toggleClass('fw-down fw-up');
-        });
-
-        panelRightIcon.click(function () {
-            $(this).toggleClass('fw-down fw-up');
+        panelHeading.click(function() {
+            $(this).find('i.right-icon-clickable').toggleClass('fw-down fw-up');
         });
 
         var bodyDiv = $('<div></div>');
