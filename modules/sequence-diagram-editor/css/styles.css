@@ -207,6 +207,13 @@ ol#breadcrumbList {
     display:block;
 }
 
+.service-variable-pane {
+    position:absolute;
+    top:32px;
+    right:75px;
+    display:none;
+}
+
 .service-variable-typebutton {
 
     float: right;
