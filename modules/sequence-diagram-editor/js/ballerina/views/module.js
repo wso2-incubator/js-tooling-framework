@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-define(['./action-definition-view', './ballerina-file-editor', './ballerina-view',,'./message-manager', './canvas',
+define(['./action-definition-view', './ballerina-file-editor', './ballerina-view','./message-manager', './canvas',
         './connector-declaration-view', './function-definition-view', './reply-statement-view',
         './resource-definition-view', './return-statement-view', './service-definition-view', './throw-statement-view',
         './while-statement-view', './worker-declaration-view', './source-view','./get-action-statement-view'],
